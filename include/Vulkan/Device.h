@@ -46,7 +46,7 @@ public:
     ///  Destroys the device.
     void Destroy();
 
-    VkInstance &GetInstance() { return m_Instance.GetVkInstance(); }
+    VkInstance &GetVkInstance() { return m_Instance.GetVkInstance(); }
     VkPhysicalDevice &GetPhysicalDevice() { return m_PhysicalDevice; }
     VkDevice &GetDevice() { return m_Device; }
     VkSurfaceKHR &GetSurface() { return m_Surface; }

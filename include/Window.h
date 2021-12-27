@@ -10,6 +10,7 @@ public:
     ~Window();
 
     void Run();
+    void Resize(uint32_t iWidth, uint32_t iHeight);
 
 private:
     void CreateSurface();
