@@ -172,10 +172,10 @@ set(
     ImGui 
     glm::glm
 ) 
-  
+    
 target_compile_definitions(
     Olympus
- 
+  
     PRIVATE
 
     GLFW_INCLUDE_VULKAN #use vulkan with GLFW
