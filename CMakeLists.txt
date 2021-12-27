@@ -121,7 +121,13 @@ set(
     ${Vulkan_LIBRARY}
 )
 
+target_include_directories(
+	Olympus
+    SYSTEM
+    PRIVATE
 
+    ${Vulkan_INCLUDE_DIRS}
+)
 ##########################
 # OLYMPUS - Source files #
 ##########################
@@ -131,28 +137,54 @@ set(
 
     src/*.cpp
     include/*.h
-) 
+)  
  
 # Adding every file to be compiled
 file(
-    GLOB 
+    GLOB_RECURSE
     OLYMPUS_SOURCES 
  
     ${OLYMPUS_FILES}
 ) 
-  
-  
+
 ####################
 # Olympus - Build #
 ####################
 
 target_sources(Olympus PRIVATE ${OLYMPUS_SOURCES})
 
+target_include_directories(
+	Olympus
+
+	PRIVATE
+
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 add_subdirectory(extern)
 add_subdirectory(extern/glm)
 
-target_link_libraries(Olympus PRIVATE GLFW ImGui glm::glm)
+set(
+    OLYMPUS_LINKER_FLAGS
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME}) 
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION}) 
- 
+    ${OLYMPUS_LINKER_FLAGS}
+    GLFW 
+    ImGui 
+    glm::glm
+) 
+
+target_compile_definitions(
+    Olympus
+
+    PRIVATE
+
+    GLFW_INCLUDE_VULKAN #use vulkan with GLFW
+    GLM_ENABLE_EXPERIMENTAL # To be able to use quaternions
+    GLM_FORCE_RADIANS # Forcing calculations to be in radians
+    GLM_FORCE_DEPTH_ZERO_TO_ONE # To fix glm's perspective matrix
+    #GLM_FORCE_LEFT_HANDED # Needs to be forced to LH for Vulkan
+)
+
+
+target_compile_options(Olympus PRIVATE ${OLYMPUS_COMPILER_FLAGS})
+target_link_libraries(Olympus PRIVATE ${OLYMPUS_LINKER_FLAGS})
