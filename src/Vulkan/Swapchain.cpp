@@ -207,36 +207,13 @@ void Swapchain::CreateImageViews()
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
-void Swapchain::CreateFrameBuffers(VkRenderPass iRenderPass, VkImageView iDepthImageView, VkImageView iVertexIndexImageView)
+void Swapchain::CreateFrameBuffers(VkRenderPass iRenderPass, VkImageView iDepthImageView)
 {
     m_Framebuffers.resize(m_Images.size());
 
     for (size_t i = 0; i < m_Framebuffers.size(); i++)
     {
-        std::array<VkImageView, 3> attachments = {m_ImageViews[i], iVertexIndexImageView, iDepthImageView};
-        VkFramebufferCreateInfo framebufferInfo{};
-        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = iRenderPass;
-        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-        framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width = m_Extent.width;
-        framebufferInfo.height = m_Extent.height;
-        framebufferInfo.layers = 1;
-
-        VK_CHECK_RESULT(
-            vkCreateFramebuffer(m_Device.GetDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]))
-    }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void Swapchain::CreateFrameBuffers(VkRenderPass iRenderPass)
-{
-    // #TODO refactor
-    m_Framebuffers.resize(m_Images.size());
-
-    for (size_t i = 0; i < m_Framebuffers.size(); i++)
-    {
-        std::array<VkImageView, 1> attachments = {m_ImageViews[i]};
+        std::array<VkImageView, 2> attachments = {m_ImageViews[i], iDepthImageView};
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = iRenderPass;

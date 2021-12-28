@@ -11,7 +11,7 @@ VkMesh::VkMesh(Device &device, const BufferFactory &bufferFactory)
 void VkMesh::InitCube()
 {
     m_Mesh = Mesh::InitCube();
-    m_Mesh.Translate({0, 0, 1.0});
+    m_Mesh.Translate({0, 0, 2.0});
 
     CreateVertexBuffer();
     CreateIndexBuffer();

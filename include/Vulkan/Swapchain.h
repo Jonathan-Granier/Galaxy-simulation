@@ -31,14 +31,8 @@ public:
     /// @brief
     ///  Create the framebuffers used by the swapchain.
     /// @param[in] iRenderPass Render pass to attache to the framebuffers.
-    void CreateFrameBuffers(VkRenderPass iRenderPass);
-
-    /// @brief
-    ///  Create the framebuffers used by the swapchain.
-    /// @param[in] iRenderPass Render pass to attache to the framebuffers.
     /// @param[in] iDepthImageView Depth attachment used by the render pass.
-    /// @param[in] iVertexIndexImageView VertexIndex attachment used by the render pass.
-    void CreateFrameBuffers(VkRenderPass iRenderPass, VkImageView iDepthImageView, VkImageView iVertexIndexImageView);
+    void CreateFrameBuffers(VkRenderPass iRenderPass, VkImageView iDepthImageView);
 
     /// @brief
     ///  Get the next image to draw.

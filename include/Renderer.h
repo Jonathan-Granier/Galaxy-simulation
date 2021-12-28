@@ -6,6 +6,7 @@
 #include "Vulkan/PipelineLayout.h"
 #include "Vulkan/MeshPipeline.h"
 #include "Vulkan/BufferFactory.h"
+#include "Vulkan/Image.h"
 #include "Vulkan/DescriptorSet.h"
 #include "Vulkan/CommandBuffer.h"
 #include "Vulkan/UniformBuffer.h"
@@ -84,6 +85,13 @@ private:
     ///  Creates the synchronization objets.
     void CreateSyncObjects();
 
+    ///  Creates the depth buffer.
+    void CreateDepthBuffer();
+
+    ///  Finds the appropriate depth format.
+    /// @return Chosen depth format.
+    VkFormat FindDepthFormat();
+
     ///  Builds the command buffer at the given index.
     /// @param iIndex Index of the command buffer to build.
     void BuildCommandBuffer(uint32_t iIndex);
@@ -116,6 +124,9 @@ private:
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
     /// Command buffer for the graphics queue. ( 1 by framebuffer of the swapchain).
     std::vector<CommandBuffer> m_CommandBuffers{};
+
+    /// Depth buffer image.
+    Image m_DepthBuffer;
 
     /// Mesh to draw.
     std::unique_ptr<VkMesh> m_Mesh;
