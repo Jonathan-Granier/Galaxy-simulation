@@ -5,6 +5,7 @@ add_executable(Olympus)
 # Using C++17
 target_compile_features(Olympus PRIVATE cxx_std_17)
 
+
 #############################
 # Olympus - Finding Vulkan #
 #############################
@@ -172,19 +173,19 @@ set(
     ImGui 
     glm::glm
 ) 
-    
+     
 target_compile_definitions(
     Olympus
   
     PRIVATE
 
+    OLYMPUS_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/"
     GLFW_INCLUDE_VULKAN #use vulkan with GLFW
     GLM_ENABLE_EXPERIMENTAL # To be able to use quaternions
     GLM_FORCE_RADIANS # Forcing calculations to be in radians
     GLM_FORCE_DEPTH_ZERO_TO_ONE # To fix glm's perspective matrix
     #GLM_FORCE_LEFT_HANDED # Needs to be forced to LH for Vulkan
 )
-
 
 target_compile_options(Olympus PRIVATE ${OLYMPUS_COMPILER_FLAGS})
 target_link_libraries(Olympus PRIVATE ${OLYMPUS_LINKER_FLAGS})
