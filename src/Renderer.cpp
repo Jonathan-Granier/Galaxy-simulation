@@ -1,6 +1,9 @@
 #include "Renderer.h"
 #include "Vulkan/Debug.h"
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
+#include <chrono>
+
 //----------------------------------------------------------------------------------------------------------------------
 Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
     : m_Device(iInstance, iSurface),
@@ -83,6 +86,10 @@ void Renderer::ReleaseSwapchainRessources()
     for (CommandBuffer &commandBuffer : m_CommandBuffers)
         commandBuffer.Free();
 
+    m_UniformBuffers.Model.Release();
+
+    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
+
     m_MeshPipeline.Destroy();
     m_PipelineLayout.Destroy();
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
@@ -118,25 +125,42 @@ void Renderer::CreateCommandBuffers()
 void Renderer::InitGeometry()
 {
     m_Mesh = std::make_unique<VkMesh>(m_Device, *m_BufferFactory);
-    m_Mesh->InitTriangle();
+    m_Mesh->InitCube();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::CreateUniformBuffers()
 {
+    m_UniformBuffers.Model.Init(sizeof(ModelInfo), *m_BufferFactory);
+}
+
+void Renderer::UpdateUniformBuffers()
+{
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    ModelInfo modelUbo{};
+    modelUbo.Model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
+    modelUbo.Proj[1][1] *= -1;
+
+    m_BufferFactory->TransferDataInBuffer(modelUbo, sizeof(modelUbo), m_UniformBuffers.Model.GetMemoryBuffer());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::CreatePipelineLayout()
 {
-    std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(0);
+    std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(1);
 
-    // // Model UBO
-    // descriptorBinding[0].binding = 0;
-    // descriptorBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    // descriptorBinding[0].descriptorCount = 1;
-    // descriptorBinding[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    // descriptorBinding[0].pImmutableSamplers = nullptr;
+    // Model UBO
+    descriptorBinding[0].binding = 0;
+    descriptorBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorBinding[0].descriptorCount = 1;
+    descriptorBinding[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    descriptorBinding[0].pImmutableSamplers = nullptr;
 
     m_PipelineLayout.Create(descriptorBinding);
 }
@@ -156,42 +180,27 @@ void Renderer::CreatePipeline()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::CreateDescriptorPool()
 {
-    // VkDescriptorPoolSize uniformPoolSize{};
-    // uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    // uniformPoolSize.descriptorCount = 6; // ModelInfo + CameraInfo + ScreenSize*2 + Lighting + PointSize
+    VkDescriptorPoolSize uniformPoolSize{};
+    uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uniformPoolSize.descriptorCount = 1; // ModelInfo
 
-    // VkDescriptorPoolSize imagePoolSize{};
-    // imagePoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-    // imagePoolSize.descriptorCount = 1; // Vertex Index Image
+    std::array<VkDescriptorPoolSize, 1> poolSizes{uniformPoolSize};
 
-    // VkDescriptorPoolSize storageBufferPoolSize{};
-    // storageBufferPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    // storageBufferPoolSize.descriptorCount = 2; // Shuffled buffer + Reproject buffer
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    poolInfo.pPoolSizes = poolSizes.data();
+    poolInfo.maxSets = 3;
 
-    // std::array<VkDescriptorPoolSize, 3> poolSizes{uniformPoolSize, imagePoolSize, storageBufferPoolSize};
-
-    // VkDescriptorPoolCreateInfo poolInfo{};
-    // poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    // poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-    // poolInfo.pPoolSizes = poolSizes.data();
-    // poolInfo.maxSets = 3;
-
-    // VK_CHECK_RESULT(vkCreateDescriptorPool(m_Device.GetDevice(), &poolInfo, nullptr, &m_DescriptorPool))
+    VK_CHECK_RESULT(vkCreateDescriptorPool(m_Device.GetDevice(), &poolInfo, nullptr, &m_DescriptorPool))
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::CreateDescriptorSets()
 {
-    // m_MainPassDescriptor.AllocateDescriptorSets(m_PipelineLayout.GetDescriptorLayout(), m_DescriptorPool);
-    // m_MainPassDescriptor.AddWriteDescriptor(0, m_UniformBuffers.Model);
-    // m_MainPassDescriptor.AddWriteDescriptor(1, m_UniformBuffers.Camera);
-    // m_MainPassDescriptor.AddWriteDescriptor(2, m_UniformBuffers.Lighting);
-    // m_MainPassDescriptor.AddWriteDescriptor(3, m_UniformBuffers.PointSize);
-    // m_MainPassDescriptor.UpdateDescriptorSets();
-
-    // m_GradientPassDescriptor.AllocateDescriptorSets(m_GradientPipelineLayout.GetDescriptorLayout(), m_DescriptorPool);
-    // m_GradientPassDescriptor.AddWriteDescriptor(0, m_UniformBuffers.ScreenSize);
-    // m_GradientPassDescriptor.UpdateDescriptorSets();
+    m_MainPassDescriptor.AllocateDescriptorSets(m_PipelineLayout.GetDescriptorLayout(), m_DescriptorPool);
+    m_MainPassDescriptor.AddWriteDescriptor(0, m_UniformBuffers.Model);
+    m_MainPassDescriptor.UpdateDescriptorSets();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -284,6 +293,16 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
     vkCmdBindPipeline(
         commandBuffer.GetBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetPipeline());
 
+    vkCmdBindDescriptorSets(
+        commandBuffer.GetBuffer(),
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        m_PipelineLayout.GetLayout(),
+        0,
+        1,
+        &m_MainPassDescriptor.GetDescriptorSet(),
+        0,
+        nullptr);
+
     m_Mesh->Draw(commandBuffer.GetBuffer());
 
     vkCmdEndRenderPass(commandBuffer.GetBuffer());
@@ -319,7 +338,7 @@ void Renderer::DrawNextFrame()
     m_ImagesInFlight[imageIndex] = m_InFlightFences[m_CurrentFrame];
 
     BuildCommandBuffer(imageIndex);
-    // Update uniform here
+    UpdateUniformBuffers();
 
     std::array<VkPipelineStageFlags, 1> waitStages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     std::array<VkSemaphore, 1> waitSemaphores = {m_ImageAvailableSemaphores[m_CurrentFrame]};

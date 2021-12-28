@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include "Vulkan/Device.h"
 #include "Vulkan/Swapchain.h"
 #include "Vulkan/PipelineLayout.h"
@@ -7,7 +8,21 @@
 #include "Vulkan/BufferFactory.h"
 #include "Vulkan/DescriptorSet.h"
 #include "Vulkan/CommandBuffer.h"
+#include "Vulkan/UniformBuffer.h"
 #include "Geometry/VkMesh.h"
+
+struct ModelInfo
+{
+    glm::mat4 Model;
+    glm::mat4 View;
+    glm::mat4 Proj;
+};
+
+struct UniformBuffers
+{
+    UniformBuffer Model;
+};
+
 class Renderer
 {
 public:
@@ -73,6 +88,9 @@ private:
     /// @param iIndex Index of the command buffer to build.
     void BuildCommandBuffer(uint32_t iIndex);
 
+    ///  Updates uniform buffers.
+    void UpdateUniformBuffers();
+
     /// Vulkan device that contains instance, physical device, device and queue.
     Device m_Device;
     /// Swapchain.
@@ -115,4 +133,7 @@ private:
 
     /// Current frame index in the swapchain
     size_t m_CurrentFrame = 0;
+
+    /// Uniform buffers.
+    UniformBuffers m_UniformBuffers;
 };
