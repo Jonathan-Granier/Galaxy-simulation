@@ -20,6 +20,7 @@ public:
     void InitSphere();
     void InitCube();
     void InitQuad();
+    void InitTriangle();
     void Destroy();
     VkBuffer GetVertexBuffer() const { return m_VertexBuffer.Buffer; }
     VkBuffer GetIndexBuffer() const { return m_IndexBuffer.Buffer; }

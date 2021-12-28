@@ -79,5 +79,5 @@ void Window::Resize(uint32_t iWidth, uint32_t iHeight)
 
     m_Width = width;
     m_Height = height;
-    m_Renderer->RecreateSwapchainResources(m_Width, m_Height);
+    m_Renderer->RecreateSwapchainRessources(m_Width, m_Height);
 }

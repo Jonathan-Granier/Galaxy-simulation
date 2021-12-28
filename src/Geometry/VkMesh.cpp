@@ -26,6 +26,14 @@ void VkMesh::InitQuad()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void VkMesh::InitTriangle()
+{
+    m_Mesh = Mesh::InitTriangle();
+    CreateVertexBuffer();
+    CreateIndexBuffer();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void VkMesh::Destroy()
 {
     m_BufferFactory->ReleaseBuffer(m_VertexBuffer);

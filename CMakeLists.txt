@@ -177,7 +177,7 @@ set(
 target_compile_definitions(
     Olympus
   
-    PRIVATE
+    PRIVATE  
 
     OLYMPUS_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/"
     GLFW_INCLUDE_VULKAN #use vulkan with GLFW

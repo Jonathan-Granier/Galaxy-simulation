@@ -10,6 +10,7 @@ struct Mesh
 
     static Mesh InitCube();
     static Mesh InitQuad();
+    static Mesh InitTriangle();
 
     void Translate(glm::vec3 iVector);
     [[nodiscard]] glm::vec3 ComputeCentroid() const;
