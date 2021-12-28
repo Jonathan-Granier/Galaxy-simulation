@@ -32,6 +32,9 @@ public:
     ///  Releases swapchain resources.
     void ReleaseSwapchainRessources();
 
+    ///  Renders the next frame.
+    void DrawNextFrame();
+
 private:
     ///  Creates swapchain resources (pipelines, framebuffers, descriptors, ...).
     void CreateSwapchainRessources();
@@ -66,6 +69,10 @@ private:
     ///  Creates the synchronization objets.
     void CreateSyncObjects();
 
+    ///  Builds the command buffer at the given index.
+    /// @param iIndex Index of the command buffer to build.
+    void BuildCommandBuffer(uint32_t iIndex);
+
     /// Vulkan device that contains instance, physical device, device and queue.
     Device m_Device;
     /// Swapchain.
@@ -94,4 +101,18 @@ private:
 
     /// Mesh to draw.
     std::unique_ptr<VkMesh> m_Mesh;
+
+    /// Maximum number of frames to calculate in parallel.
+    static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+
+    /// Semaphore to know if the current image is available. Already presented by the swapchain.
+    std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> m_ImageAvailableSemaphores{};
+    /// Semaphore to know if the rendering is finished for current image.
+    std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> m_RenderFinishedSemaphores{};
+    /// Fence to synchronize GPU/CPU for update uniform buffer.
+    std::array<VkFence, MAX_FRAMES_IN_FLIGHT> m_InFlightFences{};
+    std::vector<VkFence> m_ImagesInFlight{};
+
+    /// Current frame index in the swapchain
+    size_t m_CurrentFrame = 0;
 };

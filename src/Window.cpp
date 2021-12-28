@@ -50,6 +50,7 @@ void Window::Run()
 {
     while (!glfwWindowShouldClose(m_Window))
     {
+        m_Renderer->DrawNextFrame();
         glfwPollEvents();
     }
 }

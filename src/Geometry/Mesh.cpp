@@ -41,9 +41,9 @@ Mesh Mesh::InitTriangle()
 {
     Mesh m;
     m.Indices = {0, 1, 2};
+    m.Vertices.emplace_back(MeshVertex{{-0.5, 0.5, 0.}, {0., 1., 0.}});
+    m.Vertices.emplace_back(MeshVertex{{0.5, 0.5, 0.}, {1.0, 0., 0.}});
     m.Vertices.emplace_back(MeshVertex{{0., -0.5, 0.}, {0., 0., 1.}});
-    m.Vertices.emplace_back(MeshVertex{{0.5, 0.5, 0.}, {0., 0., 1.}});
-    m.Vertices.emplace_back(MeshVertex{{-0.5, 0.5, 0.}, {0., 0., 1.}});
     return m;
 }
 
