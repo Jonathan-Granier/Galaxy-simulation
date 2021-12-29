@@ -82,5 +82,5 @@ void CommandBuffer::EndAndRun(VkQueue iQueue) const
     submitInfo.pCommandBuffers = &m_CommandBuffer;
 
     vkQueueSubmit(iQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(iQueue);
+    vkQueueWaitIdle(iQueue); // TODO Replace With a fence.
 }

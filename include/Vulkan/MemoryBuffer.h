@@ -44,4 +44,6 @@ struct MemoryBuffer
     VkDeviceMemory Memory = VK_NULL_HANDLE;
     /// The vulkan buffer.
     VkBuffer Buffer = VK_NULL_HANDLE;
+    /// Mapped memory;
+    void *Mapped = nullptr;
 };

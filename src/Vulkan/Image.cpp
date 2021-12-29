@@ -120,6 +120,13 @@ void Image::TransitionImageLayout(VkCommandPool iCommandPool, VkImageLayout iOld
     CommandBuffer cmd(m_Device, iCommandPool);
     cmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
+    TransitionImageLayout(cmd, iOldLayout, iNewLayout);
+    cmd.EndAndRun(m_Device.GetGraphicsQueue());
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Image::TransitionImageLayout(CommandBuffer &ioCommandBuffer, VkImageLayout iOldLayout, VkImageLayout iNewLayout)
+{
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     barrier.oldLayout = iOldLayout;
@@ -186,7 +193,5 @@ void Image::TransitionImageLayout(VkCommandPool iCommandPool, VkImageLayout iOld
     }
 
     vkCmdPipelineBarrier(
-        cmd.GetBuffer(), sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-
-    cmd.EndAndRun(m_Device.GetGraphicsQueue());
+        ioCommandBuffer.GetBuffer(), sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 }

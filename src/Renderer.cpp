@@ -67,6 +67,8 @@ void Renderer::CreateSwapchainRessources()
     CreateUniformBuffers();
     CreateDescriptorPool();
     CreateDescriptorSets();
+
+    InitImGUI();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ void Renderer::RecreateSwapchainRessources(uint32_t iWidth, uint32_t iHeight)
 
     m_Swapchain.Init(iWidth, iHeight);
     CreateSwapchainRessources();
-    CreateCommandBuffers();
+    CreateCommandBuffers(); // TODO Move ?
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::ReleaseSwapchainRessources()
@@ -92,11 +94,20 @@ void Renderer::ReleaseSwapchainRessources()
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
+    m_ImGUI.reset();
     m_MeshPipeline.Destroy();
     m_PipelineLayout.Destroy();
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
     m_DepthBuffer.Destroy();
     m_Swapchain.Destroy();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Renderer::InitImGUI()
+{
+    m_ImGUI = std::make_unique<ImGUI>(m_Device, m_CommandPool, *m_BufferFactory);
+    m_ImGUI->init(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
+    m_ImGUI->initResources(m_RenderPass);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -330,6 +341,9 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
+    m_ImGUI->newFrame(true);
+    m_ImGUI->updateBuffers();
+
     vkCmdBeginRenderPass(commandBuffer.GetBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(
         commandBuffer.GetBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetPipeline());
@@ -345,6 +359,8 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
         nullptr);
 
     m_Mesh->Draw(commandBuffer.GetBuffer());
+
+    m_ImGUI->drawFrame(commandBuffer.GetBuffer());
 
     vkCmdEndRenderPass(commandBuffer.GetBuffer());
 

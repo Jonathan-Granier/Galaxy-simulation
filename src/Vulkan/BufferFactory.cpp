@@ -32,7 +32,7 @@ MemoryBuffer BufferFactory::CreateMemoryBuffer(
 
     VK_CHECK_RESULT(
         vkAllocateMemory(m_Device.GetDevice(), &allocInfo, nullptr, &buffer.Memory))
-    vkBindBufferMemory(m_Device.GetDevice(), buffer.Buffer, buffer.Memory, 0);
+    VK_CHECK_RESULT(vkBindBufferMemory(m_Device.GetDevice(), buffer.Buffer, buffer.Memory, 0));
 
     return buffer;
 }

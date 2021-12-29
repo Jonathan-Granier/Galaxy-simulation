@@ -8,8 +8,8 @@ target_compile_features(Olympus PRIVATE cxx_std_17)
 
 #############################
 # Olympus - Finding Vulkan #
-#############################
-
+############################# 
+   
 if (NOT VULKAN_SDK_ROOT)
     # Vulkan SDK path not set, trying to find it automatically
     find_package(Vulkan)
@@ -47,7 +47,7 @@ if (Vulkan_FOUND)
     if (NOT GLSLC_EXECUTABLE)
         set(GLSLC_EXECUTABLE glslc) # glslc is assumed to be available from the path... Kind of a long shot under Windows
     endif ()
-
+ 
     message(STATUS "[Vulkan] Found:")
     if (VULKAN_SDK_ROOT)
         message(STATUS "  - Root path: ${VULKAN_SDK_ROOT}")

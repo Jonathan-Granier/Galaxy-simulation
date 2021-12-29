@@ -10,6 +10,7 @@
 #include "Vulkan/DescriptorSet.h"
 #include "Vulkan/CommandBuffer.h"
 #include "Vulkan/UniformBuffer.h"
+#include "Vulkan/ImGUI.h"
 #include "Geometry/VkMesh.h"
 
 struct ModelInfo
@@ -52,6 +53,8 @@ public:
     void DrawNextFrame();
 
 private:
+    void InitImGUI();
+
     ///  Creates swapchain resources (pipelines, framebuffers, descriptors, ...).
     void CreateSwapchainRessources();
 
@@ -147,4 +150,7 @@ private:
 
     /// Uniform buffers.
     UniformBuffers m_UniformBuffers;
+
+    /// ImGUI
+    std::unique_ptr<ImGUI> m_ImGUI;
 };

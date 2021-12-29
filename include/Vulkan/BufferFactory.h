@@ -81,6 +81,31 @@ public:
         vkUnmapMemory(m_Device.GetDevice(), iBuffer.Memory);
     }
 
+    // TODO DOC & Refactor
+    void Map(MemoryBuffer &iBuffer, VkDeviceSize iOffset = 0, VkDeviceSize iDataSize = VK_WHOLE_SIZE)
+    {
+        vkMapMemory(m_Device.GetDevice(), iBuffer.Memory, iOffset, iDataSize, 0, &iBuffer.Mapped);
+    }
+
+    void UnMap(MemoryBuffer &iBuffer)
+    {
+        if (iBuffer.Mapped)
+        {
+            vkUnmapMemory(m_Device.GetDevice(), iBuffer.Memory);
+            iBuffer.Mapped = nullptr;
+        }
+    }
+
+    void Flush(MemoryBuffer &iBuffer, VkDeviceSize iOffset = 0, VkDeviceSize iDataSize = VK_WHOLE_SIZE)
+    {
+        VkMappedMemoryRange mappedRange = {};
+        mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        mappedRange.memory = iBuffer.Memory;
+        mappedRange.offset = iOffset;
+        mappedRange.size = iDataSize;
+        vkFlushMappedMemoryRanges(m_Device.GetDevice(), 1, &mappedRange);
+    }
+
 protected:
     /// Vulkan device.
     Device &m_Device;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Vulkan/Device.h"
+#include "Vulkan/CommandBuffer.h" // TODO make forward file
 
 /// @brief
 ///  Class for create and manage a vulkan image.
@@ -55,6 +56,13 @@ public:
         VkMemoryPropertyFlags iProperties,
         uint32_t iMipLevels = 1,
         VkSampleCountFlagBits iNumSamples = VK_SAMPLE_COUNT_1_BIT);
+
+    /// @brief
+    ///  Transform the layout of the image.
+    /// @param[in] ioCommandBuffer Command buffer to add the transition.
+    /// @param[in] iOldLayout Old image's layout.
+    /// @param[in] iNewLayout New image's layout.
+    void TransitionImageLayout(CommandBuffer &ioCommandBuffer, VkImageLayout iOldLayout, VkImageLayout iNewLayout);
 
     /// @brief
     ///  Transform the layout of the image.
