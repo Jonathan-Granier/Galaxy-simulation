@@ -38,6 +38,21 @@ public:
     /// @param[in] ioBuffer Buffer to release.
     void ReleaseBuffer(MemoryBuffer &ioBuffer) const;
 
+    template <typename T>
+    void TransferDataInBuffer(T *iData, uint64_t iDataSize, const MemoryBuffer &iBuffer) const
+    {
+        TransferDataInBuffer(iData, 0, iDataSize, iBuffer);
+    }
+
+    template <typename T>
+    void TransferDataInBuffer(T *iData, uint64_t iOffset, uint64_t iDataSize, const MemoryBuffer &iBuffer) const
+    {
+        void *tmpData{};
+        vkMapMemory(m_Device.GetDevice(), iBuffer.Memory, iOffset, iDataSize, 0, &tmpData);
+        std::memcpy(tmpData, iData, static_cast<size_t>(iDataSize));
+        vkUnmapMemory(m_Device.GetDevice(), iBuffer.Memory);
+    }
+
     /// @brief
     ///  Transfer data in a buffer.
     /// @tparam T Type of data.

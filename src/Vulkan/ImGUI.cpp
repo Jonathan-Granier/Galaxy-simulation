@@ -62,14 +62,7 @@ void ImGUI::initResources(VkRenderPass renderPass)
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    {
-        void *tmpData{};
-        vkMapMemory(m_Device.GetDevice(), stagingBuffer.Memory, 0, uploadSize, 0, &tmpData);
-        memcpy(tmpData, fontData, static_cast<size_t>(uploadSize));
-        vkUnmapMemory(m_Device.GetDevice(), stagingBuffer.Memory);
-    }
-
-    //m_BufferFactory.TransferDataInBuffer(fontData, uploadSize, stagingBuffer); #DAFUQ TODO
+    m_BufferFactory.TransferDataInBuffer(fontData, uploadSize, stagingBuffer);
     // Copy buffer data to font image
     CommandBuffer copyCmd(m_Device, m_CommandPool);
     copyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
