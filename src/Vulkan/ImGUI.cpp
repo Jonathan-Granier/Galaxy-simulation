@@ -57,15 +57,6 @@ void ImGUI::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void ImGUI::init(float width, float height)
-{
-    // Dimensions
-    ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(width, height);
-    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 void ImGUI::CreateRessources(VkRenderPass iRenderPass)
 {
     ImGuiIO &io = ImGui::GetIO();
@@ -271,56 +262,6 @@ void ImGUI::CreateDescriptors()
     m_DescriptorSet.AllocateDescriptorSets(m_DescriptorSetLayout, m_DescriptorPool, 1);
     m_DescriptorSet.AddWriteDescriptor(0, m_FontTexture.GetDescriptor(), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 0);
     m_DescriptorSet.UpdateDescriptorSets();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void ImGUI::newFrame(bool updateFrameGraph)
-{
-    ImGui::NewFrame();
-
-    // Init imGui windows and elements
-
-    ImVec4 clear_color = ImColor(114, 144, 154);
-    static float f = 0.0f;
-    ImGui::TextUnformatted("Olympus");
-    ImGui::TextUnformatted("TRUC");
-
-    // Update frame time display
-    if (updateFrameGraph)
-    {
-        std::rotate(uiSettings.frameTimes.begin(), uiSettings.frameTimes.begin() + 1, uiSettings.frameTimes.end());
-        float frameTime = 1000.0f / (12 * 1000.0f);
-        uiSettings.frameTimes.back() = frameTime;
-        if (frameTime < uiSettings.frameTimeMin)
-        {
-            uiSettings.frameTimeMin = frameTime;
-        }
-        if (frameTime > uiSettings.frameTimeMax)
-        {
-            uiSettings.frameTimeMax = frameTime;
-        }
-    }
-
-    ImGui::PlotLines("Frame Times", &uiSettings.frameTimes[0], 50, 0, "", uiSettings.frameTimeMin, uiSettings.frameTimeMax, ImVec2(0, 80));
-
-    ImGui::Text("Camera");
-    //ImGui::InputFloat3("position", 10.0f, 2);
-    //ImGui::InputFloat3("rotation", 20.0f, 2);
-
-    ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Example settings");
-    ImGui::Checkbox("Render models", &uiSettings.displayModels);
-    ImGui::Checkbox("Display logos", &uiSettings.displayLogos);
-    ImGui::Checkbox("Display background", &uiSettings.displayBackground);
-    ImGui::Checkbox("Animate light", &uiSettings.animateLight);
-    ImGui::SliderFloat("Light speed", &uiSettings.lightSpeed, 0.1f, 1.0f);
-    ImGui::End();
-
-    ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-    //ImGui::ShowDemoWindow();
-
-    // Render to generate draw buffers
-    ImGui::Render();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -64,8 +64,6 @@ void Renderer::CreateSwapchainRessources()
     CreateUniformBuffers();
     CreateDescriptorPool();
     CreateDescriptorSets();
-
-    InitImGUI();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -91,8 +89,6 @@ void Renderer::ReleaseSwapchainRessources()
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
-    m_ImGUI->Destroy();
-    m_ImGUI.reset();
     m_MeshPipeline.Destroy();
     m_PipelineLayout.Destroy();
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
@@ -100,12 +96,9 @@ void Renderer::ReleaseSwapchainRessources()
     m_Swapchain.Destroy();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Renderer::InitImGUI()
+void Renderer::Wait()
 {
-    m_ImGUI = std::make_unique<ImGUI>(m_Device, *m_BufferFactory);
-    m_ImGUI->init(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
-    m_ImGUI->CreateRessources(m_RenderPass);
+    vkDeviceWaitIdle(m_Device.GetDevice());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -305,7 +298,7 @@ void Renderer::CreateSyncObjects()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::BuildCommandBuffer(uint32_t iIndex)
+void Renderer::BuildCommandBuffer(ImGUI &iImGUI, uint32_t iIndex)
 {
     const CommandBuffer &commandBuffer = m_CommandBuffers[iIndex];
     commandBuffer.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
@@ -325,9 +318,6 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
-    m_ImGUI->newFrame(true);
-    m_ImGUI->Update();
-
     vkCmdBeginRenderPass(commandBuffer.GetBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(
         commandBuffer.GetBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetPipeline());
@@ -344,7 +334,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 
     m_Mesh->Draw(commandBuffer.GetBuffer());
 
-    m_ImGUI->Draw(commandBuffer.GetBuffer());
+    iImGUI.Draw(commandBuffer.GetBuffer());
 
     vkCmdEndRenderPass(commandBuffer.GetBuffer());
 
@@ -352,7 +342,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::DrawNextFrame()
+void Renderer::DrawNextFrame(ImGUI &iImGUI)
 {
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
@@ -378,7 +368,7 @@ void Renderer::DrawNextFrame()
     // Mark the image as now being in use by this frame
     m_ImagesInFlight[imageIndex] = m_InFlightFences[m_CurrentFrame];
 
-    BuildCommandBuffer(imageIndex);
+    BuildCommandBuffer(iImGUI, imageIndex);
     UpdateUniformBuffers();
 
     std::array<VkPipelineStageFlags, 1> waitStages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};

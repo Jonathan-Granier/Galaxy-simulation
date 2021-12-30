@@ -1,6 +1,7 @@
 #pragma once
 #include <glfw/glfw3.h>
 #include "Renderer.h"
+#include "Vulkan/ImGUI.h"
 #include <memory>
 
 class Window
@@ -25,4 +26,6 @@ private:
     Instance m_Instance;
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
     std::unique_ptr<Renderer> m_Renderer;
+    /// ImGUI
+    std::unique_ptr<ImGUI> m_ImGUI;
 };

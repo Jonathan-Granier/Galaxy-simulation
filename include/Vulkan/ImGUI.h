@@ -8,20 +8,6 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 
-struct UISettings
-{
-    bool displayModels = true;
-    bool displayLogos = true;
-    bool displayBackground = true;
-    bool animateLight = false;
-    float lightSpeed = 0.25f;
-    std::array<float, 50> frameTimes{};
-    float frameTimeMin = 9999.0f, frameTimeMax = 0.0f;
-    float lightTimer = 0.0f;
-};
-
-static UISettings uiSettings;
-
 class ImGUI
 {
 
@@ -36,12 +22,6 @@ public:
     ImGUI(Device &ioDevice, BufferFactory &ioBufferFactory);
 
     ~ImGUI();
-    // TODO Move window
-    // Initialize styles, keys, etc.
-    void init(float width, float height);
-    // TODO Move window
-    // Starts a new imGui frame and sets up windows and ui elements
-    void newFrame(bool updateFrameGraph);
 
     // Initialize all Vulkan resources used by the ui
     void CreateRessources(VkRenderPass iRenderPass);

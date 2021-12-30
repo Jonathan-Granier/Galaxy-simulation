@@ -50,11 +50,15 @@ public:
     void ReleaseSwapchainRessources();
 
     ///  Renders the next frame.
-    void DrawNextFrame();
+    void DrawNextFrame(ImGUI &iImGUI);
+
+    Device &GetDevice() { return m_Device; }
+    BufferFactory &GetBufferFactory() { return *m_BufferFactory; }
+    VkRenderPass &GetRenderPass() { return m_RenderPass; }
+
+    void Wait();
 
 private:
-    void InitImGUI();
-
     ///  Creates swapchain resources (pipelines, framebuffers, descriptors, ...).
     void CreateSwapchainRessources();
 
@@ -97,7 +101,7 @@ private:
 
     ///  Builds the command buffer at the given index.
     /// @param iIndex Index of the command buffer to build.
-    void BuildCommandBuffer(uint32_t iIndex);
+    void BuildCommandBuffer(ImGUI &iImGUI, uint32_t iIndex);
 
     ///  Updates uniform buffers.
     void UpdateUniformBuffers();
