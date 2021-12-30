@@ -2,6 +2,7 @@
 
 #include "Vulkan/Device.h"
 #include "Vulkan/Texture.h"
+#include "Vulkan/DescriptorSet.h"
 #include "Vulkan/BufferFactory.h"
 #include <array>
 #include <glm/glm.hpp>
@@ -23,25 +24,6 @@ static UISettings uiSettings;
 
 class ImGUI
 {
-private:
-    // Vulkan resources for rendering the UI
-    Device &m_Device;
-    VkCommandPool m_CommandPool;
-    BufferFactory &m_BufferFactory;
-
-    Texture m_FontTexture;
-
-        MemoryBuffer m_VertexBuffer;
-    MemoryBuffer m_IndexBuffer;
-
-    int32_t vertexCount = 0;
-    int32_t indexCount = 0;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline pipeline;
-
-    VkDescriptorPool descriptorPool;
-    VkDescriptorSetLayout m_DescriptorSetLayout;
-    VkDescriptorSet m_DescriptorSet;
 
 public:
     // UI params are set via push constants
@@ -54,19 +36,44 @@ public:
     ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBufferFactory);
 
     ~ImGUI();
+    // TODO Move window
     // Initialize styles, keys, etc.
     void init(float width, float height);
-    // Initialize all Vulkan resources used by the ui
-    void initResources();
-
-    void CreatePipeline(VkRenderPass renderPass);
-
+    // TODO Move window
     // Starts a new imGui frame and sets up windows and ui elements
     void newFrame(bool updateFrameGraph);
 
+    // Initialize all Vulkan resources used by the ui
+    void CreateRessources(VkRenderPass iRenderPass);
+    void Destroy();
+
     // Update vertex and index buffer containing the imGui elements when required
-    void updateBuffers();
+    void Update();
 
     // Draw current imGui frame into a command buffer
-    void drawFrame(VkCommandBuffer commandBuffer);
+    void Draw(VkCommandBuffer commandBuffer);
+
+private:
+    void CreateDescriptors();
+    void CreatePipeline(VkRenderPass renderPass);
+    // Vulkan resources for rendering the UI
+    Device &m_Device;
+    VkCommandPool m_CommandPool;
+    BufferFactory &m_BufferFactory;
+
+    Texture m_FontTexture;
+
+    MemoryBuffer m_VertexBuffer;
+    MemoryBuffer m_IndexBuffer;
+
+    int32_t m_VertexCount = 0;
+    int32_t m_IndexCount = 0;
+    VkPipelineLayout m_PipelineLayout;
+    VkPipeline m_Pipeline;
+
+    VkDescriptorPool m_DescriptorPool;
+    VkDescriptorSetLayout m_DescriptorSetLayout;
+    DescriptorSet m_DescriptorSet;
+
+    float m_Scale = 1.0f;
 };

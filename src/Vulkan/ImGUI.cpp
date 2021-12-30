@@ -3,6 +3,7 @@
 #include "Vulkan/Debug.h"
 #include "Vulkan/Shader.h"
 
+//----------------------------------------------------------------------------------------------------------------------
 ImGUI::ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBufferFactory)
     : m_Device(ioDevice),
       m_CommandPool(ioCommandPool), // TODO move command pool in device ?
@@ -10,38 +11,63 @@ ImGUI::ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBuf
       m_FontTexture(m_Device, ioBufferFactory)
 {
     ImGui::CreateContext();
+
+    ImGuiStyle &style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.0f, 0.0f, 0.0f, 0.1f);
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.8f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_FrameBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.8f);
+    style.Colors[ImGuiCol_CheckMark] = ImVec4(1.0f, 0.0f, 0.0f, 0.8f);
+    style.Colors[ImGuiCol_SliderGrab] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(1.0f, 0.0f, 0.0f, 0.8f);
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.1f);
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(1.0f, 1.0f, 1.0f, 0.2f);
+    style.Colors[ImGuiCol_Button] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(1.0f, 0.0f, 0.0f, 0.6f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(1.0f, 0.0f, 0.0f, 0.8f);
+    // Dimensions
+    ImGuiIO &io = ImGui::GetIO();
+    io.FontGlobalScale = m_Scale;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 ImGUI::~ImGUI()
 {
-    ImGui::DestroyContext();
+    if (ImGui::GetCurrentContext())
+    {
+        ImGui::DestroyContext();
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::Destroy()
+{
     // Release all Vulkan resources required for rendering imGui
     m_BufferFactory.ReleaseBuffer(m_VertexBuffer);
     m_BufferFactory.ReleaseBuffer(m_IndexBuffer);
 
     m_FontTexture.Destroy();
-    vkDestroyPipeline(m_Device.GetDevice(), pipeline, nullptr);
-    vkDestroyPipelineLayout(m_Device.GetDevice(), pipelineLayout, nullptr);
-    vkDestroyDescriptorPool(m_Device.GetDevice(), descriptorPool, nullptr);
+    vkDestroyPipeline(m_Device.GetDevice(), m_Pipeline, nullptr);
+    vkDestroyPipelineLayout(m_Device.GetDevice(), m_PipelineLayout, nullptr);
+    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
     vkDestroyDescriptorSetLayout(m_Device.GetDevice(), m_DescriptorSetLayout, nullptr);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void ImGUI::init(float width, float height)
 {
-    // Color scheme
-    ImGuiStyle &style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.6f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(1.0f, 0.0f, 0.0f, 0.8f);
-    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
-    style.Colors[ImGuiCol_Header] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
-    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
     // Dimensions
     ImGuiIO &io = ImGui::GetIO();
     io.DisplaySize = ImVec2(width, height);
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 }
 
-void ImGUI::initResources()
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::CreateRessources(VkRenderPass iRenderPass)
 {
     ImGuiIO &io = ImGui::GetIO();
 
@@ -52,51 +78,12 @@ void ImGUI::initResources()
 
     m_FontTexture.Init(fontData, texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM, m_CommandPool);
     m_FontTexture.GetDescriptor();
-
-    // Descriptor pool
-    std::vector<VkDescriptorPoolSize> poolSizes = {{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}};
-    VkDescriptorPoolCreateInfo descriptorPoolInfo{};
-    descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-    descriptorPoolInfo.pPoolSizes = poolSizes.data();
-    descriptorPoolInfo.maxSets = 2;
-    VK_CHECK_RESULT(vkCreateDescriptorPool(m_Device.GetDevice(), &descriptorPoolInfo, nullptr, &descriptorPool));
-
-    // Descriptor set layout
-    std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings(1);
-    setLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    setLayoutBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    setLayoutBindings[0].binding = 0;
-    setLayoutBindings[0].descriptorCount = 1;
-
-    VkDescriptorSetLayoutCreateInfo descriptorLayout{};
-    descriptorLayout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    descriptorLayout.pBindings = setLayoutBindings.data();
-    descriptorLayout.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
-    VK_CHECK_RESULT(vkCreateDescriptorSetLayout(m_Device.GetDevice(), &descriptorLayout, nullptr, &m_DescriptorSetLayout));
-
-    // Descriptor set
-    VkDescriptorSetAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    allocInfo.descriptorPool = descriptorPool;
-    allocInfo.pSetLayouts = &m_DescriptorSetLayout;
-    allocInfo.descriptorSetCount = 1;
-    VK_CHECK_RESULT(vkAllocateDescriptorSets(m_Device.GetDevice(), &allocInfo, &m_DescriptorSet));
-
-    VkDescriptorImageInfo fontDescriptor = m_FontTexture.GetDescriptor();
-
-    std::vector<VkWriteDescriptorSet> writeDescriptorSets(1);
-    writeDescriptorSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    writeDescriptorSets[0].dstSet = m_DescriptorSet;
-    writeDescriptorSets[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    writeDescriptorSets[0].dstBinding = 0;
-    writeDescriptorSets[0].pImageInfo = &fontDescriptor;
-    writeDescriptorSets[0].descriptorCount = 1;
-
-    vkUpdateDescriptorSets(m_Device.GetDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+    CreateDescriptors();
+    CreatePipeline(iRenderPass);
 }
 
-void ImGUI::CreatePipeline(VkRenderPass renderPass)
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::CreatePipeline(VkRenderPass iRenderPass)
 {
     // Pipeline layout
     // Push constants for UI rendering parameters
@@ -113,9 +100,9 @@ void ImGUI::CreatePipeline(VkRenderPass renderPass)
     pipelineLayoutCreateInfo.pushConstantRangeCount = 1;
     pipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
 
-    VK_CHECK_RESULT(vkCreatePipelineLayout(m_Device.GetDevice(), &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
+    VK_CHECK_RESULT(vkCreatePipelineLayout(m_Device.GetDevice(), &pipelineLayoutCreateInfo, nullptr, &m_PipelineLayout));
 
-    // Setup graphics pipeline for UI rendering
+    // Setup graphics m_Pipeline for UI rendering
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyState{};
     inputAssemblyState.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -201,8 +188,8 @@ void ImGUI::CreatePipeline(VkRenderPass renderPass)
 
     VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
     pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    pipelineCreateInfo.layout = pipelineLayout;
-    pipelineCreateInfo.renderPass = renderPass;
+    pipelineCreateInfo.layout = m_PipelineLayout;
+    pipelineCreateInfo.renderPass = iRenderPass;
     pipelineCreateInfo.flags = 0;
     pipelineCreateInfo.basePipelineIndex = -1;
     pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -249,12 +236,45 @@ void ImGUI::CreatePipeline(VkRenderPass renderPass)
 
     pipelineCreateInfo.pVertexInputState = &vertexInputState;
 
-    VK_CHECK_RESULT(vkCreateGraphicsPipelines(m_Device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pipeline));
+    VK_CHECK_RESULT(vkCreateGraphicsPipelines(m_Device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &m_Pipeline));
 
     fragShader.Destroy();
     vertShader.Destroy();
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::CreateDescriptors()
+{
+    // Descriptor pool
+    std::vector<VkDescriptorPoolSize> poolSizes = {{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}};
+    VkDescriptorPoolCreateInfo descriptorPoolInfo{};
+    descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    descriptorPoolInfo.pPoolSizes = poolSizes.data();
+    descriptorPoolInfo.maxSets = 2;
+
+    VK_CHECK_RESULT(vkCreateDescriptorPool(m_Device.GetDevice(), &descriptorPoolInfo, nullptr, &m_DescriptorPool));
+
+    // Descriptor set layout
+    std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings(1);
+    setLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    setLayoutBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    setLayoutBindings[0].binding = 0;
+    setLayoutBindings[0].descriptorCount = 1;
+
+    VkDescriptorSetLayoutCreateInfo descriptorLayout{};
+    descriptorLayout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptorLayout.pBindings = setLayoutBindings.data();
+    descriptorLayout.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+
+    VK_CHECK_RESULT(vkCreateDescriptorSetLayout(m_Device.GetDevice(), &descriptorLayout, nullptr, &m_DescriptorSetLayout));
+    m_DescriptorSet.Init(m_Device);
+    m_DescriptorSet.AllocateDescriptorSets(m_DescriptorSetLayout, m_DescriptorPool, 1);
+    m_DescriptorSet.AddWriteDescriptor(0, m_FontTexture.GetDescriptor(), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 0);
+    m_DescriptorSet.UpdateDescriptorSets();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void ImGUI::newFrame(bool updateFrameGraph)
 {
     ImGui::NewFrame();
@@ -304,7 +324,8 @@ void ImGUI::newFrame(bool updateFrameGraph)
     ImGui::Render();
 }
 
-void ImGUI::updateBuffers()
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::Update()
 {
     ImDrawData *imDrawData = ImGui::GetDrawData();
 
@@ -320,22 +341,22 @@ void ImGUI::updateBuffers()
     // Update buffers only if vertex or index count has been changed compared to current buffer size
 
     // Vertex buffer
-    if ((m_VertexBuffer.Buffer == VK_NULL_HANDLE) || (vertexCount != imDrawData->TotalVtxCount))
+    if ((m_VertexBuffer.Buffer == VK_NULL_HANDLE) || (m_VertexCount != imDrawData->TotalVtxCount))
     {
         m_BufferFactory.ReleaseBuffer(m_VertexBuffer);
         m_VertexBuffer = m_BufferFactory.CreateMemoryBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 
-        vertexCount = imDrawData->TotalVtxCount;
+        m_VertexCount = imDrawData->TotalVtxCount;
         m_BufferFactory.Map(m_VertexBuffer);
     }
 
     // Index buffer
-    if ((m_IndexBuffer.Buffer == VK_NULL_HANDLE) || (indexCount < imDrawData->TotalIdxCount))
+    if ((m_IndexBuffer.Buffer == VK_NULL_HANDLE) || (m_IndexCount < imDrawData->TotalIdxCount))
     {
         m_BufferFactory.ReleaseBuffer(m_IndexBuffer);
         m_IndexBuffer = m_BufferFactory.CreateMemoryBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 
-        indexCount = imDrawData->TotalIdxCount;
+        m_IndexCount = imDrawData->TotalIdxCount;
         m_BufferFactory.Map(m_IndexBuffer);
     }
 
@@ -357,12 +378,13 @@ void ImGUI::updateBuffers()
     m_BufferFactory.Flush(m_IndexBuffer);
 }
 
-void ImGUI::drawFrame(VkCommandBuffer commandBuffer)
+//----------------------------------------------------------------------------------------------------------------------
+void ImGUI::Draw(VkCommandBuffer commandBuffer)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &m_DescriptorSet, 0, nullptr);
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSet.GetDescriptorSet(), 0, nullptr);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline);
 
     VkViewport viewport{};
     viewport.width = ImGui::GetIO().DisplaySize.x;
@@ -375,7 +397,7 @@ void ImGUI::drawFrame(VkCommandBuffer commandBuffer)
     // UI scale and translate via push constants
     pushConstBlock.scale = glm::vec2(2.0f / io.DisplaySize.x, 2.0f / io.DisplaySize.y);
     pushConstBlock.translate = glm::vec2(-1.0f);
-    vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstBlock), &pushConstBlock);
+    vkCmdPushConstants(commandBuffer, m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstBlock), &pushConstBlock);
 
     // Render commands
     ImDrawData *imDrawData = ImGui::GetDrawData();

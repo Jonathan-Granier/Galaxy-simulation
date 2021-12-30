@@ -94,6 +94,7 @@ void Renderer::ReleaseSwapchainRessources()
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
+    m_ImGUI->Destroy();
     m_ImGUI.reset();
     m_MeshPipeline.Destroy();
     m_PipelineLayout.Destroy();
@@ -107,8 +108,7 @@ void Renderer::InitImGUI()
 {
     m_ImGUI = std::make_unique<ImGUI>(m_Device, m_CommandPool, *m_BufferFactory);
     m_ImGUI->init(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
-    m_ImGUI->initResources();
-    m_ImGUI->CreatePipeline(m_RenderPass);
+    m_ImGUI->CreateRessources(m_RenderPass);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -343,7 +343,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
     renderPassInfo.pClearValues = clearValues.data();
 
     m_ImGUI->newFrame(true);
-    m_ImGUI->updateBuffers();
+    m_ImGUI->Update();
 
     vkCmdBeginRenderPass(commandBuffer.GetBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(
@@ -361,7 +361,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 
     m_Mesh->Draw(commandBuffer.GetBuffer());
 
-    m_ImGUI->drawFrame(commandBuffer.GetBuffer());
+    m_ImGUI->Draw(commandBuffer.GetBuffer());
 
     vkCmdEndRenderPass(commandBuffer.GetBuffer());
 
