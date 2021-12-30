@@ -10,6 +10,7 @@ Device::Device(Instance &ioInstance, VkSurfaceKHR iSurface)
 {
     PickPhysicalDevice();
     CreateLogicalDevice();
+    CreateCommandPool();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -17,7 +18,8 @@ void Device::Destroy()
 {
     // Window have the ownership on the surface
     m_Surface = VK_NULL_HANDLE;
-
+    if (m_CommandPool)
+        vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
     if (m_Device)
         vkDestroyDevice(m_Device, nullptr);
 }
@@ -227,4 +229,17 @@ VkSampleCountFlagBits Device::FindMaxUsableSampleCount()
         return VK_SAMPLE_COUNT_2_BIT;
 
     return VK_SAMPLE_COUNT_1_BIT;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Device::CreateCommandPool()
+{
+    Device::QueueFamilyIndices queueFamilyIndices = GetQueueIndices();
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+    VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool))
 }

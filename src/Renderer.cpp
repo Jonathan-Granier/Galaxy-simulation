@@ -20,8 +20,6 @@ void Renderer::CreateRessources()
 {
     std::cout << "Create ressources" << std::endl;
 
-    CreateCommandPool();
-
     m_BufferFactory = std::make_unique<BufferFactory>(m_Device, m_CommandPool);
 
     m_MainPassDescriptor.Init(m_Device);
@@ -45,7 +43,6 @@ void Renderer::ReleaseRessources()
         vkDestroyFence(m_Device.GetDevice(), m_InFlightFences[i], nullptr);
     }
 
-    vkDestroyCommandPool(m_Device.GetDevice(), m_CommandPool, nullptr);
     m_Mesh->Destroy();
 
     m_BufferFactory.reset();
@@ -106,22 +103,9 @@ void Renderer::ReleaseSwapchainRessources()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::InitImGUI()
 {
-    m_ImGUI = std::make_unique<ImGUI>(m_Device, m_CommandPool, *m_BufferFactory);
+    m_ImGUI = std::make_unique<ImGUI>(m_Device, *m_BufferFactory);
     m_ImGUI->init(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
     m_ImGUI->CreateRessources(m_RenderPass);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void Renderer::CreateCommandPool()
-{
-    Device::QueueFamilyIndices queueFamilyIndices = m_Device.GetQueueIndices();
-
-    VkCommandPoolCreateInfo poolInfo{};
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-
-    VK_CHECK_RESULT(vkCreateCommandPool(m_Device.GetDevice(), &poolInfo, nullptr, &m_CommandPool))
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -132,7 +116,7 @@ void Renderer::CreateCommandBuffers()
 
     for (size_t i = 0; i < m_CommandBuffers.capacity(); ++i)
     {
-        m_CommandBuffers.emplace_back(m_Device, m_CommandPool);
+        m_CommandBuffers.emplace_back(m_Device);
     }
 }
 
@@ -240,8 +224,7 @@ void Renderer::CreateDepthBuffer()
         1,
         m_Device.GetMaxUsableSampleCount());
     m_DepthBuffer.CreateImageView(VK_IMAGE_ASPECT_DEPTH_BIT);
-    m_DepthBuffer.TransitionImageLayout(
-        m_CommandPool, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    m_DepthBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

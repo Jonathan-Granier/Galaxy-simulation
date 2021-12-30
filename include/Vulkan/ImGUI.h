@@ -33,7 +33,7 @@ public:
         glm::vec2 translate;
     } pushConstBlock;
 
-    ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBufferFactory);
+    ImGUI(Device &ioDevice, BufferFactory &ioBufferFactory);
 
     ~ImGUI();
     // TODO Move window
@@ -58,7 +58,6 @@ private:
     void CreatePipeline(VkRenderPass renderPass);
     // Vulkan resources for rendering the UI
     Device &m_Device;
-    VkCommandPool m_CommandPool;
     BufferFactory &m_BufferFactory;
 
     Texture m_FontTexture;

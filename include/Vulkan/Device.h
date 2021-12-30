@@ -53,6 +53,7 @@ public:
     VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
     VkQueue GetPresentQueue() { return m_PresentQueue; }
     VkQueue GetComputeQueue() { return m_ComputeQueue; }
+    VkCommandPool &GetCommandPool() { return m_CommandPool; }
 
     QueueFamilyIndices &GetQueueIndices() { return m_QueueIndices; }
 
@@ -110,6 +111,8 @@ private:
     /// @return Indices of the queue families.
     QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice iDevice);
 
+    void CreateCommandPool();
+
     Instance &m_Instance;
     VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
     VkDevice m_Device = VK_NULL_HANDLE;
@@ -118,6 +121,7 @@ private:
     VkQueue m_ComputeQueue = VK_NULL_HANDLE;
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
     QueueFamilyIndices m_QueueIndices{};
+    VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 
     VkSampleCountFlagBits m_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 

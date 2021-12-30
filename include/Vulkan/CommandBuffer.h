@@ -9,9 +9,8 @@ class CommandBuffer
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the pipeline with.
-    /// @param iCommandPool Command pool to allocate the command buffer.
-    CommandBuffer(Device &ioDevice, VkCommandPool iCommandPool);
+    /// @param ioDevice Device to initialize the command buffer with.
+    CommandBuffer(Device &ioDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -71,5 +70,4 @@ private:
     VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
 
     Device *m_Device{};
-    VkCommandPool m_CommandPool{};
 };

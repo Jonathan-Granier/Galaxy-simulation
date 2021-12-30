@@ -2,12 +2,12 @@
 #include "Vulkan/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-CommandBuffer::CommandBuffer(Device &ioDevice, VkCommandPool iCommandPool)
-    : m_Device{&ioDevice}, m_CommandPool{iCommandPool}
+CommandBuffer::CommandBuffer(Device &ioDevice)
+    : m_Device{&ioDevice}
 {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = m_CommandPool;
+    allocInfo.commandPool = m_Device->GetCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = 1;
 
@@ -18,8 +18,7 @@ CommandBuffer::CommandBuffer(Device &ioDevice, VkCommandPool iCommandPool)
 //----------------------------------------------------------------------------------------------------------------------
 CommandBuffer::CommandBuffer(CommandBuffer &&ioBuffer) noexcept
     : m_CommandBuffer{std::exchange(ioBuffer.m_CommandBuffer, {})}, m_Device{ioBuffer.m_Device} // The device functions must be available for a CommandBuffer to be destroyed
-      ,
-      m_CommandPool{std::exchange(ioBuffer.m_CommandPool, {})}
+
 {
 }
 
@@ -51,7 +50,6 @@ CommandBuffer &CommandBuffer::operator=(CommandBuffer &&ioBuffer) noexcept
 {
     std::swap(m_CommandBuffer, ioBuffer.m_CommandBuffer);
     std::swap(m_Device, ioBuffer.m_Device);
-    std::swap(m_CommandPool, ioBuffer.m_CommandPool);
 
     return *this;
 }
@@ -68,7 +66,7 @@ void CommandBuffer::Free()
     if (m_CommandBuffer == VK_NULL_HANDLE)
         return;
 
-    vkFreeCommandBuffers(m_Device->GetDevice(), m_CommandPool, 1, &m_CommandBuffer);
+    vkFreeCommandBuffers(m_Device->GetDevice(), m_Device->GetCommandPool(), 1, &m_CommandBuffer);
     m_CommandBuffer = VK_NULL_HANDLE;
 }
 

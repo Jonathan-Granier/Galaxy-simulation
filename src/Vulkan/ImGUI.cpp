@@ -4,9 +4,8 @@
 #include "Vulkan/Shader.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-ImGUI::ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBufferFactory)
+ImGUI::ImGUI(Device &ioDevice, BufferFactory &ioBufferFactory)
     : m_Device(ioDevice),
-      m_CommandPool(ioCommandPool), // TODO move command pool in device ?
       m_BufferFactory(ioBufferFactory),
       m_FontTexture(m_Device, ioBufferFactory)
 {
@@ -76,7 +75,7 @@ void ImGUI::CreateRessources(VkRenderPass iRenderPass)
     int texWidth, texHeight;
     io.Fonts->GetTexDataAsRGBA32(&fontData, &texWidth, &texHeight);
 
-    m_FontTexture.Init(fontData, texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM, m_CommandPool);
+    m_FontTexture.Init(fontData, texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM);
     m_FontTexture.GetDescriptor();
     CreateDescriptors();
     CreatePipeline(iRenderPass);

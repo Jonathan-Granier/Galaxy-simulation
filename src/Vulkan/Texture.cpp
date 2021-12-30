@@ -17,7 +17,7 @@ Texture::~Texture()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Texture::Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFormat iFormat, VkCommandPool iCommandPool)
+void Texture::Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFormat iFormat)
 {
 
     // Move data in buffer.
@@ -37,7 +37,7 @@ void Texture::Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFo
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     m_Image.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT, 1);
 
-    CommandBuffer copyCmd(m_Device, iCommandPool);
+    CommandBuffer copyCmd(m_Device);
     copyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
     // Prepare for transfer

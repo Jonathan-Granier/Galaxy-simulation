@@ -40,7 +40,7 @@ MemoryBuffer BufferFactory::CreateMemoryBuffer(
 //----------------------------------------------------------------------------------------------------------------------
 void BufferFactory::CopyBuffer(VkBuffer iSrcBuffer, VkBuffer iDstBuffer, VkDeviceSize iSize) const
 {
-    const CommandBuffer commandBuffer(m_Device, m_CommandPool);
+    const CommandBuffer commandBuffer(m_Device);
 
     commandBuffer.Begin();
     commandBuffer.CopyBuffer(iSrcBuffer, iDstBuffer, iSize, 0, 0);

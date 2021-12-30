@@ -69,7 +69,7 @@ public:
     /// @param[in] iCommandPool Command pool to allocate the command buffer.
     /// @param[in] iOldLayout Old image's layout.
     /// @param[in] iNewLayout New image's layout.
-    void TransitionImageLayout(VkCommandPool iCommandPool, VkImageLayout iOldLayout, VkImageLayout iNewLayout);
+    void TransitionImageLayout(VkImageLayout iOldLayout, VkImageLayout iNewLayout);
 
     VkImage GetImage() { return m_Image; }
     VkImageView GetImageView() { return m_ImageView; }

@@ -13,7 +13,7 @@ public:
     explicit Texture(Device &iDevice, BufferFactory &iBufferFactory);
     ~Texture();
 
-    void Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFormat iFormat, VkCommandPool iCommandPool);
+    void Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFormat iFormat);
     void Destroy();
     VkDescriptorImageInfo GetDescriptor() { return m_Descriptor; }
 

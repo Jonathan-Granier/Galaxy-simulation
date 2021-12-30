@@ -115,9 +115,9 @@ static bool HasStencilComponent(VkFormat format)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Image::TransitionImageLayout(VkCommandPool iCommandPool, VkImageLayout iOldLayout, VkImageLayout iNewLayout)
+void Image::TransitionImageLayout(VkImageLayout iOldLayout, VkImageLayout iNewLayout)
 {
-    CommandBuffer cmd(m_Device, iCommandPool);
+    CommandBuffer cmd(m_Device);
     cmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
     TransitionImageLayout(cmd, iOldLayout, iNewLayout);
