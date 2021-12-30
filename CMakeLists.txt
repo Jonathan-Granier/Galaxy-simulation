@@ -21,7 +21,7 @@ if (NOT Vulkan_FOUND)
     if (NOT VULKAN_SDK_ROOT AND OLYMPUS_PLATFORM_WINDOWS)
         # If under Windows with the path not manually set, try to locate it from the environment variable
         set(VULKAN_SDK_ROOT "$ENV{VK_SDK_PATH}")
-    endif ()
+    endif () 
 
     if (VULKAN_SDK_ROOT)
         # SDK path has been defined

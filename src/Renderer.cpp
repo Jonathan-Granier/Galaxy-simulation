@@ -107,7 +107,8 @@ void Renderer::InitImGUI()
 {
     m_ImGUI = std::make_unique<ImGUI>(m_Device, m_CommandPool, *m_BufferFactory);
     m_ImGUI->init(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
-    m_ImGUI->initResources(m_RenderPass);
+    m_ImGUI->initResources();
+    m_ImGUI->CreatePipeline(m_RenderPass);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
