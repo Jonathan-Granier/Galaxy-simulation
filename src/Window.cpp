@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Vulkan/Debug.h"
+#include <imgui/imgui.h>
 
 //----------------------------------------------------------------------------------------------------------------------
 static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
@@ -50,9 +51,24 @@ void Window::Run()
 {
     while (!glfwWindowShouldClose(m_Window))
     {
+        UpdateImGUI();
         m_Renderer->DrawNextFrame();
         glfwPollEvents();
     }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Window::UpdateImGUI()
+{
+    ImGuiIO &io = ImGui::GetIO();
+
+    //io.DisplaySize = ImVec2((float)width, (float)height);
+    //io.DeltaTime = frameTimer;
+    double xpos, ypos;
+    glfwGetCursorPos(m_Window, &xpos, &ypos);
+    io.MousePos = ImVec2(xpos, ypos);
+    io.MouseDown[0] = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+    io.MouseDown[1] = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

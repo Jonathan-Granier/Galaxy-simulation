@@ -16,6 +16,7 @@ private:
     void CreateSurface();
     void DestroySurface();
 
+    void UpdateImGUI();
     GLFWwindow *m_Window = nullptr;
     std::string m_Name;
     uint32_t m_Width;

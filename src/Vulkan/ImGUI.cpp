@@ -10,7 +10,6 @@ ImGUI::ImGUI(Device &ioDevice, VkCommandPool ioCommandPool, BufferFactory &ioBuf
       m_BufferFactory(ioBufferFactory)
 {
     ImGui::CreateContext();
-    std::cout << "[ImGUI] end constructor" << std::endl;
 }
 
 ImGUI::~ImGUI()
@@ -31,7 +30,6 @@ ImGUI::~ImGUI()
 
 void ImGUI::init(float width, float height)
 {
-    std::cout << "[ImGUI] Begin Init" << std::endl;
     // Color scheme
     ImGuiStyle &style = ImGui::GetStyle();
     style.Colors[ImGuiCol_TitleBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.6f);
@@ -43,12 +41,10 @@ void ImGUI::init(float width, float height)
     ImGuiIO &io = ImGui::GetIO();
     io.DisplaySize = ImVec2(width, height);
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-    std::cout << "[ImGUI] End Init" << std::endl;
 }
 
 void ImGUI::initResources(VkRenderPass renderPass)
 {
-    std::cout << "[ImGUI] Begin initResources" << std::endl;
     ImGuiIO &io = ImGui::GetIO();
 
     // Create font texture
@@ -99,10 +95,10 @@ void ImGUI::initResources(VkRenderPass renderPass)
 
     // Prepare for shader read
     m_FontImage.TransitionImageLayout(copyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    std::cout << "[ImGUI] Before run " << std::endl;
+
     copyCmd.EndAndRun(m_Device.GetGraphicsQueue()); // TODO Use copy queue.
     m_BufferFactory.ReleaseBuffer(stagingBuffer);
-    std::cout << "[ImGUI] Run copy buffer to image" << std::endl;
+
     // Font texture Sampler
     VkSamplerCreateInfo samplerInfo{};
     samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -115,7 +111,6 @@ void ImGUI::initResources(VkRenderPass renderPass)
     samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
     VK_CHECK_RESULT(vkCreateSampler(m_Device.GetDevice(), &samplerInfo, nullptr, &m_Sampler));
-    std::cout << "[ImGUI] end texture " << std::endl;
     // Descriptor pool
     std::vector<VkDescriptorPoolSize> poolSizes = {{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}};
     VkDescriptorPoolCreateInfo descriptorPoolInfo{};
@@ -163,7 +158,7 @@ void ImGUI::initResources(VkRenderPass renderPass)
     writeDescriptorSets[0].descriptorCount = 1;
 
     vkUpdateDescriptorSets(m_Device.GetDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
-    std::cout << "[ImGUI] end descriptor" << std::endl;
+
     // Pipeline cache
     VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
     pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -324,7 +319,6 @@ void ImGUI::initResources(VkRenderPass renderPass)
 
     m_FragShader.Destroy();
     m_VertShader.Destroy();
-    std::cout << "[ImGUI] end initResources" << std::endl;
 }
 
 void ImGUI::newFrame(bool updateFrameGraph)
