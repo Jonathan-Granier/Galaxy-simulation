@@ -4,6 +4,8 @@
 #include "Vulkan/MemoryBuffer.h"
 #include <cstring>
 
+// TODO Remove this class , move create in Device and other method in MemoryBuffer
+
 /// @brief
 ///  Factory for create and manage buffers.
 class BufferFactory
@@ -12,8 +14,7 @@ public:
     /// @brief
     ///  Constructor.
     /// @param[in] ioDevice Device to initialize the pipeline with.
-    /// @param[in] iCommandPool Command pool to copy the buffers.
-    BufferFactory(Device &ioDevice, VkCommandPool iCommandPool);
+    BufferFactory(Device &ioDevice);
 
     /// @brief
     ///  Destructor.
@@ -124,6 +125,4 @@ public:
 protected:
     /// Vulkan device.
     Device &m_Device;
-    /// Command pool to copy the buffers.
-    VkCommandPool m_CommandPool;
 };

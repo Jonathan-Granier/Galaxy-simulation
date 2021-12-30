@@ -17,6 +17,7 @@ private:
     void CreateSurface();
     void DestroySurface();
 
+    void InitImGUI();
     void UpdateImGUI();
     GLFWwindow *m_Window = nullptr;
     std::string m_Name;
@@ -26,6 +27,13 @@ private:
     Instance m_Instance;
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
     std::unique_ptr<Renderer> m_Renderer;
-    /// ImGUI
-    std::unique_ptr<ImGUI> m_ImGUI;
+
+    struct
+    {
+        std::array<float, 50> Previous{};
+        float Min = 9999.0f, Max = 0.0f;
+        float Current = 0;
+    } m_FrameTimes;
+
+    uint32_t m_FrameCounter = 0;
 };

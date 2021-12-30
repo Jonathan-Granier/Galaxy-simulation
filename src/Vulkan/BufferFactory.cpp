@@ -3,8 +3,8 @@
 #include "Vulkan/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-BufferFactory::BufferFactory(Device &ioDevice, VkCommandPool iCommandPool)
-    : m_Device(ioDevice), m_CommandPool(iCommandPool)
+BufferFactory::BufferFactory(Device &ioDevice)
+    : m_Device(ioDevice)
 {
 }
 
