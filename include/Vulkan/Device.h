@@ -5,6 +5,8 @@
 #include <optional>
 #include <vector>
 
+class MemoryBuffer;
+
 /// @brief
 ///  Class holding the Vulkan main objects.
 class Device
@@ -48,12 +50,13 @@ public:
 
     VkInstance &GetVkInstance() { return m_Instance.GetVkInstance(); }
     VkPhysicalDevice &GetPhysicalDevice() { return m_PhysicalDevice; }
+    const VkDevice &GetDevice() const { return m_Device; }
     VkDevice &GetDevice() { return m_Device; }
     VkSurfaceKHR &GetSurface() { return m_Surface; }
-    VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
-    VkQueue GetPresentQueue() { return m_PresentQueue; }
-    VkQueue GetComputeQueue() { return m_ComputeQueue; }
-    VkCommandPool &GetCommandPool() { return m_CommandPool; }
+    VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
+    VkQueue GetPresentQueue() const { return m_PresentQueue; }
+    VkQueue GetComputeQueue() const { return m_ComputeQueue; }
+    const VkCommandPool &GetCommandPool() const { return m_CommandPool; }
 
     QueueFamilyIndices &GetQueueIndices() { return m_QueueIndices; }
 
@@ -66,7 +69,7 @@ public:
     /// @param iTypeFilter Type filter.
     /// @param iProperties Memory properties.
     /// @return Found supported memory type.
-    uint32_t FindMemoryType(uint32_t iTypeFilter, VkMemoryPropertyFlags iProperties);
+    uint32_t FindMemoryType(uint32_t iTypeFilter, VkMemoryPropertyFlags iProperties) const;
 
     /// @brief
     ///  Finds a format that supports the given tiling & features.
@@ -78,6 +81,13 @@ public:
         const std::vector<VkFormat> &iCandidates, VkImageTiling iTiling, VkFormatFeatureFlags iFeatures);
 
     VkSampleCountFlagBits GetMaxUsableSampleCount() { return VK_SAMPLE_COUNT_1_BIT; }
+
+    /// @brief
+    ///  Create and allocate a buffer.
+    /// @param[in] iSize Size in bytes of the buffer to be created.
+    /// @param[in] iUsage Specifying allowed usages of the buffer.
+    /// @param[in] iProperties Memory type.
+    MemoryBuffer CreateMemoryBuffer(VkDeviceSize iSize, VkBufferUsageFlags iUsage, VkMemoryPropertyFlags iProperties) const;
 
 private:
     /// @brief

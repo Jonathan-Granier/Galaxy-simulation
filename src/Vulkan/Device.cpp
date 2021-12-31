@@ -1,5 +1,6 @@
 #include "Vulkan/Device.h"
 #include "Vulkan/Debug.h"
+#include "Vulkan/MemoryBuffer.h"
 #include <set>
 #include <stdexcept>
 #include <vector>
@@ -164,7 +165,7 @@ void Device::CreateLogicalDevice()
 // properties This is necessary as implementations can offer an arbitrary number
 // of Memory types with different Memory properties. You can check
 // http://vulkan.gpuinfo.org/ for details on different Memory configurations
-uint32_t Device::FindMemoryType(uint32_t iTypeFilter, VkMemoryPropertyFlags iProperties)
+uint32_t Device::FindMemoryType(uint32_t iTypeFilter, VkMemoryPropertyFlags iProperties) const
 {
     VkPhysicalDeviceMemoryProperties memProperties;
     vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
@@ -242,4 +243,35 @@ void Device::CreateCommandPool()
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
     VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool))
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+MemoryBuffer Device::CreateMemoryBuffer(
+    VkDeviceSize iSize, VkBufferUsageFlags iUsage, VkMemoryPropertyFlags iProperties) const
+{
+    MemoryBuffer buffer;
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = iSize;
+    bufferInfo.usage = iUsage;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    VK_CHECK_RESULT(
+        vkCreateBuffer(m_Device, &bufferInfo, nullptr, &buffer.Buffer))
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(m_Device, buffer.Buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, iProperties);
+
+    VK_CHECK_RESULT(
+        vkAllocateMemory(m_Device, &allocInfo, nullptr, &buffer.Memory))
+    VK_CHECK_RESULT(vkBindBufferMemory(m_Device, buffer.Buffer, buffer.Memory, 0));
+
+    buffer.Device = this;
+
+    return buffer;
 }

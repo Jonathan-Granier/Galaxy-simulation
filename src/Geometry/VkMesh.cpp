@@ -2,8 +2,8 @@
 #include <iostream>
 
 //----------------------------------------------------------------------------------------------------------------------
-VkMesh::VkMesh(Device &device, const BufferFactory &bufferFactory)
-    : m_Device(&device), m_BufferFactory(&bufferFactory)
+VkMesh::VkMesh(Device &iDevice)
+    : m_Device(&iDevice)
 {
 }
 
@@ -36,8 +36,8 @@ void VkMesh::InitTriangle()
 //----------------------------------------------------------------------------------------------------------------------
 void VkMesh::Destroy()
 {
-    m_BufferFactory->ReleaseBuffer(m_VertexBuffer);
-    m_BufferFactory->ReleaseBuffer(m_IndexBuffer);
+    m_VertexBuffer.Destroy();
+    m_IndexBuffer.Destroy();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -45,20 +45,20 @@ void VkMesh::CreateVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Vertices[0]) * m_Mesh.Vertices.size();
 
-    MemoryBuffer stagingBuffer = m_BufferFactory->CreateMemoryBuffer(
+    MemoryBuffer stagingBuffer = m_Device->CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    m_BufferFactory->TransferDataInBuffer(m_Mesh.Vertices, bufferSize, stagingBuffer);
+    stagingBuffer.TransferDataInBuffer(m_Mesh.Vertices, bufferSize);
 
-    m_VertexBuffer = m_BufferFactory->CreateMemoryBuffer(
+    m_VertexBuffer = m_Device->CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    m_BufferFactory->CopyBuffer(stagingBuffer.Buffer, m_VertexBuffer.Buffer, bufferSize);
-    m_BufferFactory->ReleaseBuffer(stagingBuffer);
+    m_VertexBuffer.CopyFrom(stagingBuffer.Buffer, bufferSize);
+    stagingBuffer.Destroy();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -66,20 +66,20 @@ void VkMesh::CreateIndexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Indices[0]) * m_Mesh.Indices.size();
 
-    MemoryBuffer stagingBuffer = m_BufferFactory->CreateMemoryBuffer(
+    MemoryBuffer stagingBuffer = m_Device->CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    m_BufferFactory->TransferDataInBuffer(m_Mesh.Indices, bufferSize, stagingBuffer);
+    stagingBuffer.TransferDataInBuffer(m_Mesh.Indices, bufferSize);
 
-    m_IndexBuffer = m_BufferFactory->CreateMemoryBuffer(
+    m_IndexBuffer = m_Device->CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    m_BufferFactory->CopyBuffer(stagingBuffer.Buffer, m_IndexBuffer.Buffer, bufferSize);
-    m_BufferFactory->ReleaseBuffer(stagingBuffer);
+    m_IndexBuffer.CopyFrom(stagingBuffer.Buffer, bufferSize);
+    stagingBuffer.Destroy();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

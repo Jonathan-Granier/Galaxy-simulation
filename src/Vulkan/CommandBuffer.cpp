@@ -2,8 +2,8 @@
 #include "Vulkan/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-CommandBuffer::CommandBuffer(Device &ioDevice)
-    : m_Device{&ioDevice}
+CommandBuffer::CommandBuffer(const Device &iDevice)
+    : m_Device{&iDevice}
 {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -12,7 +12,7 @@ CommandBuffer::CommandBuffer(Device &ioDevice)
     allocInfo.commandBufferCount = 1;
 
     VK_CHECK_RESULT(
-        vkAllocateCommandBuffers(ioDevice.GetDevice(), &allocInfo, &m_CommandBuffer))
+        vkAllocateCommandBuffers(m_Device->GetDevice(), &allocInfo, &m_CommandBuffer))
 }
 
 //----------------------------------------------------------------------------------------------------------------------

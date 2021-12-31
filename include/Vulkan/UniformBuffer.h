@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Vulkan/BufferFactory.h"
 #include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/Device.h"
 #include <cstdint>
+
+/// TODO Remove this class and use memoryBuffer
 
 /// @brief
 ///  Uniform buffer. Small block of data send to the shaders.
@@ -17,7 +19,7 @@ public:
     ///  Constructor.
     /// @param[in] iSize Size of the buffer.
     /// @param[in] iFactory Buffer factory used for allocate and destroy the buffer.
-    UniformBuffer(uint64_t iSize, const BufferFactory &iFactory) { Init(iSize, iFactory); }
+    UniformBuffer(uint64_t iSize, const Device &iDevice) { Init(iSize, iDevice); }
 
     /// @brief
     ///  Deleted copy constructor.
@@ -46,8 +48,8 @@ public:
     /// @brief
     ///  Initialize the buffer.
     /// @param[in] iSize Size of the buffer.
-    /// @param[in] iFactory Buffer factory used for allocate and destroy the buffer.
-    void Init(uint64_t iSize, const BufferFactory &iFactory);
+    /// @param[in] iDevice Device used for allocate the buffer.
+    void Init(uint64_t iSize, const Device &iDevice);
 
     /// @brief
     ///  Send data to the buffer.
@@ -58,15 +60,15 @@ public:
     template <typename T>
     void SendData(const T &iData, uint64_t iOffset, uint64_t iDataSize)
     {
-        m_Factory->TransferDataInBuffer(iData, iOffset, iDataSize, m_Buffer);
+        m_Buffer.TransferDataInBuffer(iData, iDataSize, iOffset);
     }
 
     /// @brief
     ///  Release the buffer.
-    void Release() { m_Factory->ReleaseBuffer(m_Buffer); }
+    void Release() { m_Buffer.Destroy(); }
 
 private:
     MemoryBuffer m_Buffer{};
     uint64_t m_Size{0};
-    const BufferFactory *m_Factory{};
+    const Device *m_Device{};
 };

@@ -20,9 +20,7 @@ void Renderer::CreateRessources()
 {
     std::cout << "Create ressources" << std::endl;
 
-    m_BufferFactory = std::make_unique<BufferFactory>(m_Device);
-
-    m_ImGUI = std::make_unique<ImGUI>(m_Device, *m_BufferFactory);
+    m_ImGUI = std::make_unique<ImGUI>(m_Device);
 
     m_MainPassDescriptor.Init(m_Device);
 
@@ -46,8 +44,6 @@ void Renderer::ReleaseRessources()
     }
 
     m_Mesh->Destroy();
-
-    m_BufferFactory.reset();
     m_Device.Destroy();
 }
 
@@ -117,14 +113,14 @@ void Renderer::CreateCommandBuffers()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::InitGeometry()
 {
-    m_Mesh = std::make_unique<VkMesh>(m_Device, *m_BufferFactory);
+    m_Mesh = std::make_unique<VkMesh>(m_Device);
     m_Mesh->InitCube();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::CreateUniformBuffers()
 {
-    m_UniformBuffers.Model.Init(sizeof(ModelInfo), *m_BufferFactory);
+    m_UniformBuffers.Model.Init(sizeof(ModelInfo), m_Device);
 }
 
 void Renderer::UpdateUniformBuffers()
@@ -140,7 +136,7 @@ void Renderer::UpdateUniformBuffers()
     modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
     modelUbo.Proj[1][1] *= -1;
 
-    m_BufferFactory->TransferDataInBuffer(modelUbo, sizeof(modelUbo), m_UniformBuffers.Model.GetMemoryBuffer());
+    m_UniformBuffers.Model.GetMemoryBuffer().TransferDataInBuffer(&modelUbo, sizeof(modelUbo));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

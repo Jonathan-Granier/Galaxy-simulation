@@ -39,10 +39,10 @@ if (NOT Vulkan_FOUND)
 
         if (EXISTS "${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.h" AND EXISTS "${Vulkan_LIBRARIES}")
             set(Vulkan_FOUND ON)
-        endif ()
+        endif () 
     endif ()
-endif ()
-
+endif () 
+ 
 if (Vulkan_FOUND)
     if (NOT GLSLC_EXECUTABLE)
         set(GLSLC_EXECUTABLE glslc) # glslc is assumed to be available from the path... Kind of a long shot under Windows

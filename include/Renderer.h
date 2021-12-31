@@ -5,7 +5,6 @@
 #include "Vulkan/Swapchain.h"
 #include "Vulkan/PipelineLayout.h"
 #include "Vulkan/MeshPipeline.h"
-#include "Vulkan/BufferFactory.h"
 #include "Vulkan/Image.h"
 #include "Vulkan/DescriptorSet.h"
 #include "Vulkan/CommandBuffer.h"
@@ -51,10 +50,6 @@ public:
 
     ///  Renders the next frame.
     void DrawNextFrame();
-
-    Device &GetDevice() { return m_Device; }
-    BufferFactory &GetBufferFactory() { return *m_BufferFactory; }
-    VkRenderPass &GetRenderPass() { return m_RenderPass; }
 
 private:
     void InitImGUI();
@@ -109,9 +104,6 @@ private:
     Device m_Device;
     /// Swapchain.
     Swapchain m_Swapchain;
-
-    /// Buffer factory used for create buffer.
-    std::unique_ptr<BufferFactory> m_BufferFactory;
 
     /// Descriptor of the main render pass.
     DescriptorSet m_MainPassDescriptor;

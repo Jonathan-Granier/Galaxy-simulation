@@ -9,8 +9,8 @@ class CommandBuffer
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the command buffer with.
-    CommandBuffer(Device &ioDevice);
+    /// @param iDevice Device to initialize the command buffer with.
+    CommandBuffer(const Device &iDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -69,5 +69,5 @@ public:
 private:
     VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
 
-    Device *m_Device{};
+    const Device *m_Device{};
 };

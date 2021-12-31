@@ -4,10 +4,9 @@
 #include "Vulkan/Shader.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-ImGUI::ImGUI(Device &ioDevice, BufferFactory &ioBufferFactory)
+ImGUI::ImGUI(Device &ioDevice)
     : m_Device(ioDevice),
-      m_BufferFactory(ioBufferFactory),
-      m_FontTexture(m_Device, ioBufferFactory)
+      m_FontTexture(m_Device)
 {
 }
 
@@ -20,8 +19,8 @@ ImGUI::~ImGUI()
 void ImGUI::Destroy()
 {
     // Release all Vulkan resources required for rendering imGui
-    m_BufferFactory.ReleaseBuffer(m_VertexBuffer);
-    m_BufferFactory.ReleaseBuffer(m_IndexBuffer);
+    m_VertexBuffer.Destroy();
+    m_IndexBuffer.Destroy();
 
     m_FontTexture.Destroy();
     vkDestroyPipeline(m_Device.GetDevice(), m_Pipeline, nullptr);
@@ -253,25 +252,26 @@ void ImGUI::Update()
     }
 
     // Update buffers only if vertex or index count has been changed compared to current buffer size
-
     // Vertex buffer
     if ((m_VertexBuffer.Buffer == VK_NULL_HANDLE) || (m_VertexCount != imDrawData->TotalVtxCount))
     {
-        m_BufferFactory.ReleaseBuffer(m_VertexBuffer);
-        m_VertexBuffer = m_BufferFactory.CreateMemoryBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+        m_VertexBuffer.UnMap();
+        m_VertexBuffer.Destroy();
+        m_VertexBuffer = m_Device.CreateMemoryBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 
         m_VertexCount = imDrawData->TotalVtxCount;
-        m_BufferFactory.Map(m_VertexBuffer);
+        m_VertexBuffer.Map();
     }
 
     // Index buffer
     if ((m_IndexBuffer.Buffer == VK_NULL_HANDLE) || (m_IndexCount < imDrawData->TotalIdxCount))
     {
-        m_BufferFactory.ReleaseBuffer(m_IndexBuffer);
-        m_IndexBuffer = m_BufferFactory.CreateMemoryBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+        m_IndexBuffer.UnMap();
+        m_IndexBuffer.Destroy();
+        m_IndexBuffer = m_Device.CreateMemoryBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 
         m_IndexCount = imDrawData->TotalIdxCount;
-        m_BufferFactory.Map(m_IndexBuffer);
+        m_IndexBuffer.Map();
     }
 
     // Upload data
@@ -288,8 +288,8 @@ void ImGUI::Update()
     }
 
     // Flush to make writes visible to GPU
-    m_BufferFactory.Flush(m_VertexBuffer);
-    m_BufferFactory.Flush(m_IndexBuffer);
+    m_VertexBuffer.Flush();
+    m_IndexBuffer.Flush();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 #include "Vulkan/Device.h"
 #include "Vulkan/Texture.h"
 #include "Vulkan/DescriptorSet.h"
-#include "Vulkan/BufferFactory.h"
+#include "Vulkan/MemoryBuffer.h"
 #include <array>
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
@@ -19,7 +19,7 @@ public:
         glm::vec2 translate;
     } pushConstBlock;
 
-    ImGUI(Device &ioDevice, BufferFactory &ioBufferFactory);
+    ImGUI(Device &ioDevice);
 
     ~ImGUI();
 
@@ -38,7 +38,6 @@ private:
     void CreatePipeline(VkRenderPass renderPass);
     // Vulkan resources for rendering the UI
     Device &m_Device;
-    BufferFactory &m_BufferFactory;
 
     Texture m_FontTexture;
 

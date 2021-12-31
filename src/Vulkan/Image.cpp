@@ -2,8 +2,8 @@
 #include "Vulkan/Debug.h"
 #include "Vulkan/CommandBuffer.h"
 //----------------------------------------------------------------------------------------------------------------------
-Image::Image(Device &device)
-    : m_Device(device)
+Image::Image(Device &iDevice)
+    : m_Device(iDevice)
 {
 }
 

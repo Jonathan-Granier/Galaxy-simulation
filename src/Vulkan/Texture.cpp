@@ -3,9 +3,8 @@
 #include "Vulkan/MemoryBuffer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-Texture::Texture(Device &iDevice, BufferFactory &iBufferFactory)
+Texture::Texture(Device &iDevice)
     : m_Device(iDevice),
-      m_BufferFactory(iBufferFactory),
       m_Image(iDevice)
 {
 }
@@ -22,12 +21,12 @@ void Texture::Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFo
 
     // Move data in buffer.
     VkDeviceSize imageSize = iWidth * iHeight * 4; // TODO Use format to find this factor.
-    MemoryBuffer stagingBuffer = m_BufferFactory.CreateMemoryBuffer(
+    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         imageSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    m_BufferFactory.TransferDataInBuffer(iData, imageSize, stagingBuffer);
+    stagingBuffer.TransferDataInBuffer(iData, imageSize);
 
     // Create Image
     m_Image.Init(iWidth, iHeight, iFormat);
@@ -48,7 +47,7 @@ void Texture::Init(const uint8_t *iData, uint32_t iWidth, uint32_t iHeight, VkFo
 
     copyCmd.EndAndRun(m_Device.GetGraphicsQueue()); // TODO Use copy queue.
 
-    m_BufferFactory.ReleaseBuffer(stagingBuffer);
+    stagingBuffer.Destroy();
     CreateSampler();
 
     m_Descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

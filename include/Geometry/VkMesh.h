@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Geometry/Mesh.h"
-#include "Vulkan/BufferFactory.h"
 #include "Vulkan/Device.h"
 #include "Vulkan/MemoryBuffer.h"
 
@@ -10,7 +9,7 @@
 class VkMesh
 {
 public:
-    VkMesh(Device &device, const BufferFactory &bufferFactory);
+    VkMesh(Device &iDevice);
     ~VkMesh() = default;
     VkMesh(const VkMesh &) = delete;
     VkMesh(VkMesh &&ioCloud) noexcept = default;
@@ -37,7 +36,6 @@ private:
     void CreateIndexBuffer();
 
     Device *m_Device;
-    const BufferFactory *m_BufferFactory;
     Mesh m_Mesh;
 
     MemoryBuffer m_VertexBuffer;
