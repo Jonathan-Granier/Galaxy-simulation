@@ -7,46 +7,27 @@
 #include <vector>
 #include "Vulkan/Device.h"
 
-/// @brief
 /// Vulkan buffer and his device memory.
 struct MemoryBuffer
 {
-    /// @brief
     ///  Constructor.
     MemoryBuffer() = default;
 
-    /// @brief
     ///  Deleted copy constructor.
     MemoryBuffer(const MemoryBuffer &) = delete;
 
-    /// @brief
     ///  Move constructor.
     /// @param ioBuffer Buffer to be moved.
-    // TODO Default ?
-    MemoryBuffer(MemoryBuffer &&ioBuffer) noexcept
-        : Device{std::exchange(ioBuffer.Device, {nullptr})},
-          Memory{std::exchange(ioBuffer.Memory, {VK_NULL_HANDLE})},
-          Buffer{std::exchange(ioBuffer.Buffer, {VK_NULL_HANDLE})}
-    {
-    }
+    MemoryBuffer(MemoryBuffer &&ioBuffer) noexcept = default;
 
-    /// @brief
     ///  Deleted copy assignment operator.
     /// @return Reference to the current buffer.
     MemoryBuffer &operator=(const MemoryBuffer &) = delete;
 
-    /// @brief
     ///  Move assignment operator.
     /// @param ioBuffer Buffer to be moved.
     /// @return Reference to the current buffer.
-    MemoryBuffer &operator=(MemoryBuffer &&ioBuffer) noexcept
-    {
-        std::swap(Device, ioBuffer.Device);
-        std::swap(Memory, ioBuffer.Memory);
-        std::swap(Buffer, ioBuffer.Buffer);
-
-        return *this;
-    }
+    MemoryBuffer &operator=(MemoryBuffer &&ioBuffer) noexcept = default;
 
     void Destroy();
 
@@ -59,7 +40,6 @@ struct MemoryBuffer
         vkUnmapMemory(Device->GetDevice(), Memory);
     }
 
-    /// @brief
     ///  Transfer data in a buffer.
     /// @tparam T Type of data.
     /// @param[in] iData Vector to transfer.
