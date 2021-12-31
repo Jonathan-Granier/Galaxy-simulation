@@ -58,7 +58,7 @@ public:
     /// @param[in] iOffset Offset of the data in the buffer.
     /// @param[in] iDataSize Size of the data.
     template <typename T>
-    void SendData(const T &iData, uint64_t iOffset, uint64_t iDataSize)
+    void SendData(const T &iData, uint64_t iDataSize = VK_WHOLE_SIZE, uint64_t iOffset = 0)
     {
         m_Buffer.TransferDataInBuffer(iData, iDataSize, iOffset);
     }

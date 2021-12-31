@@ -136,7 +136,7 @@ void Renderer::UpdateUniformBuffers()
     modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
     modelUbo.Proj[1][1] *= -1;
 
-    m_UniformBuffers.Model.GetMemoryBuffer().TransferDataInBuffer(&modelUbo, sizeof(modelUbo));
+    m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
