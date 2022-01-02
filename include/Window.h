@@ -51,10 +51,16 @@ private:
 
     struct
     {
+        /// Previous frame times
         std::array<float, 50> Previous{};
-        float Min = 9999.0f, Max = 0.0f;
+        /// Maximum frame time. 
+        float Min = 9999.0f;
+        /// Minimum frame time.
+        float Max = 0.0f;
+        /// Current frame time.
         float Current = 0;
     } m_FrameTimes;
 
+    /// Count the number of frame. 
     uint32_t m_FrameCounter = 0;
 };

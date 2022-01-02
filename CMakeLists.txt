@@ -12,7 +12,7 @@ target_compile_features(Olympus PRIVATE cxx_std_17)
    
 if (NOT VULKAN_SDK_ROOT)
     # Vulkan SDK path not set, trying to find it automatically
-    find_package(Vulkan)
+    find_package(Vulkan) 
 endif ()
 
 if (NOT Vulkan_FOUND)

@@ -25,6 +25,8 @@ public:
 
     // Initialize all Vulkan resources used by the ui
     void CreateRessources(VkRenderPass iRenderPass);
+
+    ///  Destroys the all vulkan resources object.
     void Destroy();
 
     // Update vertex and index buffer containing the imGui elements when required
@@ -39,19 +41,26 @@ private:
     // Vulkan resources for rendering the UI
     Device &m_Device;
 
+    /// Texture (Image + Sampler) to store the ImGUI Font.
     Texture m_FontTexture;
-
+    /// ImGUI vertex buffer.
     MemoryBuffer m_VertexBuffer;
+    /// ImGUI Index buffer (triangle).
     MemoryBuffer m_IndexBuffer;
 
+    /// Vertex buffer size..
     int32_t m_VertexCount = 0;
+    /// Index buffer size
     int32_t m_IndexCount = 0;
+    /// Pipeline layout to draw ImGUI mesh.
     VkPipelineLayout m_PipelineLayout;
+    /// Pipeleine to draw ImGUI mesh.
     VkPipeline m_Pipeline;
 
+    /// Descriptor pool.
     VkDescriptorPool m_DescriptorPool;
+    /// Descriptor layout.
     VkDescriptorSetLayout m_DescriptorSetLayout;
+    /// Descriptor set to use the font texture.
     DescriptorSet m_DescriptorSet;
-
-    float m_Scale = 1.0f;
 };

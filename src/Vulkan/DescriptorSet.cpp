@@ -26,11 +26,10 @@ void DescriptorSet::AllocateDescriptorSets(VkDescriptorSetLayout iLayout, VkDesc
 //----------------------------------------------------------------------------------------------------------------------
 void DescriptorSet::AddWriteDescriptor(uint32_t iBinding, const UniformBuffer &iBuffer, uint64_t iDescSetIndex)
 {
-    std::unique_ptr<VkDescriptorBufferInfo> &bufferInfo = m_BufferInfos.emplace_back(
-        std::make_unique<VkDescriptorBufferInfo>());
-    bufferInfo->buffer = iBuffer.GetMemoryBuffer().Buffer;
-    bufferInfo->offset = 0;
-    bufferInfo->range = iBuffer.GetSize();
+    VkDescriptorBufferInfo &bufferInfo = m_BufferInfos.emplace_back();
+    bufferInfo.buffer = iBuffer.GetMemoryBuffer().Buffer;
+    bufferInfo.offset = 0;
+    bufferInfo.range = iBuffer.GetSize();
 
     VkWriteDescriptorSet &writeDescriptorSet = m_WriteDescriptorSets.emplace_back();
     writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -38,30 +37,28 @@ void DescriptorSet::AddWriteDescriptor(uint32_t iBinding, const UniformBuffer &i
     writeDescriptorSet.dstBinding = iBinding;
     writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     writeDescriptorSet.descriptorCount = 1;
-    writeDescriptorSet.pBufferInfo = bufferInfo.get();
+    writeDescriptorSet.pBufferInfo = &bufferInfo;
 }
 
 //TODO Refactor Buffer , add descriptor info
 void DescriptorSet::AddWriteDescriptor(
     uint32_t iBinding, VkDescriptorBufferInfo iBufferInfo, VkDescriptorType iType, uint64_t iDescSetIndex)
 {
-    std::unique_ptr<VkDescriptorBufferInfo> &bufferInfo = m_BufferInfos.emplace_back(
-        std::make_unique<VkDescriptorBufferInfo>(iBufferInfo));
+    VkDescriptorBufferInfo &bufferInfo = m_BufferInfos.emplace_back(iBufferInfo);
     VkWriteDescriptorSet &writeDescriptorSet = m_WriteDescriptorSets.emplace_back(VkWriteDescriptorSet{});
     writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     writeDescriptorSet.dstSet = m_DescriptorSets[iDescSetIndex];
     writeDescriptorSet.dstBinding = iBinding;
     writeDescriptorSet.descriptorType = iType;
     writeDescriptorSet.descriptorCount = 1;
-    writeDescriptorSet.pBufferInfo = bufferInfo.get();
+    writeDescriptorSet.pBufferInfo = &bufferInfo;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void DescriptorSet::AddWriteDescriptor(
     uint32_t iBinding, VkDescriptorImageInfo iImage, VkDescriptorType iType, uint64_t iDescSetIndex)
 {
-    std::unique_ptr<VkDescriptorImageInfo> &imageInfo = m_ImageInfos.emplace_back(
-        std::make_unique<VkDescriptorImageInfo>(iImage));
+    VkDescriptorImageInfo &imageInfo = m_ImageInfos.emplace_back(iImage);
 
     VkWriteDescriptorSet &writeDescriptorSet = m_WriteDescriptorSets.emplace_back(VkWriteDescriptorSet{});
     writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -69,7 +66,7 @@ void DescriptorSet::AddWriteDescriptor(
     writeDescriptorSet.dstBinding = iBinding;
     writeDescriptorSet.descriptorType = iType;
     writeDescriptorSet.descriptorCount = 1;
-    writeDescriptorSet.pImageInfo = imageInfo.get();
+    writeDescriptorSet.pImageInfo = &imageInfo;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

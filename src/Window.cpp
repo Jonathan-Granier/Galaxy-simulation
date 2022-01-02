@@ -39,7 +39,7 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight) : m_Name(iN
 Window::~Window()
 {
     if (m_Renderer)
-        m_Renderer->ReleaseRessources();
+        m_Renderer->ReleaseResources();
 
     if (ImGui::GetCurrentContext())
     {
@@ -167,5 +167,5 @@ void Window::Resize(uint32_t iWidth, uint32_t iHeight)
 
     m_Width = width;
     m_Height = height;
-    m_Renderer->RecreateSwapchainRessources(m_Width, m_Height);
+    m_Renderer->RecreateSwapchainResources(m_Width, m_Height);
 }

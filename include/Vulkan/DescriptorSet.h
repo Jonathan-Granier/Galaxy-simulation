@@ -82,9 +82,14 @@ public:
     void UpdateDescriptorSets();
 
 private:
+    /// A set of Descriptor set.
     std::vector<VkDescriptorSet> m_DescriptorSets{};
+    /// A set of write descriptor with a Image of Buffer information.
     std::vector<VkWriteDescriptorSet> m_WriteDescriptorSets{};
-    std::vector<std::unique_ptr<VkDescriptorImageInfo>> m_ImageInfos{};
-    std::vector<std::unique_ptr<VkDescriptorBufferInfo>> m_BufferInfos{};
+    /// Storage image information used by update.
+    std::vector<VkDescriptorImageInfo> m_ImageInfos{};
+    /// Storage buffer information used by update.
+    std::vector<VkDescriptorBufferInfo> m_BufferInfos{};
+    /// Vulkan device.
     Device *m_Device{};
 };

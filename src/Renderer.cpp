@@ -12,11 +12,11 @@ Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, 
       m_MeshPipeline(m_Device),
       m_DepthBuffer(m_Device)
 {
-    CreateRessources();
+    CreateResources();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::CreateRessources()
+void Renderer::CreateResources()
 {
     std::cout << "Create ressources" << std::endl;
 
@@ -25,16 +25,16 @@ void Renderer::CreateRessources()
     m_MainPassDescriptor.Init(m_Device);
 
     InitGeometry();
-    CreateSwapchainRessources();
+    CreateSwapchainResources();
     CreateSyncObjects();
     CreateCommandBuffers();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::ReleaseRessources()
+void Renderer::ReleaseResources()
 {
     std::cout << "Release ressources" << std::endl;
-    ReleaseSwapchainRessources();
+    ReleaseSwapchainResources();
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
     {
@@ -48,7 +48,7 @@ void Renderer::ReleaseRessources()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::CreateSwapchainRessources()
+void Renderer::CreateSwapchainResources()
 {
     std::cout << "Create swapchain ressources" << std::endl;
 
@@ -67,17 +67,17 @@ void Renderer::CreateSwapchainRessources()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::RecreateSwapchainRessources(uint32_t iWidth, uint32_t iHeight)
+void Renderer::RecreateSwapchainResources(uint32_t iWidth, uint32_t iHeight)
 {
     std::cout << "Recreate swapchain ressources" << std::endl;
-    ReleaseSwapchainRessources();
+    ReleaseSwapchainResources();
 
     m_Swapchain.Init(iWidth, iHeight);
-    CreateSwapchainRessources();
+    CreateSwapchainResources();
     CreateCommandBuffers(); // TODO Move ?
 }
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::ReleaseSwapchainRessources()
+void Renderer::ReleaseSwapchainResources()
 {
     std::cout << "Release swapchain ressources" << std::endl;
     vkDeviceWaitIdle(m_Device.GetDevice());
@@ -350,7 +350,7 @@ void Renderer::DrawNextFrame()
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        RecreateSwapchainRessources(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
+        RecreateSwapchainResources(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
         return;
     }
     else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
@@ -393,7 +393,7 @@ void Renderer::DrawNextFrame()
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
     {
-        RecreateSwapchainRessources(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
+        RecreateSwapchainResources(m_Swapchain.GetImageSize().width, m_Swapchain.GetImageSize().height);
     }
     else if (result != VK_SUCCESS)
     {

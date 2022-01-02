@@ -119,17 +119,28 @@ private:
 
     void CreateCommandPool();
 
+    /// Vulkan instance.
     Instance &m_Instance;
+    /// Physical device (chose by default).
     VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
+    /// Logical device.
     VkDevice m_Device = VK_NULL_HANDLE;
+    /// Graphics queue use to draw.
     VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
+    /// Present queue use to present image at the screen.
     VkQueue m_PresentQueue = VK_NULL_HANDLE;
+    /// Compute queue use to a compute pass.
     VkQueue m_ComputeQueue = VK_NULL_HANDLE;
+    /// Surface to render.
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
+    /// Queue indices.
     QueueFamilyIndices m_QueueIndices{};
+    /// Command pool allocate by device.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 
+    /// Multisample anti-aliasing. 
     VkSampleCountFlagBits m_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
+    /// Device extensions.
     const std::vector<const char *> m_DeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 };

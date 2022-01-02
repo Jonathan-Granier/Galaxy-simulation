@@ -36,17 +36,17 @@ public:
     ~Renderer() = default;
 
     ///  Create Vulkan resources.
-    void CreateRessources();
+    void CreateResources();
     ///  Releases Vulkan resources.
-    void ReleaseRessources();
+    void ReleaseResources();
 
     ///  Recreates swapchain resources.
     /// @param iWidth New swapchain width.
     /// @param iHeight New swapchain height.
-    void RecreateSwapchainRessources(uint32_t iWidth, uint32_t iHeight);
+    void RecreateSwapchainResources(uint32_t iWidth, uint32_t iHeight);
 
     ///  Releases swapchain resources.
-    void ReleaseSwapchainRessources();
+    void ReleaseSwapchainResources();
 
     ///  Renders the next frame.
     void DrawNextFrame();
@@ -55,7 +55,7 @@ private:
     /// Init ImGUI vulkan ressources.
     void InitImGUI();
     ///  Creates swapchain resources (pipelines, framebuffers, descriptors, ...).
-    void CreateSwapchainRessources();
+    void CreateSwapchainResources();
 
     ///  Initializes the default scene's geometry.
     void InitGeometry();
