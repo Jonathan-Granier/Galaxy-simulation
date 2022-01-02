@@ -4,13 +4,13 @@
 #include "Vulkan/Device.h"
 #include "Vulkan/Swapchain.h"
 #include "Vulkan/PipelineLayout.h"
-#include "Vulkan/MeshPipeline.h"
+#include "Vulkan/CloudPipeline.h"
 #include "Vulkan/Image.h"
 #include "Vulkan/DescriptorSet.h"
 #include "Vulkan/CommandBuffer.h"
 #include "Vulkan/UniformBuffer.h"
 #include "Vulkan/ImGUI.h"
-#include "Geometry/VkMesh.h"
+#include "Geometry/VkCloud.h"
 
 struct ModelInfo
 {
@@ -114,7 +114,7 @@ private:
     /// Pipeline layout of the main render pass.
     PipelineLayout m_PipelineLayout;
     /// Mesh pipeline.
-    MeshPipeline m_MeshPipeline;
+    CloudPipeline m_MeshPipeline;
 
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;
@@ -128,7 +128,7 @@ private:
     Image m_DepthBuffer;
 
     /// Mesh to draw.
-    std::unique_ptr<VkMesh> m_Mesh;
+    std::unique_ptr<VkCloud> m_Mesh;
 
     /// Maximum number of frames to calculate in parallel.
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;

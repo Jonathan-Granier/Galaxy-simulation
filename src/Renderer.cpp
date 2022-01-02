@@ -113,8 +113,8 @@ void Renderer::CreateCommandBuffers()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::InitGeometry()
 {
-    m_Mesh = std::make_unique<VkMesh>(m_Device);
-    m_Mesh->InitCube();
+    m_Mesh = std::make_unique<VkCloud>(m_Device);
+    m_Mesh->Init();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
