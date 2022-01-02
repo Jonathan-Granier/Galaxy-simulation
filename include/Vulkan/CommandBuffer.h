@@ -67,7 +67,8 @@ public:
     void Free();
 
 private:
+    /// Command buffer.
     VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
-
+    /// Vulkan device.
     const Device *m_Device{};
 };

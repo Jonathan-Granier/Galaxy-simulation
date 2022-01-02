@@ -17,8 +17,8 @@ CommandBuffer::CommandBuffer(const Device &iDevice)
 
 //----------------------------------------------------------------------------------------------------------------------
 CommandBuffer::CommandBuffer(CommandBuffer &&ioBuffer) noexcept
-    : m_CommandBuffer{std::exchange(ioBuffer.m_CommandBuffer, {})}, m_Device{ioBuffer.m_Device} // The device functions must be available for a CommandBuffer to be destroyed
-
+    : m_CommandBuffer{std::exchange(ioBuffer.m_CommandBuffer, {})},
+      m_Device{ioBuffer.m_Device}
 {
 }
 

@@ -10,8 +10,8 @@ class Shader
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the shader with.
-    explicit Shader(Device &ioDevice);
+    /// @param iDevice Device to initialize the shader with.
+    explicit Shader(const Device &iDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -50,6 +50,7 @@ public:
     void Destroy();
 
 private:
-    Device *m_Device;
+    /// Vulkan device.
+    const Device *m_Device;
     VkShaderModule m_ShaderModule = VK_NULL_HANDLE;
 };

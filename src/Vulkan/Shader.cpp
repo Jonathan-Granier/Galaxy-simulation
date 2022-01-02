@@ -3,8 +3,8 @@
 #include <fstream>
 
 //----------------------------------------------------------------------------------------------------------------------
-Shader::Shader(Device &ioDevice)
-    : m_Device{&ioDevice}
+Shader::Shader(const Device &iDevice)
+    : m_Device{&iDevice}
 {
 }
 

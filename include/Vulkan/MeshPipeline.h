@@ -38,5 +38,6 @@ protected:
         MeshVertex::GetAttributeDescriptions();
 
 private:
+    /// Polygon mode to draw the mesh.
     VkPolygonMode m_PolygonMode = VK_POLYGON_MODE_FILL;
 };

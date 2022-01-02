@@ -67,7 +67,7 @@ void Texture::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Texture::CopyBufferToImage(CommandBuffer &ioCommandBuffer, VkBuffer &iBuffer)
+void Texture::CopyBufferToImage(CommandBuffer &ioCommandBuffer, const VkBuffer &iBuffer)
 {
     VkBufferImageCopy region{};
     region.bufferOffset = 0;

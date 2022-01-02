@@ -68,7 +68,11 @@ public:
     void Release() { m_Buffer.Destroy(); }
 
 private:
+    /// Buffer.
     MemoryBuffer m_Buffer{};
+    /// Buffer size.
     uint64_t m_Size{0};
+
+    /// Vulkan Device.
     const Device *m_Device{};
 };

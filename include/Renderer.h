@@ -52,6 +52,7 @@ public:
     void DrawNextFrame();
 
 private:
+    /// Init ImGUI vulkan ressources.
     void InitImGUI();
     ///  Creates swapchain resources (pipelines, framebuffers, descriptors, ...).
     void CreateSwapchainRessources();

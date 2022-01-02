@@ -60,10 +60,6 @@ public:
 
     QueueFamilyIndices &GetQueueIndices() { return m_QueueIndices; }
 
-    // QVulkanInstance *GetQtInstance() { return m_Instance; }
-    // QVulkanFunctions *GetVkFuncs() { return m_VkFuncs; }
-    // QVulkanDeviceFunctions *GetVkDeviceFuncs() { return m_VkDeviceFuncs; }
-
     /// @brief
     ///  Finds a memory type that supports the given properties.
     /// @param iTypeFilter Type filter.

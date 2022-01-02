@@ -2,17 +2,6 @@
 #include "Vulkan/Debug.h"
 #include <imgui/imgui.h>
 
-struct UISettings
-{
-    bool displayModels = true;
-    bool displayLogos = true;
-    bool displayBackground = true;
-    bool animateLight = false;
-    float lightSpeed = 0.25f;
-};
-
-static UISettings uiSettings;
-
 //----------------------------------------------------------------------------------------------------------------------
 static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
 {

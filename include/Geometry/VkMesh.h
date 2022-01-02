@@ -35,9 +35,13 @@ private:
     ///  Allocate the mesh indices (triangle) in the gpu memory.
     void CreateIndexBuffer();
 
+    /// Vulkan device.
     Device *m_Device;
+    /// Geometrical mesh.
     Mesh m_Mesh;
 
+    /// Vertex buffer.
     MemoryBuffer m_VertexBuffer;
+    /// Triangle indices buffer.
     MemoryBuffer m_IndexBuffer;
 };

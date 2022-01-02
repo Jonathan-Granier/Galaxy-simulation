@@ -75,8 +75,8 @@ void Pipeline::Create(
     VkPipelineVertexInputStateCreateInfo vertexInputInfo = GetVertexInputInfo();
     VkPipelineInputAssemblyStateCreateInfo inputAssembly = GetInputAssemblyInfo();
     VkPipelineRasterizationStateCreateInfo rasterizer = GetRasterizationInfo();
+
     // Viewports
-    //#TODO
     VkViewport viewport;
     viewport.x = 0;
     viewport.y = 0;

@@ -18,7 +18,6 @@ ImGUI::~ImGUI()
 //----------------------------------------------------------------------------------------------------------------------
 void ImGUI::Destroy()
 {
-    // Release all Vulkan resources required for rendering imGui
     m_VertexBuffer.Destroy();
     m_IndexBuffer.Destroy();
 

@@ -82,8 +82,12 @@ protected:
     /// @return Pipeline's rasterization information object.
     virtual VkPipelineRasterizationStateCreateInfo GetRasterizationInfo() = 0;
 
+    /// Vulkan device.
     Device *m_Device;
+    /// Vulkan pipeline.
     VkPipeline m_Pipeline = VK_NULL_HANDLE;
+    /// Vertex shader.
     Shader m_VertShader;
+    /// Fragment shader.
     Shader m_FragShader;
 };
