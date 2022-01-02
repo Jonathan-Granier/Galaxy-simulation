@@ -1,6 +1,6 @@
 #pragma once
 #include "Vulkan/Device.h"
-#include "Vulkan/CommandBuffer.h" // TODO make forward file
+#include "Vulkan/CommandBuffer.h"
 
 /// @brief
 ///  Class for create and manage a vulkan image.

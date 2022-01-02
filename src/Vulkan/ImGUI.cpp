@@ -254,7 +254,6 @@ void ImGUI::Update()
     // Vertex buffer
     if ((m_VertexBuffer.Buffer == VK_NULL_HANDLE) || (m_VertexCount != imDrawData->TotalVtxCount))
     {
-        m_VertexBuffer.UnMap();
         m_VertexBuffer.Destroy();
         m_VertexBuffer = m_Device.CreateMemoryBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 
@@ -265,7 +264,6 @@ void ImGUI::Update()
     // Index buffer
     if ((m_IndexBuffer.Buffer == VK_NULL_HANDLE) || (m_IndexCount < imDrawData->TotalIdxCount))
     {
-        m_IndexBuffer.UnMap();
         m_IndexBuffer.Destroy();
         m_IndexBuffer = m_Device.CreateMemoryBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 

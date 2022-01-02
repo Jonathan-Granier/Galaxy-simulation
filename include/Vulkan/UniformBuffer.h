@@ -4,7 +4,6 @@
 #include "Vulkan/Device.h"
 #include <cstdint>
 
-/// TODO Remove this class and use memoryBuffer
 
 /// @brief
 ///  Uniform buffer. Small block of data send to the shaders.
