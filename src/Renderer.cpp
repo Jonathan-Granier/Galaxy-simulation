@@ -123,7 +123,7 @@ void Renderer::CreateUniformBuffers()
     m_UniformBuffers.Model.Init(sizeof(ModelInfo), m_Device);
 }
 
-void Renderer::UpdateUniformBuffers()
+void Renderer::UpdateUniformBuffers(const glm::mat4& iView, const glm::mat4& iProj)
 {
     static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -131,9 +131,13 @@ void Renderer::UpdateUniformBuffers()
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     ModelInfo modelUbo{};
-    modelUbo.Model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
+    modelUbo.Model = glm::mat4(1.0);
+    modelUbo.View = iView;
+    modelUbo.Proj = iProj;
+    //modelUbo.Model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    
+   // modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+   // modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
     modelUbo.Proj[1][1] *= -1;
 
     m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
@@ -341,7 +345,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::DrawNextFrame()
+void Renderer::DrawNextFrame(const glm::mat4& iView, const glm::mat4& iProj)
 {
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
@@ -368,7 +372,7 @@ void Renderer::DrawNextFrame()
     m_ImagesInFlight[imageIndex] = m_InFlightFences[m_CurrentFrame];
 
     BuildCommandBuffer(imageIndex);
-    UpdateUniformBuffers();
+    UpdateUniformBuffers(iView, iProj);
 
     std::array<VkPipelineStageFlags, 1> waitStages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     std::array<VkSemaphore, 1> waitSemaphores = {m_ImageAvailableSemaphores[m_CurrentFrame]};

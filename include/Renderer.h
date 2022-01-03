@@ -49,7 +49,9 @@ public:
     void ReleaseSwapchainResources();
 
     ///  Renders the next frame.
-    void DrawNextFrame();
+    /// @param iView View matrix of the scene.
+    /// @param iProj Projection matrix of the scene.
+    void DrawNextFrame(const glm::mat4& iView, const glm::mat4& iProj);
 
 private:
     /// Init ImGUI vulkan ressources.
@@ -99,7 +101,9 @@ private:
     void BuildCommandBuffer(uint32_t iIndex);
 
     ///  Updates uniform buffers.
-    void UpdateUniformBuffers();
+    /// @param iView View matrix of the scene.
+    /// @param iProj Projection matrix of the scene.
+    void UpdateUniformBuffers(const glm::mat4& iView, const glm::mat4& iProj);
 
     /// Vulkan device that contains instance, physical device, device and queue.
     Device m_Device;

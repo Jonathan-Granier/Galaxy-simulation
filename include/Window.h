@@ -1,6 +1,7 @@
 #pragma once
 #include <glfw/glfw3.h>
 #include "Renderer.h"
+#include "Camera.h"
 #include "Vulkan/ImGUI.h"
 #include <memory>
 
@@ -21,7 +22,7 @@ public:
     void Run();
     /// Resize the window.
     void Resize(uint32_t iWidth, uint32_t iHeight);
-
+    void Scroll(float iYOffset);
 private:
     /// Create glfw's surface.
     void CreateSurface();
@@ -33,6 +34,7 @@ private:
     /// Update ImGUI (use during render loop).
     void UpdateImGUI();
 
+    void UpdateMouse();
     /// GLFW window.
     GLFWwindow *m_Window = nullptr;
     /// Window's name
@@ -63,4 +65,8 @@ private:
 
     /// Count the number of frame. 
     uint32_t m_FrameCounter = 0;
+
+    Camera m_Camera;
+    
+    glm::vec2 m_PrevMousePos;    
 };
