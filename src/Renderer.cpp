@@ -9,7 +9,7 @@ Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, 
     : m_Device(iInstance, iSurface),
       m_Swapchain(m_Device, iWidth, iHeight),
       m_PipelineLayout(m_Device),
-      m_MeshPipeline(m_Device),
+      m_CloudPipeline(m_Device),
       m_DepthBuffer(m_Device)
 {
     CreateResources();
@@ -43,7 +43,9 @@ void Renderer::ReleaseResources()
         vkDestroyFence(m_Device.GetDevice(), m_InFlightFences[i], nullptr);
     }
 
-    m_Mesh->Destroy();
+    for (VkCloud &c : m_Clouds)
+        c.Destroy();
+
     m_Device.Destroy();
 }
 
@@ -91,7 +93,7 @@ void Renderer::ReleaseSwapchainResources()
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
-    m_MeshPipeline.Destroy();
+    m_CloudPipeline.Destroy();
     m_PipelineLayout.Destroy();
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
     m_DepthBuffer.Destroy();
@@ -113,8 +115,15 @@ void Renderer::CreateCommandBuffers()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::InitGeometry()
 {
-    m_Mesh = std::make_unique<VkCloud>(m_Device);
-    m_Mesh->Init();
+    m_Clouds.reserve(4);
+    // m_Clouds.emplace_back(m_Device);
+    // m_Clouds.back().InitAxisX();
+    // m_Clouds.emplace_back(m_Device);
+    // m_Clouds.back().InitAxisY();
+    // m_Clouds.emplace_back(m_Device);
+    // m_Clouds.back().InitAxisZ();
+    m_Clouds.emplace_back(m_Device);
+    m_Clouds.back().Init();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -123,7 +132,7 @@ void Renderer::CreateUniformBuffers()
     m_UniformBuffers.Model.Init(sizeof(ModelInfo), m_Device);
 }
 
-void Renderer::UpdateUniformBuffers(const glm::mat4& iView, const glm::mat4& iProj)
+void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
     static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -135,9 +144,9 @@ void Renderer::UpdateUniformBuffers(const glm::mat4& iView, const glm::mat4& iPr
     modelUbo.View = iView;
     modelUbo.Proj = iProj;
     //modelUbo.Model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    
-   // modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-   // modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
+
+    // modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    // modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
     modelUbo.Proj[1][1] *= -1;
 
     m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
@@ -160,7 +169,7 @@ void Renderer::CreatePipelineLayout()
 
 void Renderer::CreatePipeline()
 {
-    m_MeshPipeline.Create(
+    m_CloudPipeline.Create(
         m_PipelineLayout.GetLayout(),
         m_RenderPass,
         0,
@@ -323,7 +332,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 
     vkCmdBeginRenderPass(commandBuffer.GetBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(
-        commandBuffer.GetBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetPipeline());
+        commandBuffer.GetBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_CloudPipeline.GetPipeline());
 
     vkCmdBindDescriptorSets(
         commandBuffer.GetBuffer(),
@@ -335,7 +344,8 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
         0,
         nullptr);
 
-    m_Mesh->Draw(commandBuffer.GetBuffer());
+    for (VkCloud &cloud : m_Clouds)
+        cloud.Draw(commandBuffer.GetBuffer());
 
     m_ImGUI->Draw(commandBuffer.GetBuffer());
 
@@ -345,7 +355,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Renderer::DrawNextFrame(const glm::mat4& iView, const glm::mat4& iProj)
+void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 

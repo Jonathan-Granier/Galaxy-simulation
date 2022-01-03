@@ -9,6 +9,12 @@ static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
     app->Resize(width, height);
 }
 
+static void ScrollCallBack(GLFWwindow *window, double xoffset, double yoffset)
+{
+    auto app = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
+    app->Scroll(yoffset);
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight) : m_Name(iName),
                                                                        m_Width(iWidth),
@@ -20,8 +26,7 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight) : m_Name(iN
     m_Window = glfwCreateWindow(m_Width, m_Height, m_Name.c_str(), nullptr, nullptr);
     glfwSetWindowUserPointer(m_Window, this);
     glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
-    //glfwSetCursorPosCallback(m_Window, cursor_position_callback);
-
+    glfwSetScrollCallback(m_Window, ScrollCallBack);
 
     uint32_t glfwExtensionCount = 0;
     const char **glfwExtensions;
@@ -35,9 +40,8 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight) : m_Name(iN
     InitImGUI();
 
     m_Renderer = std::make_unique<Renderer>(m_Instance, m_Surface, m_Width, m_Height);
-    m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 10.0f);
+    m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 100.0f);
     m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -3.75f));
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -173,34 +177,33 @@ void Window::Resize(uint32_t iWidth, uint32_t iHeight)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Window::UpdateMouse(){
+void Window::UpdateMouse()
+{
 
     double xpos, ypos;
     glfwGetCursorPos(m_Window, &xpos, &ypos);
-    
+
     ImGuiIO &io = ImGui::GetIO();
     io.MousePos = ImVec2(xpos, ypos);
     io.MouseDown[0] = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
     io.MouseDown[1] = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
-    bool middle = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS;
-    
+
     float dx = xpos - m_PrevMousePos.x;
-    float dy = ypos - m_PrevMousePos.y;  
+    float dy = ypos - m_PrevMousePos.y;
     m_PrevMousePos = glm::vec2(xpos, ypos);
-    
-    // Left 
-    if(io.MouseDown[0]){
-        m_Camera.Rotate(glm::vec3(dy * m_Camera.GetRotationSpeed(), dx * m_Camera.GetRotationSpeed(), 0.0f));
-    }
-    else if(io.MouseDown[1]){
-        m_Camera.Translate(glm::vec3(-0.0f, 0.0f, dy * .005f));
-    }
-    else if(middle){
+
+    // Left
+    if (io.MouseDown[0])
+    {
         m_Camera.Translate(glm::vec3(dx * 0.01f, -dy * 0.01f, 0.0f));
     }
-    
+    else if (io.MouseDown[1])
+    {
+        m_Camera.Rotate(glm::vec3(dy * m_Camera.GetRotationSpeed(), dx * m_Camera.GetRotationSpeed(), 0.0f));
+    }
 }
 
-void Window::Scroll(float iYOffset){
-    m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 0.005f));
+void Window::Scroll(float iYOffset)
+{
+    m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 0.05f));
 }

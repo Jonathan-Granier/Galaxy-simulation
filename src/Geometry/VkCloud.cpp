@@ -3,16 +3,10 @@
 #include <iostream>
 
 //----------------------------------------------------------------------------------------------------------------------
-VkCloud::VkCloud(Device& iDevice)
+VkCloud::VkCloud(Device &iDevice)
 	: m_Device(&iDevice)
-{}
-
-//----------------------------------------------------------------------------------------------------------------------
-VkCloud::~VkCloud()
 {
-	Destroy();
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::Init()
@@ -38,23 +32,23 @@ void VkCloud::InitAxisY()
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::InitAxisZ()
 {
-	m_Cloud = Cloud::InitAxisY();
+	m_Cloud = Cloud::InitAxisZ();
 	CreateVertexBuffer(glm::vec3(0, 0, 1.0));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::Destroy()
 {
-    m_VertexBuffer.Destroy();
+	m_VertexBuffer.Destroy();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void VkCloud::CreateVertexBuffer(const glm::vec3& color)
+void VkCloud::CreateVertexBuffer(const glm::vec3 &color)
 {
 	std::vector<CloudVertex> points;
 	points.reserve(m_Cloud.Points.size());
 
-	for(const glm::vec3& curPt : m_Cloud.Points )
+	for (const glm::vec3 &curPt : m_Cloud.Points)
 	{
 		CloudVertex v;
 		v.Pos = curPt;
@@ -83,8 +77,8 @@ void VkCloud::CreateVertexBuffer(const glm::vec3& color)
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::Draw(VkCommandBuffer commandBuffer)
 {
-	VkBuffer vertexBuffers[] = { m_VertexBuffer.Buffer };
-	VkDeviceSize offsets[] = { 0 };
+	VkBuffer vertexBuffers[] = {m_VertexBuffer.Buffer};
+	VkDeviceSize offsets[] = {0};
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 	vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Cloud.Points.size()), 1, 0, 0);
 }

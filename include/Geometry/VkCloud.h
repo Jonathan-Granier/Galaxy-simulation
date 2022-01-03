@@ -11,13 +11,13 @@
 class VkCloud
 {
 public:
-	explicit VkCloud(Device& m_Device);
-	~VkCloud();
+	explicit VkCloud(Device &m_Device);
+	~VkCloud() = default;
 
-	VkCloud(const VkCloud&) = delete;
-	VkCloud(VkCloud&& ioCloud) noexcept = default;
-	VkCloud& operator=(const VkCloud&) = delete;
-	VkCloud& operator=(VkCloud&& ioCloud) noexcept = default;
+	VkCloud(const VkCloud &) = delete;
+	VkCloud(VkCloud &&ioCloud) noexcept = default;
+	VkCloud &operator=(const VkCloud &) = delete;
+	VkCloud &operator=(VkCloud &&ioCloud) noexcept = default;
 
 	void Init();
 	void InitAxisX();
@@ -30,9 +30,9 @@ public:
 private:
 	/// @brief
 	///  Allocate the cloud in the gpu memory.
-	void CreateVertexBuffer(const glm::vec3& color = glm::vec3(1.0, 0, 0));
+	void CreateVertexBuffer(const glm::vec3 &color = glm::vec3(1.0, 0, 0));
 
-	Device* m_Device;
+	Device *m_Device;
 	Cloud m_Cloud;
 
 	MemoryBuffer m_VertexBuffer;

@@ -51,7 +51,7 @@ public:
     ///  Renders the next frame.
     /// @param iView View matrix of the scene.
     /// @param iProj Projection matrix of the scene.
-    void DrawNextFrame(const glm::mat4& iView, const glm::mat4& iProj);
+    void DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj);
 
 private:
     /// Init ImGUI vulkan ressources.
@@ -103,7 +103,7 @@ private:
     ///  Updates uniform buffers.
     /// @param iView View matrix of the scene.
     /// @param iProj Projection matrix of the scene.
-    void UpdateUniformBuffers(const glm::mat4& iView, const glm::mat4& iProj);
+    void UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj);
 
     /// Vulkan device that contains instance, physical device, device and queue.
     Device m_Device;
@@ -117,8 +117,8 @@ private:
 
     /// Pipeline layout of the main render pass.
     PipelineLayout m_PipelineLayout;
-    /// Mesh pipeline.
-    CloudPipeline m_MeshPipeline;
+    /// Cloud pipeline.
+    CloudPipeline m_CloudPipeline;
 
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;
@@ -132,7 +132,7 @@ private:
     Image m_DepthBuffer;
 
     /// Mesh to draw.
-    std::unique_ptr<VkCloud> m_Mesh;
+    std::vector<VkCloud> m_Clouds;
 
     /// Maximum number of frames to calculate in parallel.
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
