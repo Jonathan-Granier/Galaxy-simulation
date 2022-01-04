@@ -12,7 +12,7 @@ layout(binding = 0) uniform ModelInfo {
 } modelUbo;
 
 void main() {
-    gl_PointSize = 3;
+    gl_PointSize = 1;
     gl_Position = modelUbo.proj * modelUbo.view * modelUbo.model * vec4(inPosition, 1.0);
     fragColor = inColor;
 }

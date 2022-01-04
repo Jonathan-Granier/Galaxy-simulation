@@ -17,20 +17,6 @@ public:
     explicit ComputePass(Device &device);
 
     /// @brief
-    ///  Destructor.
-    void Destroy();
-
-    /// @brief
-    ///  Creates the compute pass.
-    /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
-    /// @param iGalaxy Galaxy cloud.
-    /// @param iOptions  Uniform buffer of control parameters.
-    void Create(
-        VkDescriptorPool &iDescriptorPool,
-        const VkCloud &iGalaxy,
-        const UniformBuffer &iOptions);
-
-    /// @brief
     ///  Submits the command buffer to the compute queue.
     /// @param[in] iWaitSemaphore Semaphore to wait before execute the pass.
     /// @param[in] iSignalSemaphore Semaphore to signal when the execution is finished.
@@ -45,26 +31,25 @@ public:
 
 protected:
     /// @brief
-    ///  Create the pipeline layout.
-    void CreatePipelineLayout();
-
-    /// Create speed and acceleration buffer.
-    /// @param iNbPoint Number of point in Galaxy
-    void CreateBuffers(VkDeviceSize iNbPoint);
+    ///  Destructor.
+    virtual void Destroy();
 
     /// @brief
-    ///  Create the descriptors.
+    ///  Creates the compute pass.
     /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
     /// @param iGalaxy Galaxy cloud.
-    /// @param iOptions Uniform buffer of control parameters.
-    void CreateDescriptor(
-        VkDescriptorPool &iDescriptorPool,
-        const VkCloud &iGalaxy,
-        const UniformBuffer &iOptions);
+    /// @param iOptions  Uniform buffer of control parameters.
+    virtual void Create(
+        std::filesystem::path iShaderName,
+        VkDeviceSize iNbPoint);
+
+    /// @brief
+    ///  Create the pipeline layout.
+    virtual void CreatePipelineLayout() = 0;
 
     /// @brief
     ///  Create the pipeline.
-    void CreatePipeline();
+    void CreatePipeline(std::filesystem::path iShaderName);
 
     /// @brief
     ///  Create the command pool and the command buffer.
@@ -97,7 +82,4 @@ protected:
     DescriptorSet m_DescriptorSet;
     /// Compute pipeline.
     VkPipeline m_Pipeline;
-
-    MemoryBuffer m_AccelerationBuffer;
-    MemoryBuffer m_SpeedBuffer;
 };

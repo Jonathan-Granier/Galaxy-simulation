@@ -40,8 +40,8 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight) : m_Name(iN
     InitImGUI();
 
     m_Renderer = std::make_unique<Renderer>(m_Instance, m_Surface, m_Width, m_Height);
-    m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 100.0f);
-    m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -3.75f));
+    m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 1000.0f);
+    m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -100.0f));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -205,5 +205,5 @@ void Window::UpdateMouse()
 
 void Window::Scroll(float iYOffset)
 {
-    m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 0.05f));
+    m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.0f));
 }

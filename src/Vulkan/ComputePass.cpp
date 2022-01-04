@@ -15,8 +15,6 @@ ComputePass::ComputePass(Device &device)
 void ComputePass::Destroy()
 {
     m_PipelineLayout.Destroy();
-    m_AccelerationBuffer.Destroy();
-    m_SpeedBuffer.Destroy();
     vkDestroyPipeline(m_Device.GetDevice(), m_Pipeline, nullptr);
     vkDestroySemaphore(m_Device.GetDevice(), m_Semaphore, nullptr);
     vkDestroyCommandPool(m_Device.GetDevice(), m_CommandPool, nullptr);
@@ -24,107 +22,22 @@ void ComputePass::Destroy()
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ComputePass::Create(
-    VkDescriptorPool &iDescriptorPool,
-    const VkCloud &iGalaxy,
-    const UniformBuffer &iOptions)
+    std::filesystem::path iShaderName,
+    VkDeviceSize iNbPoint)
 {
-    VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
-    CreatePipelineLayout();
-    CreateBuffers(nbPoint);
-    CreateDescriptor(iDescriptorPool, iGalaxy, iOptions);
-    CreatePipeline();
+    CreatePipeline(iShaderName);
     CreateCommandPoolAndBuffer();
     CreateSemaphore();
-    BuildCommandBuffer(nbPoint);
+    BuildCommandBuffer(iNbPoint);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void ComputePass::CreatePipelineLayout()
-{
-    std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(4);
-
-    // Position storage buffer.
-    descriptorBinding[0].binding = 0;
-    descriptorBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    descriptorBinding[0].descriptorCount = 1;
-    descriptorBinding[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    descriptorBinding[0].pImmutableSamplers = nullptr;
-
-    // Acceleration storage buffer
-    descriptorBinding[1].binding = 1;
-    descriptorBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    descriptorBinding[1].descriptorCount = 1;
-    descriptorBinding[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    descriptorBinding[1].pImmutableSamplers = nullptr;
-
-    // Speed buffer.
-    descriptorBinding[2].binding = 2;
-    descriptorBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    descriptorBinding[2].descriptorCount = 1;
-    descriptorBinding[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    descriptorBinding[2].pImmutableSamplers = nullptr;
-
-    // Smoothing length
-    descriptorBinding[3].binding = 3;
-    descriptorBinding[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    descriptorBinding[3].descriptorCount = 1;
-    descriptorBinding[3].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    descriptorBinding[3].pImmutableSamplers = nullptr;
-
-    m_PipelineLayout.Create(descriptorBinding);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void ComputePass::CreateBuffers(VkDeviceSize iNbPoint)
-{
-    VkDeviceSize size = sizeof(glm::vec3) * iNbPoint;
-    m_AccelerationBuffer = m_Device.CreateMemoryBuffer(
-        iNbPoint,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    m_SpeedBuffer = m_Device.CreateMemoryBuffer(
-        iNbPoint,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void ComputePass::CreateDescriptor(
-    VkDescriptorPool &iDescriptorPool, const VkCloud &iGalaxy, const UniformBuffer &iOptions)
-{
-    m_DescriptorSet.AllocateDescriptorSets(m_PipelineLayout.GetDescriptorLayout(), iDescriptorPool);
-    //Vertex Buffer of the galaxy
-    VkDescriptorBufferInfo vertexBufferInfo{};
-    vertexBufferInfo.buffer = iGalaxy.GetVertexBuffer().Buffer;
-    vertexBufferInfo.offset = 0;
-    vertexBufferInfo.range = iGalaxy.GetVertexBuffer().Size;
-
-    // Acceleration buffer
-    VkDescriptorBufferInfo accelerationBufferInfo{};
-    accelerationBufferInfo.buffer = m_AccelerationBuffer.Buffer;
-    accelerationBufferInfo.offset = 0;
-    accelerationBufferInfo.range = m_AccelerationBuffer.Size;
-
-    // Speed buffer
-    VkDescriptorBufferInfo speedBufferInfo{};
-    speedBufferInfo.buffer = m_SpeedBuffer.Buffer;
-    speedBufferInfo.offset = 0;
-    speedBufferInfo.range = m_SpeedBuffer.Size;
-
-    m_DescriptorSet.AddWriteDescriptor(0, vertexBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-    m_DescriptorSet.AddWriteDescriptor(1, accelerationBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-    m_DescriptorSet.AddWriteDescriptor(2, speedBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-    m_DescriptorSet.AddWriteDescriptor(3, iOptions);
-    m_DescriptorSet.UpdateDescriptorSets();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void ComputePass::CreatePipeline()
+void ComputePass::CreatePipeline(std::filesystem::path iShaderName)
 {
     Shader shader(m_Device);
     std::filesystem::path shaderPath = OLYMPUS_ROOT;
-    shaderPath += "shaders/displacement_comp.spv";
+    shaderPath += "shaders" / iShaderName;
+    shaderPath += "_comp.spv";
     shader.Load(shaderPath);
 
     VkPipelineShaderStageCreateInfo shaderStageInfo{};

@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 #include "Vulkan/VulkanObject/Device.h"
 #include "Vulkan/VulkanObject/Swapchain.h"
-#include "Vulkan/ComputePass.h"
+#include "Vulkan/DisplacementPass.h"
+#include "Vulkan/AccelerationPass.h"
 #include "Vulkan/VulkanObject/PipelineLayout.h"
 #include "Vulkan/CloudPipeline.h"
 #include "Vulkan/VulkanObject/Image.h"
@@ -20,15 +21,23 @@ struct ModelInfo
     glm::mat4 Proj;
 };
 
-struct StepInfo
+struct DisplacementInfo
 {
     float step = 1.0;
+};
+
+struct AccelerationInfo
+{
+    float InteractionRate = 1.0;
+    float SmoothLenght = 1.0;
+    uint32_t NbPoint = 0;
 };
 
 struct UniformBuffers
 {
     UniformBuffer Model;
-    UniformBuffer Step;
+    UniformBuffer Displacement;
+    UniformBuffer Acceleration;
 };
 
 class Renderer
@@ -130,8 +139,11 @@ private:
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;
 
-    /// Compute Pass
-    ComputePass m_DisplacementPass;
+    // Compute Pass
+    /// Pass to compute the stars acceleration
+    AccelerationPass m_AccelerationPass;
+    /// Pass to calculate the new position and speed of each stars.
+    DisplacementPass m_DisplacementPass;
 
     /// Command pool for the graphics queue.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;

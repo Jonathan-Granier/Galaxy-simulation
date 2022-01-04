@@ -20,13 +20,14 @@ layout(std140, binding = 0) buffer Positions
 // Binding 1: Acceleration storage buffer, input
 layout(std140, binding = 1) buffer Accelerations
 {
-    vec3 accelerations[ ];
-};
+    vec4 accelerations[ ];
+}; 
 
 // Binding 2: Option uniform buffer.
 layout(binding = 2) uniform Options {
     float InteractionRate;
     float SmoothLength;
+    uint NbPoints;
 } options;
 
 
@@ -41,13 +42,13 @@ void main() {
 
     vec3 acc = vec3(0,0,0);
 
-    for(int i = 0; i < options.InteractionRate * gl_WorkGroupSize.x; i++)
+    for(int i = 0; i < options.InteractionRate * options.NbPoints; i++)
     {
         if (i != index){
             vec3 vector = positions[i].pos - positions[index].pos;
             acc += (normalize(vector) / (Norm(vector) + options.SmoothLength)) / options.InteractionRate;
         }
     }
-
-    accelerations[index] = acc;
+    acc += (1000 * normalize(-positions[index].pos)) / (Norm(positions[index].pos) + options.SmoothLength);
+    accelerations[index] = vec4(acc,0);
 }

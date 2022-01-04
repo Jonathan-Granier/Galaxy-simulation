@@ -7,10 +7,10 @@ Cloud Cloud::InitGalaxy()
 {
 
 	Cloud cloud;
-	cloud.Points.resize(5000);
+	cloud.Points.resize(20000);
 
-	float thickness = .5f;
-	float diameter = 10.0f;
+	float thickness = 5.f;
+	float diameter = 100.0f;
 
 	for (glm::vec3 &position : cloud.Points)
 	{

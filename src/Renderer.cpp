@@ -11,6 +11,7 @@ Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, 
       m_PipelineLayout(m_Device),
       m_CloudPipeline(m_Device),
       m_DepthBuffer(m_Device),
+      m_AccelerationPass(m_Device),
       m_DisplacementPass(m_Device)
 {
     CreateResources();
@@ -66,10 +67,13 @@ void Renderer::CreateSwapchainResources()
     CreateDescriptorPool();
     CreateDescriptorSets();
 
+    m_AccelerationPass.Create(m_DescriptorPool, m_Clouds[0], m_UniformBuffers.Acceleration);
+
     m_DisplacementPass.Create(
         m_DescriptorPool,
         m_Clouds[0],
-        m_UniformBuffers.Step);
+        m_UniformBuffers.Displacement,
+        m_AccelerationPass.GetAccelerationBuffer());
 
     m_ImGUI->CreateRessources(m_RenderPass);
 }
@@ -91,13 +95,15 @@ void Renderer::ReleaseSwapchainResources()
     vkDeviceWaitIdle(m_Device.GetDevice());
 
     m_ImGUI->Destroy();
-    m_DisplacementPass.Destroy();
 
+    m_DisplacementPass.Destroy();
+    m_AccelerationPass.Destroy();
     for (CommandBuffer &commandBuffer : m_CommandBuffers)
         commandBuffer.Free();
 
     m_UniformBuffers.Model.Release();
-    m_UniformBuffers.Step.Release();
+    m_UniformBuffers.Acceleration.Release();
+    m_UniformBuffers.Displacement.Release();
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
@@ -138,7 +144,8 @@ void Renderer::InitGeometry()
 void Renderer::CreateUniformBuffers()
 {
     m_UniformBuffers.Model.Init(sizeof(ModelInfo), m_Device);
-    m_UniformBuffers.Step.Init(sizeof(StepInfo), m_Device);
+    m_UniformBuffers.Displacement.Init(sizeof(DisplacementInfo), m_Device);
+    m_UniformBuffers.Acceleration.Init(sizeof(AccelerationInfo), m_Device);
 }
 
 void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj)
@@ -156,9 +163,14 @@ void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iPr
 
     m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
 
-    StepInfo stepInfo;
-    stepInfo.step = 1.;
-    m_UniformBuffers.Step.SendData(&stepInfo, sizeof(StepInfo));
+    DisplacementInfo stepInfo;
+    stepInfo.step = 0.0001f;
+    m_UniformBuffers.Displacement.SendData(&stepInfo, sizeof(DisplacementInfo));
+    AccelerationInfo accelerationInfo;
+    accelerationInfo.SmoothLenght = 1.f;
+    accelerationInfo.InteractionRate = 0.05f;
+    accelerationInfo.NbPoint = m_Clouds[0].GetCloud().Points.size();
+    m_UniformBuffers.Acceleration.SendData(&accelerationInfo, sizeof(AccelerationInfo));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -193,11 +205,11 @@ void Renderer::CreateDescriptorPool()
 {
     VkDescriptorPoolSize uniformPoolSize{};
     uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uniformPoolSize.descriptorCount = 2; // ModelInfo + StepInfo
+    uniformPoolSize.descriptorCount = 3; // ModelInfo + AccelerationInfo + DisplacementInfo
 
     VkDescriptorPoolSize storageBufferPoolSize{};
     storageBufferPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    storageBufferPoolSize.descriptorCount = 3; // Position Buffer + Acceleration buffer + Speed buffer
+    storageBufferPoolSize.descriptorCount = 5; // Position Buffer*2 + Acceleration buffer*2 + Speed buffer*1
 
     std::array<VkDescriptorPoolSize, 2> poolSizes{uniformPoolSize, storageBufferPoolSize};
 
@@ -370,7 +382,10 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
+    // TODO remove ?
     m_DisplacementPass.WaitFence();
+    m_AccelerationPass.WaitFence();
+
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
@@ -400,7 +415,7 @@ void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 
     std::array<VkPipelineStageFlags, 1> waitStages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     std::array<VkSemaphore, 1> waitSemaphores = {m_ImageAvailableSemaphores[m_CurrentFrame]};
-    std::array<VkSemaphore, 1> signalSemaphores = {m_DisplacementPass.GetSemaphore()};
+    std::array<VkSemaphore, 1> signalSemaphores = {m_AccelerationPass.GetSemaphore()};
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -417,6 +432,7 @@ void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
     VK_CHECK_RESULT(
         vkQueueSubmit(m_Device.GetGraphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrame]))
 
+    m_AccelerationPass.Process(m_AccelerationPass.GetSemaphore(), m_DisplacementPass.GetSemaphore());
     m_DisplacementPass.Process(m_DisplacementPass.GetSemaphore(), m_RenderFinishedSemaphores[m_CurrentFrame]);
 
     result = m_Swapchain.PresentNextImage(&m_RenderFinishedSemaphores[m_CurrentFrame], imageIndex);

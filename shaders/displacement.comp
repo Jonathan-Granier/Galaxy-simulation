@@ -21,13 +21,13 @@ layout(std140, binding = 0) buffer Positions
 // Binding 1: Acceleration storage buffer, input
 layout(std140, binding = 1) buffer Accelerations
 {
-    vec3 accelerations[ ];
+    vec4 accelerations[ ];
 };
 
 // Binding 2: Speed storage buffer, input
 layout(std140, binding = 2) buffer Speeds
 {
-    vec3 speeds[ ];
+    vec4 speeds[ ];
 };
 
 // Binding 2: Option uniform buffer.
@@ -39,10 +39,7 @@ layout(binding = 3) uniform Options {
 void main() {
     uint index = gl_GlobalInvocationID.x;
 
+
     speeds[index] += options.Step * accelerations[index];
-    
-    vec3 test = vec3(0.0001,0,0);
-    if(positions[index].pos.x < 0)
-        test *= -1;
-    positions[index].pos += options.Step * test;
+    positions[index].pos += options.Step * speeds[index].xyz;
 }
