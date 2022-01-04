@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/Debug.h"
 #include <imgui/imgui.h>
 
 //----------------------------------------------------------------------------------------------------------------------

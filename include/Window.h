@@ -2,7 +2,7 @@
 #include <glfw/glfw3.h>
 #include "Renderer.h"
 #include "Camera.h"
-#include "Vulkan/ImGUI.h"
+#include "Vulkan/VulkanObject/ImGUI.h"
 #include <memory>
 
 /// Main window manage with GLFW.
@@ -23,6 +23,7 @@ public:
     /// Resize the window.
     void Resize(uint32_t iWidth, uint32_t iHeight);
     void Scroll(float iYOffset);
+
 private:
     /// Create glfw's surface.
     void CreateSurface();
@@ -55,7 +56,7 @@ private:
     {
         /// Previous frame times
         std::array<float, 50> Previous{};
-        /// Maximum frame time. 
+        /// Maximum frame time.
         float Min = 9999.0f;
         /// Minimum frame time.
         float Max = 0.0f;
@@ -63,10 +64,10 @@ private:
         float Current = 0;
     } m_FrameTimes;
 
-    /// Count the number of frame. 
+    /// Count the number of frame.
     uint32_t m_FrameCounter = 0;
 
     Camera m_Camera;
-    
-    glm::vec2 m_PrevMousePos;    
+
+    glm::vec2 m_PrevMousePos;
 };

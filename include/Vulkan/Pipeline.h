@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vulkan/Device.h"
-#include "Vulkan/Shader.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/Shader.h"
 
 /// @brief
 ///  Graphics pipeline used to render a scene.

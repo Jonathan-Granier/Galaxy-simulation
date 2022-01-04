@@ -1,5 +1,5 @@
 #include "Vulkan/Pipeline.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/Debug.h"
 //----------------------------------------------------------------------------------------------------------------------
 Pipeline::Pipeline(Device &ioDevice)
     : m_Device{&ioDevice}, m_VertShader(ioDevice), m_FragShader(ioDevice)

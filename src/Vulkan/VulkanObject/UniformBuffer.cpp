@@ -1,4 +1,4 @@
-#include "Vulkan/UniformBuffer.h"
+#include "Vulkan/VulkanObject/UniformBuffer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 UniformBuffer::UniformBuffer(UniformBuffer &&ioBuffer) noexcept

@@ -1,6 +1,6 @@
-#include "Vulkan/Texture.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Texture.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 Texture::Texture(Device &iDevice)

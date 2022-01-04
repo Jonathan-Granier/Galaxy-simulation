@@ -1,5 +1,5 @@
 #pragma once
-#include "Vulkan/Device.h"
+#include "Vulkan/VulkanObject/Device.h"
 
 /// @brief
 ///  Pipeline layout used to create a pipeline.

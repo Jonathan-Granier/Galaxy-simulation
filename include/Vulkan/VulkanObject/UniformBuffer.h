@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Vulkan/MemoryBuffer.h"
-#include "Vulkan/Device.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
 #include <cstdint>
-
 
 /// @brief
 ///  Uniform buffer. Small block of data send to the shaders.

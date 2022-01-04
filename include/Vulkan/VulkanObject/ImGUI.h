@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Vulkan/Device.h"
-#include "Vulkan/Texture.h"
-#include "Vulkan/DescriptorSet.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/Texture.h"
+#include "Vulkan/VulkanObject/DescriptorSet.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 #include <array>
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Geometry/Cloud.h"
-#include "Vulkan/Device.h"
-#include "Vulkan/CommandBuffer.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 #include <glm/vec3.hpp>
 
 /// @brief

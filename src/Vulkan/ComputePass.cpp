@@ -1,7 +1,7 @@
 
 #include "Vulkan/ComputePass.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/Shader.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/Shader.h"
 #include <cmath>
 
 //----------------------------------------------------------------------------------------------------------------------

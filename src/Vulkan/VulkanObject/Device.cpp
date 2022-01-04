@@ -1,6 +1,6 @@
-#include "Vulkan/Device.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 #include <set>
 #include <stdexcept>
 #include <vector>

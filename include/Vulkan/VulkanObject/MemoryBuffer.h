@@ -1,11 +1,10 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
 #include <utility>
 #include <cstring>
 #include <iostream>
 #include <vector>
-#include "Vulkan/Device.h"
+#include "Vulkan/VulkanObject/Device.h"
 
 /// Vulkan buffer and his device memory.
 struct MemoryBuffer

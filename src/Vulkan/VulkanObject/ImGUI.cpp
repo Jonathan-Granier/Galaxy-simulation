@@ -1,7 +1,7 @@
-#include "Vulkan/ImGUI.h"
-#include "Vulkan/MemoryBuffer.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/Shader.h"
+#include "Vulkan/VulkanObject/ImGUI.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/Shader.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 ImGUI::ImGUI(Device &ioDevice)

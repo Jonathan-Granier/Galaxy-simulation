@@ -1,6 +1,6 @@
 #include <glfw/glfw3.h>
-#include "Vulkan/Instance.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/Instance.h"
+#include "Vulkan/VulkanObject/Debug.h"
 #include <vector>
 #include <cstring>
 

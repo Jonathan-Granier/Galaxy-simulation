@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Geometry/Mesh.h"
-#include "Vulkan/Device.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 
 /// @brief
 ///  Class which holds, allocates and draws a mesh.

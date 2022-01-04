@@ -1,5 +1,5 @@
-#include "Vulkan/CommandBuffer.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
+#include "Vulkan/VulkanObject/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 CommandBuffer::CommandBuffer(const Device &iDevice)

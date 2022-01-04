@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vulkan/Device.h"
+#include "Vulkan/VulkanObject/Device.h"
 
 /// @brief
 ///  Class for create and manage a command buffer.

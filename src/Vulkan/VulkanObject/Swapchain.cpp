@@ -1,6 +1,6 @@
-#include "Vulkan/Swapchain.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/Image.h"
+#include "Vulkan/VulkanObject/Swapchain.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/Image.h"
 #include <array>
 
 //----------------------------------------------------------------------------------------------------------------------

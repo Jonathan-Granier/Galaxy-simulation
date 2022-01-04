@@ -1,16 +1,16 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Vulkan/Device.h"
-#include "Vulkan/Swapchain.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/Swapchain.h"
 #include "Vulkan/ComputePass.h"
-#include "Vulkan/PipelineLayout.h"
+#include "Vulkan/VulkanObject/PipelineLayout.h"
 #include "Vulkan/CloudPipeline.h"
-#include "Vulkan/Image.h"
-#include "Vulkan/DescriptorSet.h"
-#include "Vulkan/CommandBuffer.h"
-#include "Vulkan/UniformBuffer.h"
-#include "Vulkan/ImGUI.h"
+#include "Vulkan/VulkanObject/Image.h"
+#include "Vulkan/VulkanObject/DescriptorSet.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
+#include "Vulkan/VulkanObject/UniformBuffer.h"
+#include "Vulkan/VulkanObject/ImGUI.h"
 #include "Geometry/VkCloud.h"
 
 struct ModelInfo

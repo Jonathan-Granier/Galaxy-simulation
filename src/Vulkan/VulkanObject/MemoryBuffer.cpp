@@ -1,5 +1,5 @@
-#include "Vulkan/MemoryBuffer.h"
-#include "Vulkan/CommandBuffer.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 void MemoryBuffer::Destroy()

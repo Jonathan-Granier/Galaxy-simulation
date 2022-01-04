@@ -1,6 +1,6 @@
-#include "Vulkan/DescriptorSet.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/UniformBuffer.h"
+#include "Vulkan/VulkanObject/DescriptorSet.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/UniformBuffer.h"
 //----------------------------------------------------------------------------------------------------------------------
 void DescriptorSet::Init(Device &ioDevice)
 {

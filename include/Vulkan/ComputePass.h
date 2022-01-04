@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Vulkan/PipelineLayout.h"
-#include "Vulkan/DescriptorSet.h"
-#include "Vulkan/Device.h"
-#include "Vulkan/MemoryBuffer.h"
+#include "Vulkan/VulkanObject/PipelineLayout.h"
+#include "Vulkan/VulkanObject/DescriptorSet.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/MemoryBuffer.h"
 #include "Geometry/VkCloud.h"
 
 /// @brief

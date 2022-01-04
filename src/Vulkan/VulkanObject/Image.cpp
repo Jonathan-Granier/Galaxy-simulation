@@ -1,6 +1,6 @@
-#include "Vulkan/Image.h"
-#include "Vulkan/Debug.h"
-#include "Vulkan/CommandBuffer.h"
+#include "Vulkan/VulkanObject/Image.h"
+#include "Vulkan/VulkanObject/Debug.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
 //----------------------------------------------------------------------------------------------------------------------
 Image::Image(Device &iDevice)
     : m_Device(iDevice)

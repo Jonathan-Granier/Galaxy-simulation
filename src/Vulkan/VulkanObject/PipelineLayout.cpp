@@ -1,5 +1,5 @@
-#include "Vulkan/PipelineLayout.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/PipelineLayout.h"
+#include "Vulkan/VulkanObject/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 PipelineLayout::PipelineLayout(Device &device)

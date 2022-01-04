@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Vulkan/Debug.h"
+#include "Vulkan/VulkanObject/Debug.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <chrono>

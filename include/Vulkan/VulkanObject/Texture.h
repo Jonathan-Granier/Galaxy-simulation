@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Vulkan/CommandBuffer.h"
-#include "Vulkan/Device.h"
-#include "Vulkan/Image.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/Image.h"
 
 ///  Class which holds and manage a image like a texture. (Not working).
 class Texture

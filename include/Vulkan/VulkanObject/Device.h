@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vulkan/Instance.h"
+#include "Vulkan/VulkanObject/Instance.h"
 #include <vulkan/vulkan.h>
 #include <optional>
 #include <vector>
@@ -138,7 +138,7 @@ private:
     /// Command pool allocate by device.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 
-    /// Multisample anti-aliasing. 
+    /// Multisample anti-aliasing.
     VkSampleCountFlagBits m_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
     /// Device extensions.

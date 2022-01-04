@@ -1,6 +1,6 @@
 #pragma once
-#include "Vulkan/Device.h"
-#include "Vulkan/CommandBuffer.h"
+#include "Vulkan/VulkanObject/Device.h"
+#include "Vulkan/VulkanObject/CommandBuffer.h"
 
 /// @brief
 ///  Class for create and manage a vulkan image.
@@ -70,7 +70,7 @@ public:
     /// @param[in] iOldLayout Old image's layout.
     /// @param[in] iNewLayout New image's layout.
     void TransitionImageLayout(VkImageLayout iOldLayout, VkImageLayout iNewLayout);
-    
+
     VkImage GetImage() { return m_Image; }
     VkImageView GetImageView() { return m_ImageView; }
     uint32_t GetWidth() const { return m_Width; }
