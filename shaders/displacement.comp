@@ -1,0 +1,48 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout (local_size_x = 256) in;
+
+struct Vertex
+{
+    vec3 pos;
+    float pad1;
+    vec3 color;
+    int pad2;
+};
+
+
+// Binding 0 : Position of point in Galaxy, output
+layout(std140, binding = 0) buffer Positions
+{
+    Vertex positions[ ];
+};
+
+// Binding 1: Acceleration storage buffer, input
+layout(std140, binding = 1) buffer Accelerations
+{
+    vec3 accelerations[ ];
+};
+
+// Binding 2: Speed storage buffer, input
+layout(std140, binding = 2) buffer Speeds
+{
+    vec3 speeds[ ];
+};
+
+// Binding 2: Option uniform buffer.
+layout(binding = 3) uniform Options {
+    float Step;
+} options;
+
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+
+    speeds[index] += options.Step * accelerations[index];
+    
+    vec3 test = vec3(0.0001,0,0);
+    if(positions[index].pos.x < 0)
+        test *= -1;
+    positions[index].pos += options.Step * test;
+}

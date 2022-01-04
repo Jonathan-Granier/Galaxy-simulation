@@ -64,4 +64,7 @@ struct MemoryBuffer
     VkBuffer Buffer = VK_NULL_HANDLE;
     /// Mapped memory.
     void *Mapped = nullptr;
+
+    /// Buffer Size;
+    VkDeviceSize Size = 0;
 };

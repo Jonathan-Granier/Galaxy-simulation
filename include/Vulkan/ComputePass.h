@@ -1,0 +1,103 @@
+#pragma once
+
+#include "Vulkan/PipelineLayout.h"
+#include "Vulkan/DescriptorSet.h"
+#include "Vulkan/Device.h"
+#include "Vulkan/MemoryBuffer.h"
+#include "Geometry/VkCloud.h"
+
+/// @brief
+///  Compute pass for the compute star position.
+class ComputePass
+{
+public:
+    /// @brief
+    ///  Constructor.
+    /// @param ioDevice Device to initialize the compute pass with.
+    explicit ComputePass(Device &device);
+
+    /// @brief
+    ///  Destructor.
+    void Destroy();
+
+    /// @brief
+    ///  Creates the compute pass.
+    /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
+    /// @param iGalaxy Galaxy cloud.
+    /// @param iOptions  Uniform buffer of control parameters.
+    void Create(
+        VkDescriptorPool &iDescriptorPool,
+        const VkCloud &iGalaxy,
+        const UniformBuffer &iOptions);
+
+    /// @brief
+    ///  Submits the command buffer to the compute queue.
+    /// @param[in] iWaitSemaphore Semaphore to wait before execute the pass.
+    /// @param[in] iSignalSemaphore Semaphore to signal when the execution is finished.
+    void Process(VkSemaphore iWaitSemaphore, VkSemaphore iSignalSemaphore);
+
+    /// @brief
+    /// Wait the fence of the compute pass.
+    void WaitFence();
+
+    VkSemaphore GetSemaphore() { return m_Semaphore; }
+    VkCommandBuffer GetCommandBuffer() { return m_CommandBuffer; }
+
+protected:
+    /// @brief
+    ///  Create the pipeline layout.
+    void CreatePipelineLayout();
+
+    /// Create speed and acceleration buffer.
+    /// @param iNbPoint Number of point in Galaxy
+    void CreateBuffers(VkDeviceSize iNbPoint);
+
+    /// @brief
+    ///  Create the descriptors.
+    /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
+    /// @param iGalaxy Galaxy cloud.
+    /// @param iOptions Uniform buffer of control parameters.
+    void CreateDescriptor(
+        VkDescriptorPool &iDescriptorPool,
+        const VkCloud &iGalaxy,
+        const UniformBuffer &iOptions);
+
+    /// @brief
+    ///  Create the pipeline.
+    void CreatePipeline();
+
+    /// @brief
+    ///  Create the command pool and the command buffer.
+    void CreateCommandPoolAndBuffer();
+    /// @brief
+    /// Create the sempahore and the fence used for the sync.
+    void CreateSemaphore();
+
+    /// @brief
+    ///  Build the command buffer.
+    /// @param iWidth VertexIndexImage width.
+    /// @param iHeight VertexIndexImage height.
+    void BuildCommandBuffer(VkDeviceSize iNbPoint);
+
+    /// Vulkan device.
+    Device &m_Device;
+
+    /// Command pool for the compute queue.
+    VkCommandPool m_CommandPool;
+    /// Command buffer storing the dispatch commands and barriers.
+    VkCommandBuffer m_CommandBuffer;
+    /// Execution dependency between compute & graphic submission.
+    VkSemaphore m_Semaphore;
+    /// Synchronisation GPU/CPU. Need to find a better solution.
+    VkFence m_Fence;
+
+    /// Layout of the compute pipeline.
+    PipelineLayout m_PipelineLayout;
+    /// Descriptor of the compute pass.
+    DescriptorSet m_DescriptorSet;
+    /// Compute pipeline.
+    VkPipeline m_Pipeline;
+
+    MemoryBuffer m_AccelerationBuffer;
+    MemoryBuffer m_SpeedBuffer;
+};

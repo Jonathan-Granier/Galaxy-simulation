@@ -164,13 +164,13 @@ target_include_directories(
 
 add_subdirectory(extern)
 add_subdirectory(extern/glm)
-   
+     
 set(
     OLYMPUS_LINKER_FLAGS 
 
     ${OLYMPUS_LINKER_FLAGS}
     GLFW 
-    ImGui 
+    ImGui  
     glm::glm
 )  
 

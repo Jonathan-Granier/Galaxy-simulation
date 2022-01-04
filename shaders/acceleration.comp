@@ -1,0 +1,53 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout (local_size_x = 256) in;
+
+struct Vertex
+{
+    vec3 pos;
+    float pad1;
+    vec3 color;
+    int pad2;
+};
+
+// Binding 0 : Position of point in Galaxy, input
+layout(std140, binding = 0) buffer Positions
+{
+    Vertex positions[ ];
+};
+
+// Binding 1: Acceleration storage buffer, input
+layout(std140, binding = 1) buffer Accelerations
+{
+    vec3 accelerations[ ];
+};
+
+// Binding 2: Option uniform buffer.
+layout(binding = 2) uniform Options {
+    float InteractionRate;
+    float SmoothLength;
+} options;
+
+
+float Norm(vec3 vector)
+{
+	return pow(vector.x, 2) + pow(vector.y, 2) + pow(vector.z, 2);
+}
+
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+
+    vec3 acc = vec3(0,0,0);
+
+    for(int i = 0; i < options.InteractionRate * gl_WorkGroupSize.x; i++)
+    {
+        if (i != index){
+            vec3 vector = positions[i].pos - positions[index].pos;
+            acc += (normalize(vector) / (Norm(vector) + options.SmoothLength)) / options.InteractionRate;
+        }
+    }
+
+    accelerations[index] = acc;
+}

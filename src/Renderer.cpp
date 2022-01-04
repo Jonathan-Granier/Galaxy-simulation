@@ -10,7 +10,8 @@ Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, 
       m_Swapchain(m_Device, iWidth, iHeight),
       m_PipelineLayout(m_Device),
       m_CloudPipeline(m_Device),
-      m_DepthBuffer(m_Device)
+      m_DepthBuffer(m_Device),
+      m_DisplacementPass(m_Device)
 {
     CreateResources();
 }
@@ -65,6 +66,11 @@ void Renderer::CreateSwapchainResources()
     CreateDescriptorPool();
     CreateDescriptorSets();
 
+    m_DisplacementPass.Create(
+        m_DescriptorPool,
+        m_Clouds[0],
+        m_UniformBuffers.Step);
+
     m_ImGUI->CreateRessources(m_RenderPass);
 }
 
@@ -85,11 +91,13 @@ void Renderer::ReleaseSwapchainResources()
     vkDeviceWaitIdle(m_Device.GetDevice());
 
     m_ImGUI->Destroy();
+    m_DisplacementPass.Destroy();
 
     for (CommandBuffer &commandBuffer : m_CommandBuffers)
         commandBuffer.Free();
 
     m_UniformBuffers.Model.Release();
+    m_UniformBuffers.Step.Release();
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
@@ -130,6 +138,7 @@ void Renderer::InitGeometry()
 void Renderer::CreateUniformBuffers()
 {
     m_UniformBuffers.Model.Init(sizeof(ModelInfo), m_Device);
+    m_UniformBuffers.Step.Init(sizeof(StepInfo), m_Device);
 }
 
 void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj)
@@ -143,13 +152,13 @@ void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iPr
     modelUbo.Model = glm::mat4(1.0);
     modelUbo.View = iView;
     modelUbo.Proj = iProj;
-    //modelUbo.Model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    // modelUbo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    // modelUbo.Proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_Swapchain.GetImageSize().width) / static_cast<float>(m_Swapchain.GetImageSize().height), 0.1f, 10.0f);
     modelUbo.Proj[1][1] *= -1;
 
     m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
+
+    StepInfo stepInfo;
+    stepInfo.step = 1.;
+    m_UniformBuffers.Step.SendData(&stepInfo, sizeof(StepInfo));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -184,9 +193,13 @@ void Renderer::CreateDescriptorPool()
 {
     VkDescriptorPoolSize uniformPoolSize{};
     uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uniformPoolSize.descriptorCount = 1; // ModelInfo
+    uniformPoolSize.descriptorCount = 2; // ModelInfo + StepInfo
 
-    std::array<VkDescriptorPoolSize, 1> poolSizes{uniformPoolSize};
+    VkDescriptorPoolSize storageBufferPoolSize{};
+    storageBufferPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    storageBufferPoolSize.descriptorCount = 3; // Position Buffer + Acceleration buffer + Speed buffer
+
+    std::array<VkDescriptorPoolSize, 2> poolSizes{uniformPoolSize, storageBufferPoolSize};
 
     VkDescriptorPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -357,6 +370,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
+    m_DisplacementPass.WaitFence();
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
@@ -386,7 +400,7 @@ void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 
     std::array<VkPipelineStageFlags, 1> waitStages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     std::array<VkSemaphore, 1> waitSemaphores = {m_ImageAvailableSemaphores[m_CurrentFrame]};
-    std::array<VkSemaphore, 1> signalSemaphores = {m_RenderFinishedSemaphores[m_CurrentFrame]};
+    std::array<VkSemaphore, 1> signalSemaphores = {m_DisplacementPass.GetSemaphore()};
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -402,6 +416,8 @@ void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 
     VK_CHECK_RESULT(
         vkQueueSubmit(m_Device.GetGraphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrame]))
+
+    m_DisplacementPass.Process(m_DisplacementPass.GetSemaphore(), m_RenderFinishedSemaphores[m_CurrentFrame]);
 
     result = m_Swapchain.PresentNextImage(&m_RenderFinishedSemaphores[m_CurrentFrame], imageIndex);
 

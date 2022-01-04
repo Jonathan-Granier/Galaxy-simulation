@@ -27,6 +27,9 @@ public:
 	void Destroy();
 	void Draw(VkCommandBuffer commandBuffer);
 
+	const MemoryBuffer &GetVertexBuffer() const { return m_VertexBuffer; }
+	const Cloud &GetCloud() const { return m_Cloud; }
+
 private:
 	/// @brief
 	///  Allocate the cloud in the gpu memory.

@@ -272,6 +272,6 @@ MemoryBuffer Device::CreateMemoryBuffer(
     VK_CHECK_RESULT(vkBindBufferMemory(m_Device, buffer.Buffer, buffer.Memory, 0));
 
     buffer.Device = this;
-
+    buffer.Size = iSize;
     return buffer;
 }

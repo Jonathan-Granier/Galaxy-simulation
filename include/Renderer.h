@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "Vulkan/Device.h"
 #include "Vulkan/Swapchain.h"
+#include "Vulkan/ComputePass.h"
 #include "Vulkan/PipelineLayout.h"
 #include "Vulkan/CloudPipeline.h"
 #include "Vulkan/Image.h"
@@ -19,9 +20,15 @@ struct ModelInfo
     glm::mat4 Proj;
 };
 
+struct StepInfo
+{
+    float step = 1.0;
+};
+
 struct UniformBuffers
 {
     UniformBuffer Model;
+    UniformBuffer Step;
 };
 
 class Renderer
@@ -122,6 +129,9 @@ private:
 
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;
+
+    /// Compute Pass
+    ComputePass m_DisplacementPass;
 
     /// Command pool for the graphics queue.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
