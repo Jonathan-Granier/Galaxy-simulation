@@ -69,7 +69,7 @@ void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy)
 
     for (const glm::vec3 &position : iGalaxy.GetCloud().Points)
     {
-        glm::vec3 speed = glm::normalize(glm::cross(position, glm::vec3(0.f, 1.f, 0.f) * 10.0f));
+        glm::vec3 speed = glm::normalize(glm::cross(position, glm::vec3(0.f, 1.f, 0.f))) * 20.0f;
         speeds.emplace_back(glm::vec4(speed, 0));
     }
 

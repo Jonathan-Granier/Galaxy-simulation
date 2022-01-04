@@ -39,7 +39,6 @@ layout(binding = 3) uniform Options {
 void main() {
     uint index = gl_GlobalInvocationID.x;
 
-
     speeds[index] += options.Step * accelerations[index];
     positions[index].pos += options.Step * speeds[index].xyz;
 }
