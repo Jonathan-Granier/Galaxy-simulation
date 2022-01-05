@@ -2,6 +2,7 @@
 #include <glfw/glfw3.h>
 #include "Renderer.h"
 #include "Camera.h"
+#include "Menu.h"
 #include "Vulkan/VulkanObject/ImGUI.h"
 #include <memory>
 
@@ -30,12 +31,8 @@ private:
     /// Destroy glfw's surface.
     void DestroySurface();
 
-    /// Init ImGUI, the UI overlay.
-    void InitImGUI();
-    /// Update ImGUI (use during render loop).
-    void UpdateImGUI();
-
     void UpdateMouse();
+
     /// GLFW window.
     GLFWwindow *m_Window = nullptr;
     /// Window's name
@@ -68,6 +65,6 @@ private:
     uint32_t m_FrameCounter = 0;
 
     Camera m_Camera;
-
+    Menu m_Menu;
     glm::vec2 m_PrevMousePos;
 };
