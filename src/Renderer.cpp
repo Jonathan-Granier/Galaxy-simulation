@@ -27,9 +27,22 @@ void Renderer::CreateResources()
     m_MainPassDescriptor.Init(m_Device);
 
     InitGeometry();
+    CreatePipelineLayout();
     CreateSwapchainResources();
+
+    CreateUniformBuffers();
+    CreateDescriptorPool();
+    CreateDescriptorSets();
+
+    m_AccelerationPass.Create(m_DescriptorPool, m_Clouds[0], m_UniformBuffers.Acceleration);
+
+    m_DisplacementPass.Create(
+        m_DescriptorPool,
+        m_Clouds[0],
+        m_UniformBuffers.Displacement,
+        m_AccelerationPass.GetAccelerationBuffer());
+
     CreateSyncObjects();
-    CreateCommandBuffers();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -37,6 +50,16 @@ void Renderer::ReleaseResources()
 {
     std::cout << "Release ressources" << std::endl;
     ReleaseSwapchainResources();
+
+    m_DisplacementPass.Destroy();
+    m_AccelerationPass.Destroy();
+    m_UniformBuffers.Model.Release();
+    m_UniformBuffers.Acceleration.Release();
+    m_UniformBuffers.Displacement.Release();
+
+    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
+
+    m_PipelineLayout.Destroy();
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
     {
@@ -61,21 +84,9 @@ void Renderer::CreateSwapchainResources()
 
     m_Swapchain.CreateFrameBuffers(m_RenderPass, m_DepthBuffer.GetImageView());
 
-    CreatePipelineLayout();
-    CreatePipeline();
-    CreateUniformBuffers();
-    CreateDescriptorPool();
-    CreateDescriptorSets();
-
-    m_AccelerationPass.Create(m_DescriptorPool, m_Clouds[0], m_UniformBuffers.Acceleration);
-
-    m_DisplacementPass.Create(
-        m_DescriptorPool,
-        m_Clouds[0],
-        m_UniformBuffers.Displacement,
-        m_AccelerationPass.GetAccelerationBuffer());
-
     m_ImGUI->CreateRessources(m_RenderPass);
+    CreatePipeline();
+    CreateCommandBuffers();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -86,29 +97,20 @@ void Renderer::RecreateSwapchainResources(uint32_t iWidth, uint32_t iHeight)
 
     m_Swapchain.Init(iWidth, iHeight);
     CreateSwapchainResources();
-    CreateCommandBuffers(); // TODO Move ?
 }
+
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::ReleaseSwapchainResources()
 {
     std::cout << "Release swapchain ressources" << std::endl;
     vkDeviceWaitIdle(m_Device.GetDevice());
 
+    m_CloudPipeline.Destroy();
     m_ImGUI->Destroy();
 
-    m_DisplacementPass.Destroy();
-    m_AccelerationPass.Destroy();
     for (CommandBuffer &commandBuffer : m_CommandBuffers)
         commandBuffer.Free();
 
-    m_UniformBuffers.Model.Release();
-    m_UniformBuffers.Acceleration.Release();
-    m_UniformBuffers.Displacement.Release();
-
-    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
-
-    m_CloudPipeline.Destroy();
-    m_PipelineLayout.Destroy();
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
     m_DepthBuffer.Destroy();
     m_Swapchain.Destroy();
@@ -129,15 +131,11 @@ void Renderer::CreateCommandBuffers()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::InitGeometry()
 {
-    m_Clouds.reserve(4);
-    // m_Clouds.emplace_back(m_Device);
-    // m_Clouds.back().InitAxisX();
-    // m_Clouds.emplace_back(m_Device);
-    // m_Clouds.back().InitAxisY();
-    // m_Clouds.emplace_back(m_Device);
-    // m_Clouds.back().InitAxisZ();
+    m_Clouds.reserve(1);
     m_Clouds.emplace_back(m_Device);
     m_Clouds.back().Init();
+
+    m_AccelerationInfo.NbPoint = m_Clouds[0].GetCloud().Points.size();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -163,14 +161,8 @@ void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iPr
 
     m_UniformBuffers.Model.SendData(&modelUbo, sizeof(ModelInfo));
 
-    DisplacementInfo stepInfo;
-    stepInfo.step = 0.0001f;
-    m_UniformBuffers.Displacement.SendData(&stepInfo, sizeof(DisplacementInfo));
-    AccelerationInfo accelerationInfo;
-    accelerationInfo.SmoothLenght = 1.f;
-    accelerationInfo.InteractionRate = 0.05f;
-    accelerationInfo.NbPoint = m_Clouds[0].GetCloud().Points.size();
-    m_UniformBuffers.Acceleration.SendData(&accelerationInfo, sizeof(AccelerationInfo));
+    m_UniformBuffers.Displacement.SendData(&m_DisplacementInfo, sizeof(DisplacementInfo));
+    m_UniformBuffers.Acceleration.SendData(&m_AccelerationInfo, sizeof(AccelerationInfo));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

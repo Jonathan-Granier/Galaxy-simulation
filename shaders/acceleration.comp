@@ -25,6 +25,7 @@ layout(std140, binding = 1) buffer Accelerations
 
 // Binding 2: Option uniform buffer.
 layout(binding = 2) uniform Options {
+    float BlackHoleMass;
     float InteractionRate;
     float SmoothLength;
     uint NbPoints;
@@ -49,6 +50,6 @@ void main() {
             acc += (normalize(vector) / (Norm(vector) + options.SmoothLength)) / options.InteractionRate;
         }
     }
-    acc += (1000 * normalize(-positions[index].pos)) / (Norm(positions[index].pos) + options.SmoothLength);
+    acc += (options.BlackHoleMass * normalize(-positions[index].pos)) / (Norm(positions[index].pos) + options.SmoothLength);
     accelerations[index] = vec4(acc,0);
 }

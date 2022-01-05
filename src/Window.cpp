@@ -41,6 +41,7 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
     CreateSurface();
 
     m_Renderer = std::make_unique<Renderer>(m_Instance, m_Surface, m_Width, m_Height);
+
     m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 1000.0f);
     m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -100.0f));
 }
@@ -68,6 +69,8 @@ void Window::Run()
         auto tStart = std::chrono::high_resolution_clock::now();
         UpdateMouse();
         m_Menu.UpdateMenu();
+        UpdateParameters();
+
         m_Renderer->DrawNextFrame(m_Camera.GetViewMatrix(), m_Camera.GetPerspectiveMatrix());
 
         auto tEnd = std::chrono::high_resolution_clock::now();
@@ -135,6 +138,14 @@ void Window::UpdateMouse()
     }
 }
 
+void Window::UpdateParameters()
+{
+    m_Renderer->SetStep(m_Menu.GetRealTimeParameters().Step);
+    m_Renderer->SetInteractionRate(m_Menu.GetRealTimeParameters().InteractionRate);
+    m_Renderer->SetSmoothLenght(m_Menu.GetRealTimeParameters().SmoothingLenght);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void Window::Scroll(float iYOffset)
 {
     m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.f));

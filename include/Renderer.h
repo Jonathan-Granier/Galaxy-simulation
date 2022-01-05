@@ -14,32 +14,6 @@
 #include "Vulkan/VulkanObject/ImGUI.h"
 #include "Geometry/VkCloud.h"
 
-struct ModelInfo
-{
-    glm::mat4 Model;
-    glm::mat4 View;
-    glm::mat4 Proj;
-};
-
-struct DisplacementInfo
-{
-    float step = 1.0;
-};
-
-struct AccelerationInfo
-{
-    float InteractionRate = 1.0;
-    float SmoothLenght = 1.0;
-    uint32_t NbPoint = 0;
-};
-
-struct UniformBuffers
-{
-    UniformBuffer Model;
-    UniformBuffer Displacement;
-    UniformBuffer Acceleration;
-};
-
 class Renderer
 {
 public:
@@ -53,6 +27,7 @@ public:
 
     ///  Create Vulkan resources.
     void CreateResources();
+
     ///  Releases Vulkan resources.
     void ReleaseResources();
 
@@ -68,6 +43,10 @@ public:
     /// @param iView View matrix of the scene.
     /// @param iProj Projection matrix of the scene.
     void DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj);
+
+    void SetStep(float iStep) { m_DisplacementInfo.Step = iStep; };
+    void SetInteractionRate(float iInteractionRate) { m_AccelerationInfo.InteractionRate = iInteractionRate; };
+    void SetSmoothLenght(float iSmoothLenght) { m_AccelerationInfo.SmoothLenght = iSmoothLenght; };
 
 private:
     /// Init ImGUI vulkan ressources.
@@ -170,9 +149,34 @@ private:
     /// Current frame index in the swapchain
     size_t m_CurrentFrame = 0;
 
-    /// Uniform buffers.
-    UniformBuffers m_UniformBuffers;
-
     /// ImGUI
     std::unique_ptr<ImGUI> m_ImGUI;
+
+    struct ModelInfo
+    {
+        glm::mat4 Model;
+        glm::mat4 View;
+        glm::mat4 Proj;
+    };
+
+    struct DisplacementInfo
+    {
+        float Step = 0;
+    } m_DisplacementInfo;
+
+    struct AccelerationInfo
+    {
+        float BlackHoleMass = 1000.0;
+        float InteractionRate = 0;
+        float SmoothLenght = 0;
+        uint32_t NbPoint = 0;
+    } m_AccelerationInfo;
+
+    /// Uniform buffers.
+    struct UniformBuffers
+    {
+        UniformBuffer Model;
+        UniformBuffer Displacement;
+        UniformBuffer Acceleration;
+    } m_UniformBuffers;
 };

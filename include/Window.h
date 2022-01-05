@@ -32,7 +32,7 @@ private:
     void DestroySurface();
 
     void UpdateMouse();
-
+    void UpdateParameters();
     /// GLFW window.
     GLFWwindow *m_Window = nullptr;
     /// Window's name

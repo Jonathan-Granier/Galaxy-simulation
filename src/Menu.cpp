@@ -42,60 +42,65 @@ Menu::~Menu()
 //----------------------------------------------------------------------------------------------------------------------
 void Menu::UpdateMenu()
 {
-    ImGui::NewFrame();
+    if (m_Visible)
+    {
+        ImGui::NewFrame();
 
-    ImGui::Begin("Simulation settings (F1 to hide)");
-    ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.9f);
+        ImGui::Begin("Simulation settings (F1 to hide)");
+        ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.9f);
 
-    AddTitle("Real time settings");
+        AddTitle("Real time settings");
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The time step duration");
-    ImGui::SliderFloat("##Step", &m_RealTimeParameters.Step, 0.0001f, 0.1f, "%.4f", ImGuiSliderFlags_Logarithmic);
+        ImGui::Text("The time step duration");
+        ImGui::SliderFloat("##Step", &m_RealTimeParameters.Step, 0.0001f, 0.1f, "%.4f", ImGuiSliderFlags_Logarithmic);
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The smoothing length");
-    ImGui::SliderFloat("##SmoothingLength", &m_RealTimeParameters.SmoothingLenght, 0.001f, 1.f, NULL, ImGuiSliderFlags_Logarithmic);
+        ImGui::Text("The smoothing length");
+        ImGui::SliderFloat("##SmoothingLength", &m_RealTimeParameters.SmoothingLenght, 0.001f, 1.f, NULL, ImGuiSliderFlags_Logarithmic);
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The interaction rate");
-    ImGui::SliderFloat("##InteractionRate", &m_RealTimeParameters.InteractionRate, 0.001f, 1.f, "%.3f", ImGuiSliderFlags_Logarithmic);
+        ImGui::Text("The interaction rate");
+        ImGui::SliderFloat("##InteractionRate", &m_RealTimeParameters.InteractionRate, 0.001f, 1.f, "%.3f", ImGuiSliderFlags_Logarithmic);
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    AddTitle("Start settings");
+        AddTitle("Start settings");
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    // Init imGui windows and elements
-    ImGui::Text("The number of stars");
-    ImGui::SliderInt("##NbStars", &m_GalaxyParameters.NbStars, 1000, 1000000, NULL, ImGuiSliderFlags_Logarithmic);
+        // Init imGui windows and elements
+        ImGui::Text("The number of stars");
+        ImGui::SliderInt("##NbStars", &m_GalaxyParameters.NbStars, 1000, 1000000, NULL, ImGuiSliderFlags_Logarithmic);
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The diameter of the galaxy");
-    ImGui::SliderFloat("##GalaxyDiameter", &m_GalaxyParameters.Diameter, 10.f, 1000.f, "%.0f");
+        ImGui::Text("The diameter of the galaxy");
+        ImGui::SliderFloat("##GalaxyDiameter", &m_GalaxyParameters.Diameter, 10.f, 1000.f, "%.0f");
 
-    ImGui::Text("The thickness of the galaxy");
-    ImGui::SliderFloat("##GalaxyThickness", &m_GalaxyParameters.Thickness, 1.f, 100.f, "%.0f");
+        ImGui::Text("The thickness of the galaxy");
+        ImGui::SliderFloat("##GalaxyThickness", &m_GalaxyParameters.Thickness, 1.f, 100.f, "%.0f");
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The initial speed of the stars");
-    ImGui::SliderFloat("##StarsSpeed", &m_GalaxyParameters.StarsSpeed, 0.f, 500.f, "%.1f");
+        ImGui::Text("The initial speed of the stars");
+        ImGui::SliderFloat("##StarsSpeed", &m_GalaxyParameters.StarsSpeed, 0.f, 500.f, "%.1f");
 
-    ImGui::NewLine();
+        ImGui::NewLine();
 
-    ImGui::Text("The mass of the black hole");
-    ImGui::SliderFloat("##BlackHoleMass", &m_GalaxyParameters.BlackHoleMass, 100.f, 1000000.f, "%.0f", ImGuiSliderFlags_Logarithmic);
+        ImGui::Text("The mass of the black hole");
+        ImGui::SliderFloat("##BlackHoleMass", &m_GalaxyParameters.BlackHoleMass, 100.f, 1000000.f, "%.0f", ImGuiSliderFlags_Logarithmic);
 
-    ImGui::End();
+        m_Active = ImGui::IsWindowFocused();
 
-    // Render to generate draw buffers
-    ImGui::Render();
+        ImGui::End();
+
+        // Render to generate draw buffers
+        ImGui::Render();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
