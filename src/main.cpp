@@ -2,7 +2,7 @@
 
 int main()
 {
-    Window window("Olympus", 800, 600);
+    Window window("Olympus", 1200, 800);
     window.Run();
     return 0;
 }

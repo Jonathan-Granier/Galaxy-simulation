@@ -1,6 +1,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <array>
+#include <chrono>
+
 class Menu
 {
 public:
@@ -15,7 +19,7 @@ public:
 
     struct RealTimeParameters
     {
-        float Step = 0.001;
+        float Step = 0.0001;
         float SmoothingLenght = 1.0f;
         float InteractionRate = 0.05f;
     };
@@ -29,14 +33,25 @@ public:
     const GalaxyParameters &GetGalaxyParameters() { return m_GalaxyParameters; }
     const RealTimeParameters &GetRealTimeParameters() { return m_RealTimeParameters; }
 
-    bool IsActive() { return m_Active; }
+    bool IsActive() const { return m_Active; }
     void SetVisible(bool iIsVisible) { m_Visible = iIsVisible; }
+    bool IsVisible() const { return m_Visible; }
+    bool IsRestart() const { return m_Restart; }
 
 private:
     void AddTitle(const std::string &iTitle);
+    std::vector<bool> CenteredButtons(const std::vector<std::string> iTexts, float iButtonsHeight, float iSpacesSize);
+    void UpdateFPS();
 
     bool m_Active = false;
     bool m_Visible = true;
+    bool m_Restart = false;
     GalaxyParameters m_GalaxyParameters;
     RealTimeParameters m_RealTimeParameters;
+
+    int m_FrameCounter = 0;
+    std::array<float, 50> m_FPS{0};
+    float m_MaxFPS = 0;
+    float m_MinFPS = 9999.0f;
+    std::chrono::_V2::system_clock::time_point m_Start;
 };

@@ -14,11 +14,12 @@ void DisplacementPass::Create(
     VkDescriptorPool &iDescriptorPool,
     const VkCloud &iGalaxy,
     const UniformBuffer &iOptions,
-    const MemoryBuffer &iAccelerationBuffer)
+    const MemoryBuffer &iAccelerationBuffer,
+    float iInitialSpeed)
 {
     VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
     CreatePipelineLayout();
-    CreateBuffers(iGalaxy);
+    CreateBuffers(iGalaxy, iInitialSpeed);
     CreateDescriptor(iDescriptorPool, iGalaxy, iOptions, iAccelerationBuffer);
     ComputePass::Create("displacement", nbPoint);
 }
@@ -60,7 +61,7 @@ void DisplacementPass::CreatePipelineLayout()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy)
+void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy, float iInitialSpeed)
 {
 
     VkDeviceSize bufferSize = sizeof(glm::vec4) * iGalaxy.GetCloud().Points.size();
@@ -69,7 +70,7 @@ void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy)
 
     for (const glm::vec3 &position : iGalaxy.GetCloud().Points)
     {
-        glm::vec3 speed = glm::normalize(glm::cross(position, glm::vec3(0.f, 1.f, 0.f))) * 20.0f;
+        glm::vec3 speed = glm::normalize(glm::cross(position, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed;
         speeds.emplace_back(glm::vec4(speed, 0));
     }
 
@@ -82,7 +83,7 @@ void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy)
 
     m_SpeedBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
     m_SpeedBuffer.CopyFrom(stagingBuffer.Buffer, bufferSize);

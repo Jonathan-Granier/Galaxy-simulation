@@ -9,9 +9,9 @@ VkCloud::VkCloud(Device &iDevice)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void VkCloud::Init()
+void VkCloud::Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness)
 {
-	m_Cloud = Cloud::InitGalaxy();
+	m_Cloud = Cloud::InitGalaxy(iNbStars, iGalaxyDiameters, iGalaxyThickness);
 	CreateVertexBuffer(glm::vec3(0.0, 0, 1.0));
 }
 

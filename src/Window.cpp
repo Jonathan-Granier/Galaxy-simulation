@@ -2,6 +2,7 @@
 #include "Vulkan/VulkanObject/Debug.h"
 #include <imgui/imgui.h>
 
+// TODO percent of max size.
 //----------------------------------------------------------------------------------------------------------------------
 static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
 {
@@ -13,6 +14,12 @@ static void ScrollCallBack(GLFWwindow *window, double xoffset, double yoffset)
 {
     auto app = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
     app->Scroll(yoffset);
+}
+
+static void KeyCallBack(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    auto app = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
+    app->KeyInput(key, action);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29,6 +36,7 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
     glfwSetWindowUserPointer(m_Window, this);
     glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
     glfwSetScrollCallback(m_Window, ScrollCallBack);
+    glfwSetKeyCallback(m_Window, KeyCallBack);
 
     uint32_t glfwExtensionCount = 0;
     const char **glfwExtensions;
@@ -41,9 +49,15 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
     CreateSurface();
 
     m_Renderer = std::make_unique<Renderer>(m_Instance, m_Surface, m_Width, m_Height);
+    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars,
+                                 m_Menu.GetGalaxyParameters().Diameter,
+                                 m_Menu.GetGalaxyParameters().Thickness,
+                                 m_Menu.GetGalaxyParameters().StarsSpeed,
+                                 m_Menu.GetGalaxyParameters().BlackHoleMass);
 
     m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 1000.0f);
-    m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -100.0f));
+    m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -150.0f));
+    m_Camera.SetRotation(glm::vec3(60.0f, 0.0f, 0.0f));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -63,11 +77,14 @@ void Window::Run()
 {
     while (!glfwWindowShouldClose(m_Window))
     {
+        if (m_Menu.IsRestart())
+            Restart();
+
         m_FrameCounter++;
         if (m_FrameCounter >= 100)
             m_FrameCounter = 0;
         auto tStart = std::chrono::high_resolution_clock::now();
-        UpdateMouse();
+        MouseInteraction();
         m_Menu.UpdateMenu();
         UpdateParameters();
 
@@ -113,7 +130,7 @@ void Window::Resize(uint32_t iWidth, uint32_t iHeight)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Window::UpdateMouse()
+void Window::MouseInteraction()
 {
 
     double xpos, ypos;
@@ -146,7 +163,29 @@ void Window::UpdateParameters()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void Window::Restart()
+{
+    m_Renderer->ReleaseGalaxy();
+    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars,
+                                 m_Menu.GetGalaxyParameters().Diameter,
+                                 m_Menu.GetGalaxyParameters().Thickness,
+                                 m_Menu.GetGalaxyParameters().StarsSpeed,
+                                 m_Menu.GetGalaxyParameters().BlackHoleMass);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void Window::Scroll(float iYOffset)
 {
     m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.f));
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Window::KeyInput(int iKey, int iAction)
+{
+
+    if (iKey == GLFW_KEY_F1 && iAction == GLFW_RELEASE)
+    {
+        std::cout << "Key press" << std::endl;
+        m_Menu.SetVisible(!m_Menu.IsVisible());
+    }
 }

@@ -3,20 +3,17 @@
 #include "MathHelper.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-Cloud Cloud::InitGalaxy()
+Cloud Cloud::InitGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness)
 {
 
 	Cloud cloud;
-	cloud.Points.resize(20000);
-
-	float thickness = 5.f;
-	float diameter = 100.0f;
+	cloud.Points.resize(iNbStars);
 
 	for (glm::vec3 &position : cloud.Points)
 	{
-		position = Spherical(RandomFloat(0.0f, diameter * 0.5f), RandomFloat(0.0, 2 * PI), RandomFloat(0.0f, PI));
+		position = Spherical(RandomFloat(0.0f, iGalaxyDiameters * 0.5f), RandomFloat(0.0, 2 * PI), RandomFloat(0.0f, PI));
 
-		position.y *= thickness / diameter;
+		position.y *= iGalaxyThickness / iGalaxyDiameters;
 	}
 	return cloud;
 }

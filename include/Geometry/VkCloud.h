@@ -19,7 +19,7 @@ public:
 	VkCloud &operator=(const VkCloud &) = delete;
 	VkCloud &operator=(VkCloud &&ioCloud) noexcept = default;
 
-	void Init();
+	void Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness);
 	void InitAxisX();
 	void InitAxisY();
 	void InitAxisZ();

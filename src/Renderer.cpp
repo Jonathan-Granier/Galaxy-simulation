@@ -26,21 +26,10 @@ void Renderer::CreateResources()
 
     m_MainPassDescriptor.Init(m_Device);
 
-    InitGeometry();
     CreatePipelineLayout();
     CreateSwapchainResources();
 
     CreateUniformBuffers();
-    CreateDescriptorPool();
-    CreateDescriptorSets();
-
-    m_AccelerationPass.Create(m_DescriptorPool, m_Clouds[0], m_UniformBuffers.Acceleration);
-
-    m_DisplacementPass.Create(
-        m_DescriptorPool,
-        m_Clouds[0],
-        m_UniformBuffers.Displacement,
-        m_AccelerationPass.GetAccelerationBuffer());
 
     CreateSyncObjects();
 }
@@ -51,13 +40,10 @@ void Renderer::ReleaseResources()
     std::cout << "Release ressources" << std::endl;
     ReleaseSwapchainResources();
 
-    m_DisplacementPass.Destroy();
-    m_AccelerationPass.Destroy();
+    ReleaseGalaxy();
     m_UniformBuffers.Model.Release();
     m_UniformBuffers.Acceleration.Release();
     m_UniformBuffers.Displacement.Release();
-
-    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
 
     m_PipelineLayout.Destroy();
 
@@ -68,10 +54,43 @@ void Renderer::ReleaseResources()
         vkDestroyFence(m_Device.GetDevice(), m_InFlightFences[i], nullptr);
     }
 
+    m_Device.Destroy();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Renderer::InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness, float iInitialSpeed, float iBlackHoleMass)
+{
+    CreateDescriptorPool();
+    CreateDescriptorSets();
+
+    VkCloud &galaxy = m_Clouds.emplace_back(m_Device);
+    galaxy.Init(iNbStars, iGalaxyDiameters, iGalaxyThickness);
+
+    m_AccelerationInfo.NbPoint = galaxy.GetCloud().Points.size();
+    m_AccelerationInfo.BlackHoleMass = iBlackHoleMass;
+
+    m_AccelerationPass.Create(m_DescriptorPool, galaxy, m_UniformBuffers.Acceleration);
+
+    m_DisplacementPass.Create(
+        m_DescriptorPool,
+        galaxy,
+        m_UniformBuffers.Displacement,
+        m_AccelerationPass.GetAccelerationBuffer(), iInitialSpeed);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void Renderer::ReleaseGalaxy()
+{
+    vkDeviceWaitIdle(m_Device.GetDevice());
+
+    m_DisplacementPass.Destroy();
+    m_AccelerationPass.Destroy();
+
+    vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
+
     for (VkCloud &c : m_Clouds)
         c.Destroy();
-
-    m_Device.Destroy();
+    m_Clouds.clear();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -126,16 +145,6 @@ void Renderer::CreateCommandBuffers()
     {
         m_CommandBuffers.emplace_back(m_Device);
     }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void Renderer::InitGeometry()
-{
-    m_Clouds.reserve(1);
-    m_Clouds.emplace_back(m_Device);
-    m_Clouds.back().Init();
-
-    m_AccelerationInfo.NbPoint = m_Clouds[0].GetCloud().Points.size();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

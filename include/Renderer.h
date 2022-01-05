@@ -31,6 +31,17 @@ public:
     ///  Releases Vulkan resources.
     void ReleaseResources();
 
+    /// Initialize Galaxy and ComputePass.
+    /// @param iNbStars Number of stars in galaxy.
+    /// @param iGalaxyDiameter Galaxy's diamater.
+    /// @param iGalaxyThickness Galaxy's thickness.
+    /// @param iInitialSpeed Stars' initial speed.
+    /// @param iBlackHoleMass Mass of the black hole in the center of the galaxy.
+    void InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness, float iInitialSpeed, float iBlackHoleMass);
+
+    /// Release Galaxy and ComputePass.
+    void ReleaseGalaxy();
+
     ///  Recreates swapchain resources.
     /// @param iWidth New swapchain width.
     /// @param iHeight New swapchain height.

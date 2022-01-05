@@ -21,9 +21,20 @@ public:
 
     /// Run render loop.
     void Run();
+
     /// Resize the window.
+    /// @param iWidth Window's width.
+    /// @param iHeight Window's heigth.
     void Resize(uint32_t iWidth, uint32_t iHeight);
+
+    /// Manage mouse scroll.
+    /// @param iYOffset Scroll offset.
     void Scroll(float iYOffset);
+
+    /// Manage Key input.
+    /// @param iKey Key noticed
+    /// @param iAction Key is press, repeat or release.
+    void KeyInput(int iKey, int iAction);
 
 private:
     /// Create glfw's surface.
@@ -31,8 +42,14 @@ private:
     /// Destroy glfw's surface.
     void DestroySurface();
 
-    void UpdateMouse();
+    /// Update mouse position
+    void MouseInteraction();
+
+    /// Update real time parameters.
     void UpdateParameters();
+
+    void Restart();
+
     /// GLFW window.
     GLFWwindow *m_Window = nullptr;
     /// Window's name
