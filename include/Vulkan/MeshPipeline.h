@@ -10,7 +10,7 @@ public:
     /// @brief
     ///  Constructor.
     /// @param iDevice Device to initialize the mesh pipeline with.
-    explicit MeshPipeline(Device &iDevice);
+    explicit MeshPipeline(const Device &iDevice);
 
     /// @brief
     ///  Sets the mode to display the meshes' polygons with.

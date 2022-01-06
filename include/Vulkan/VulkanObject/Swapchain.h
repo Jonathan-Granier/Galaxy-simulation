@@ -9,10 +9,10 @@ class Swapchain
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the swapchain with.
+    /// @param iDevice Device to initialize the swapchain with.
     /// @param iWidth Width of the surface to draw.
     /// @param iHeight Height of the surface to draw.
-    Swapchain(Device &ioDevice, uint32_t iWidth, uint32_t iHeight);
+    Swapchain(const Device &iDevice, uint32_t iWidth, uint32_t iHeight);
 
     /// @brief
     ///  Destructor.
@@ -95,7 +95,7 @@ private:
     void CreateImageViews();
 
     /// Vulkan device.
-    Device &m_Device;
+    const Device &m_Device;
 
     /// Vulkan Swapchain.
     VkSwapchainKHR m_Swapchain;

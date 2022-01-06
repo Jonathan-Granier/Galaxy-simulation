@@ -22,7 +22,7 @@ public:
     /// @param iSurface Vulkan surface to initialize the device with.
     /// @param iWidth Swapchain width.
     /// @param iHeight Swapchain height.
-    Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight);
+    Renderer(const Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight);
     ~Renderer() = default;
 
     ///  Create Vulkan resources.

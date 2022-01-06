@@ -1,7 +1,7 @@
 #include "Vulkan/MeshPipeline.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-MeshPipeline::MeshPipeline(Device &iDevice)
+MeshPipeline::MeshPipeline(const Device &iDevice)
     : Pipeline(iDevice)
 {
 }

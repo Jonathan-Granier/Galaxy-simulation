@@ -3,7 +3,7 @@
 #include "Vulkan/VulkanObject/MemoryBuffer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-Texture::Texture(Device &iDevice)
+Texture::Texture(const Device &iDevice)
     : m_Device(iDevice),
       m_Image(iDevice)
 {

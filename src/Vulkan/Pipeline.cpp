@@ -1,26 +1,11 @@
 #include "Vulkan/Pipeline.h"
 #include "Vulkan/VulkanObject/Debug.h"
 //----------------------------------------------------------------------------------------------------------------------
-Pipeline::Pipeline(Device &ioDevice)
-    : m_Device{&ioDevice}, m_VertShader(ioDevice), m_FragShader(ioDevice)
+Pipeline::Pipeline(const Device &iDevice)
+    : m_Device(iDevice),
+      m_VertShader(iDevice),
+      m_FragShader(iDevice)
 {
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-Pipeline::Pipeline(Pipeline &&ioPipeline) noexcept
-    : m_Device{ioPipeline.m_Device}, m_Pipeline{std::exchange(ioPipeline.m_Pipeline, {VK_NULL_HANDLE})}, m_VertShader(std::move(ioPipeline.m_VertShader)), m_FragShader(std::move(ioPipeline.m_FragShader))
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-Pipeline &Pipeline::operator=(Pipeline &&ioPipeline) noexcept
-{
-    m_Device = ioPipeline.m_Device;
-    std::swap(m_Pipeline, ioPipeline.m_Pipeline);
-    std::swap(m_VertShader, ioPipeline.m_VertShader);
-    std::swap(m_FragShader, ioPipeline.m_FragShader);
-
-    return *this;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -101,7 +86,7 @@ void Pipeline::Create(
     VkPipelineMultisampleStateCreateInfo multisampling{};
     multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     multisampling.sampleShadingEnable = VK_FALSE;
-    multisampling.rasterizationSamples = m_Device->GetMaxUsableSampleCount();
+    multisampling.rasterizationSamples = m_Device.GetMaxUsableSampleCount();
     //multisampling.minSampleShading = .2f;
 
     std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments = GetColorBlendAttachment(iAttachmentCount);
@@ -146,7 +131,7 @@ void Pipeline::Create(
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
     VK_CHECK_RESULT(vkCreateGraphicsPipelines(
-        m_Device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline))
+        m_Device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline))
 
     m_FragShader.Destroy();
     m_VertShader.Destroy();
@@ -158,6 +143,6 @@ void Pipeline::Destroy()
     if (m_Pipeline == VK_NULL_HANDLE)
         return;
 
-    vkDestroyPipeline(m_Device->GetDevice(), m_Pipeline, nullptr);
+    vkDestroyPipeline(m_Device.GetDevice(), m_Pipeline, nullptr);
     m_Pipeline = VK_NULL_HANDLE;
 }

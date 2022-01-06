@@ -14,7 +14,8 @@ class DescriptorSet
 public:
     /// @brief
     ///  Constructor.
-    DescriptorSet() = default;
+    /// @param iDevice Device to initialize the descriptor with.
+    DescriptorSet(const Device &iDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -39,11 +40,6 @@ public:
     DescriptorSet &operator=(DescriptorSet &&) noexcept = default;
 
     const VkDescriptorSet &GetDescriptorSet(std::size_t iSetIndex = 0) const { return m_DescriptorSets[iSetIndex]; }
-
-    /// @brief
-    ///  Initialize the descriptor.
-    /// @param ioDevice Device to initialize the descriptor with.
-    void Init(Device &ioDevice);
 
     /// @brief
     ///  Allocate a set of descriptor with the same layout.
@@ -91,5 +87,5 @@ private:
     /// Storage buffer information used by update.
     std::vector<VkDescriptorBufferInfo> m_BufferInfos{};
     /// Vulkan device.
-    Device *m_Device{};
+    const Device m_Device;
 };

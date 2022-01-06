@@ -3,7 +3,7 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 VkMesh::VkMesh(Device &iDevice)
-    : m_Device(&iDevice)
+    : m_Device(iDevice)
 {
 }
 
@@ -45,14 +45,14 @@ void VkMesh::CreateVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Vertices[0]) * m_Mesh.Vertices.size();
 
-    MemoryBuffer stagingBuffer = m_Device->CreateMemoryBuffer(
+    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
     stagingBuffer.TransferDataInBuffer(m_Mesh.Vertices, bufferSize);
 
-    m_VertexBuffer = m_Device->CreateMemoryBuffer(
+    m_VertexBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -66,14 +66,14 @@ void VkMesh::CreateIndexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Indices[0]) * m_Mesh.Indices.size();
 
-    MemoryBuffer stagingBuffer = m_Device->CreateMemoryBuffer(
+    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
     stagingBuffer.TransferDataInBuffer(m_Mesh.Indices, bufferSize);
 
-    m_IndexBuffer = m_Device->CreateMemoryBuffer(
+    m_IndexBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);

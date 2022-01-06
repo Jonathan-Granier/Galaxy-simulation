@@ -6,8 +6,8 @@
 #include <vector>
 
 //----------------------------------------------------------------------------------------------------------------------
-Device::Device(Instance &ioInstance, VkSurfaceKHR iSurface)
-    : m_Instance(ioInstance), m_Surface(iSurface)
+Device::Device(const Instance &iInstance, VkSurfaceKHR iSurface)
+    : m_Instance(iInstance), m_Surface(iSurface)
 {
     PickPhysicalDevice();
     CreateLogicalDevice();

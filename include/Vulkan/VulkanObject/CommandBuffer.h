@@ -7,43 +7,35 @@
 class CommandBuffer
 {
 public:
-    /// @brief
     ///  Constructor.
-    /// @param iDevice Device to initialize the command buffer with.
+    /// @param[in] iDevice Device to initialize the command buffer with.
     CommandBuffer(const Device &iDevice);
 
-    /// @brief
     ///  Deleted copy constructor.
     CommandBuffer(const CommandBuffer &) = delete;
 
-    /// @brief
     ///  Move constructor.
-    /// @param ioBuffer Buffer to be moved.
-    CommandBuffer(CommandBuffer &&ioBuffer) noexcept;
+    /// @param[in,out] ioBuffer Buffer to be moved.
+    CommandBuffer(CommandBuffer &&ioBuffer) noexcept = default;
 
-    /// @brief
     ///  Destructor.
     ~CommandBuffer() { Free(); }
 
-    /// @brief
     /// Deleted copy assignment operator.
     /// @return Reference to the current buffer.
     CommandBuffer &operator=(const CommandBuffer &) = delete;
 
-    /// @brief
     ///  Move assignment operator.
-    /// @param ioBuffer Buffer to be moved.
+    /// @param[in,out] ioBuffer Buffer to be moved.
     /// @return Reference to the current buffer.
-    CommandBuffer &operator=(CommandBuffer &&ioBuffer) noexcept;
+    CommandBuffer &operator=(CommandBuffer &&ioBuffer) noexcept = default;
 
     const VkCommandBuffer &GetBuffer() const { return m_CommandBuffer; }
 
-    /// @brief
     ///  Begin a record on the command buffer.
     /// @param[in] iFlags Specifying usage behavior for the command buffer.
-    void Begin(VkCommandBufferUsageFlags iFlags = 0) const;
+    void Begin(VkCommandBufferUsageFlags iFlags = 0);
 
-    /// @brief
     ///  Copy a buffer to a another buffer.
     /// @param[in] iSrcBuffer Buffer to copy.
     /// @param[in] iDstBuffer Destination buffer.
@@ -51,18 +43,15 @@ public:
     /// @param[in] iSrcOffset Offset of the source buffer.
     /// @param[in] iDstOffset Offset of the destination buffer.
     void CopyBuffer(
-        VkBuffer iSrcBuffer, VkBuffer iDstBuffer, uint64_t iSize, uint64_t iSrcOffset = 0, uint64_t iDstOffset = 0) const;
+        VkBuffer iSrcBuffer, VkBuffer iDstBuffer, uint64_t iSize, uint64_t iSrcOffset = 0, uint64_t iDstOffset = 0);
 
-    /// @brief
     ///  End the record on the command buffer.
-    void End() const;
+    void End();
 
-    /// @brief
     ///  End and run the command buffer with the given queue.
     /// @param[in] iQueue Queue to submit the buffer.
-    void EndAndRun(VkQueue iQueue) const;
+    void EndAndRun(VkQueue iQueue);
 
-    /// @brief
     ///  Free the command buffer.
     void Free();
 
@@ -70,5 +59,5 @@ private:
     /// Command buffer.
     VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
     /// Vulkan device.
-    const Device *m_Device{};
+    const Device &m_Device;
 };

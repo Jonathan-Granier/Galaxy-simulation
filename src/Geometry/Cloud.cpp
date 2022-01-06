@@ -52,7 +52,7 @@ Cloud Cloud::InitAxisZ()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Cloud::Translate(glm::vec3 &iVector)
+void Cloud::Translate(const glm::vec3 &iVector)
 {
 	for (glm::vec3 &point : Points)
 	{

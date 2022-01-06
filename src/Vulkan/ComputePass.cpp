@@ -5,10 +5,11 @@
 #include <cmath>
 
 //----------------------------------------------------------------------------------------------------------------------
-ComputePass::ComputePass(Device &device)
-    : m_Device(device), m_PipelineLayout(device)
+ComputePass::ComputePass(const Device &iDevice)
+    : m_Device(iDevice),
+      m_PipelineLayout(iDevice),
+      m_DescriptorSet(iDevice)
 {
-    m_DescriptorSet.Init(device);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

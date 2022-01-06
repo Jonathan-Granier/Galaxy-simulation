@@ -45,7 +45,7 @@ void MemoryBuffer::Flush(VkDeviceSize iDataSize, VkDeviceSize iOffset)
 //----------------------------------------------------------------------------------------------------------------------
 void MemoryBuffer::CopyFrom(VkBuffer iSrcBuffer, VkDeviceSize iSize) const
 {
-    const CommandBuffer commandBuffer(*Device);
+    CommandBuffer commandBuffer(*Device);
 
     commandBuffer.Begin();
     commandBuffer.CopyBuffer(iSrcBuffer, Buffer, iSize, 0, 0);

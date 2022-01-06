@@ -2,25 +2,9 @@
 #include "Vulkan/VulkanObject/Debug.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-PipelineLayout::PipelineLayout(Device &device)
-    : m_Device{&device}
+PipelineLayout::PipelineLayout(const Device &iDevice)
+    : m_Device(iDevice)
 {
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-PipelineLayout::PipelineLayout(PipelineLayout &&ioLayout) noexcept
-    : m_Device{ioLayout.m_Device}, m_Layout{std::exchange(ioLayout.m_Layout, {VK_NULL_HANDLE})}, m_DescLayout{std::exchange(ioLayout.m_DescLayout, {VK_NULL_HANDLE})}
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-PipelineLayout &PipelineLayout::operator=(PipelineLayout &&ioLayout) noexcept
-{
-    m_Device = ioLayout.m_Device;
-    std::swap(m_Layout, ioLayout.m_Layout);
-    std::swap(m_DescLayout, ioLayout.m_DescLayout);
-
-    return *this;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28,13 +12,13 @@ void PipelineLayout::Destroy()
 {
     if (m_DescLayout != VK_NULL_HANDLE)
     {
-        vkDestroyDescriptorSetLayout(m_Device->GetDevice(), m_DescLayout, nullptr);
+        vkDestroyDescriptorSetLayout(m_Device.GetDevice(), m_DescLayout, nullptr);
         m_DescLayout = VK_NULL_HANDLE;
     }
 
     if (m_Layout != VK_NULL_HANDLE)
     {
-        vkDestroyPipelineLayout(m_Device->GetDevice(), m_Layout, nullptr);
+        vkDestroyPipelineLayout(m_Device.GetDevice(), m_Layout, nullptr);
         m_Layout = VK_NULL_HANDLE;
     }
 }
@@ -49,7 +33,7 @@ void PipelineLayout::Create(const std::vector<VkDescriptorSetLayoutBinding> &iDe
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pSetLayouts = nullptr;
         VK_CHECK_RESULT(vkCreatePipelineLayout(
-            m_Device->GetDevice(), &pipelineLayoutInfo, nullptr, &m_Layout))
+            m_Device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_Layout))
     }
     else
     {
@@ -59,13 +43,13 @@ void PipelineLayout::Create(const std::vector<VkDescriptorSetLayoutBinding> &iDe
         layoutInfo.pBindings = iDescLayoutBinding.data();
 
         VK_CHECK_RESULT(vkCreateDescriptorSetLayout(
-            m_Device->GetDevice(), &layoutInfo, nullptr, &m_DescLayout))
+            m_Device.GetDevice(), &layoutInfo, nullptr, &m_DescLayout))
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 1;
         pipelineLayoutInfo.pSetLayouts = &m_DescLayout;
         VK_CHECK_RESULT(vkCreatePipelineLayout(
-            m_Device->GetDevice(), &pipelineLayoutInfo, nullptr, &m_Layout))
+            m_Device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_Layout))
     }
 }

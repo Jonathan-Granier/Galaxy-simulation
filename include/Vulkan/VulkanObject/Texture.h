@@ -11,7 +11,7 @@ public:
     /// @brief
     ///  Constructor.
     /// @param iDevice Device to initialize the texture with.
-    explicit Texture(Device &iDevice);
+    explicit Texture(const Device &iDevice);
     /// Destructor.
     ~Texture();
 
@@ -34,7 +34,7 @@ protected:
     void CreateSampler(float iMaxAnisotropy = 1.0f);
 
     /// Vulkan device.
-    Device &m_Device;
+    const Device &m_Device;
     /// Vulkan Image.
     Image m_Image;
     /// Associate sampler.

@@ -9,15 +9,13 @@
 class UniformBuffer
 {
 public:
-    /// @brief
     /// Constructor.
     UniformBuffer() = default;
 
-    /// @brief
     ///  Constructor.
+    /// @param[in] iDevice Device to initialize the buffer with.
     /// @param[in] iSize Size of the buffer.
-    /// @param[in] iFactory Buffer factory used for allocate and destroy the buffer.
-    UniformBuffer(uint64_t iSize, const Device &iDevice) { Init(iSize, iDevice); }
+    UniformBuffer(const Device &iDevice, uint64_t iSize) { Init(iSize, iDevice); }
 
     /// @brief
     ///  Deleted copy constructor.
@@ -25,9 +23,9 @@ public:
 
     /// @brief
     ///  Move constructor.
-    /// @param ioBuffer Buffer to be moved.
+    /// @param[in] ioBuffer Buffer to be moved.
     UniformBuffer(UniformBuffer &&ioBuffer) noexcept;
-    ~UniformBuffer() { Release(); }
+    ~UniformBuffer() { Destroy(); }
 
     /// @brief
     /// Deleted copy assignment operator.
@@ -43,13 +41,11 @@ public:
     const MemoryBuffer &GetMemoryBuffer() const { return m_Buffer; }
     uint64_t GetSize() const { return m_Size; }
 
-    /// @brief
     ///  Initialize the buffer.
     /// @param[in] iSize Size of the buffer.
     /// @param[in] iDevice Device used for allocate the buffer.
     void Init(uint64_t iSize, const Device &iDevice);
 
-    /// @brief
     ///  Send data to the buffer.
     /// @tparam T Type of the data.
     /// @param[in] iData Data to send to the buffer.
@@ -61,16 +57,14 @@ public:
         m_Buffer.TransferDataInBuffer(iData, iDataSize, iOffset);
     }
 
-    /// @brief
     ///  Release the buffer.
-    void Release() { m_Buffer.Destroy(); }
+    void Destroy() { m_Buffer.Destroy(); }
 
 private:
     /// Buffer.
     MemoryBuffer m_Buffer{};
     /// Buffer size.
     uint64_t m_Size{0};
-
     /// Vulkan Device.
     const Device *m_Device{};
 };

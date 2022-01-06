@@ -2,7 +2,7 @@
 #include "Vulkan/VulkanObject/Debug.h"
 #include "Vulkan/VulkanObject/CommandBuffer.h"
 //----------------------------------------------------------------------------------------------------------------------
-Image::Image(Device &iDevice)
+Image::Image(const Device &iDevice)
     : m_Device(iDevice)
 {
 }
@@ -43,7 +43,7 @@ void Image::Destroy()
 
 //----------------------------------------------------------------------------------------------------------------------
 VkImageView Image::CreateImageView(
-    Device &iDevice, VkImage iImage, VkFormat iFormat, VkImageAspectFlags iAspectFlags, uint32_t iMipLevels)
+    const Device &iDevice, VkImage iImage, VkFormat iFormat, VkImageAspectFlags iAspectFlags, uint32_t iMipLevels)
 {
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

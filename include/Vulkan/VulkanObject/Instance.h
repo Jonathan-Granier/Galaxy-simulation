@@ -8,6 +8,9 @@ class Instance
 public:
     /// Constructor.
     Instance() = default;
+
+    /// Destroy vulkan instance.
+    void Destroy();
     /// Create vulkan instance.
     /// @param iAppName Name of the application.
     /// @param iEnabledExtensionNames Extension to activate.
@@ -19,12 +22,10 @@ public:
 
     /// Setup validation layer.
     void SetupDebugMessenger();
-    /// Destroy vulkan instance.
-    void Destroy();
 
     /// Get vulkan instance.
     /// @return Vulkan instance.
-    VkInstance &GetVkInstance() { return m_Instance; }
+    const VkInstance &GetVkInstance() const { return m_Instance; }
 
 private:
     /// Vulkan instance

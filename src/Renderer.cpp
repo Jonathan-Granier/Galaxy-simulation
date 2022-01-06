@@ -5,14 +5,15 @@
 #include <chrono>
 
 //----------------------------------------------------------------------------------------------------------------------
-Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
+Renderer::Renderer(const Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
     : m_Device(iInstance, iSurface),
       m_Swapchain(m_Device, iWidth, iHeight),
       m_PipelineLayout(m_Device),
       m_CloudPipeline(m_Device),
       m_DepthBuffer(m_Device),
       m_AccelerationPass(m_Device),
-      m_IntegrationPass(m_Device)
+      m_IntegrationPass(m_Device),
+      m_MainPassDescriptor(m_Device)
 {
     CreateResources();
 }
@@ -23,8 +24,6 @@ void Renderer::CreateResources()
     std::cout << "Create ressources" << std::endl;
 
     m_ImGUI = std::make_unique<ImGUI>(m_Device);
-
-    m_MainPassDescriptor.Init(m_Device);
 
     CreatePipelineLayout();
     CreateSwapchainResources();
@@ -41,9 +40,9 @@ void Renderer::ReleaseResources()
     ReleaseSwapchainResources();
 
     ReleaseGalaxy();
-    m_UniformBuffers.Model.Release();
-    m_UniformBuffers.Acceleration.Release();
-    m_UniformBuffers.Displacement.Release();
+    m_UniformBuffers.Model.Destroy();
+    m_UniformBuffers.Acceleration.Destroy();
+    m_UniformBuffers.Displacement.Destroy();
 
     m_PipelineLayout.Destroy();
 
@@ -104,7 +103,7 @@ void Renderer::CreateSwapchainResources()
 
     m_Swapchain.CreateFrameBuffers(m_RenderPass, m_DepthBuffer.GetImageView());
 
-    m_ImGUI->CreateRessources(m_RenderPass);
+    m_ImGUI->CreateResources(m_RenderPass);
     CreatePipeline();
     CreateCommandBuffers();
 }
@@ -337,7 +336,7 @@ void Renderer::CreateSyncObjects()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::BuildCommandBuffer(uint32_t iIndex)
 {
-    const CommandBuffer &commandBuffer = m_CommandBuffers[iIndex];
+    CommandBuffer &commandBuffer = m_CommandBuffers[iIndex];
     commandBuffer.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
     const VkExtent2D imageSize = m_Swapchain.GetImageSize();

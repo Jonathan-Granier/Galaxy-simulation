@@ -4,9 +4,10 @@
 #include "Vulkan/VulkanObject/Shader.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-ImGUI::ImGUI(Device &ioDevice)
-    : m_Device(ioDevice),
-      m_FontTexture(m_Device)
+ImGUI::ImGUI(const Device &iDevice)
+    : m_Device(iDevice),
+      m_FontTexture(iDevice),
+      m_DescriptorSet(iDevice)
 {
 }
 
@@ -29,7 +30,7 @@ void ImGUI::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void ImGUI::CreateRessources(VkRenderPass iRenderPass)
+void ImGUI::CreateResources(VkRenderPass iRenderPass)
 {
     ImGuiIO &io = ImGui::GetIO();
 
@@ -230,7 +231,6 @@ void ImGUI::CreateDescriptors()
     descriptorLayout.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
 
     VK_CHECK_RESULT(vkCreateDescriptorSetLayout(m_Device.GetDevice(), &descriptorLayout, nullptr, &m_DescriptorSetLayout));
-    m_DescriptorSet.Init(m_Device);
     m_DescriptorSet.AllocateDescriptorSets(m_DescriptorSetLayout, m_DescriptorPool, 1);
     m_DescriptorSet.AddWriteDescriptor(0, m_FontTexture.GetDescriptor(), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 0);
     m_DescriptorSet.UpdateDescriptorSets();

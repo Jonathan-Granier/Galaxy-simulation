@@ -9,8 +9,8 @@ class Image
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the image with.
-    explicit Image(Device &device);
+    /// @param iDevice Device to initialize the image with.
+    explicit Image(const Device &iDevice);
 
     /// @brief
     ///  Destructor.
@@ -35,7 +35,7 @@ public:
     /// @param[in] iAspectFlags Specifying which aspect(s) of the image are included in the view.
     /// @param[in] iMipLevels First mipmap level accessible to the view.
     static VkImageView CreateImageView(
-        Device &iDevice, VkImage iImage, VkFormat iFormat, VkImageAspectFlags iAspectFlags, uint32_t iMipLevels = 1);
+        const Device &iDevice, VkImage iImage, VkFormat iFormat, VkImageAspectFlags iAspectFlags, uint32_t iMipLevels = 1);
 
     /// @brief
     ///  Create the image image view of the image.
@@ -79,7 +79,7 @@ public:
 
 protected:
     /// Vulkan device
-    Device &m_Device;
+    const Device &m_Device;
     /// Image's width.
     uint32_t m_Width;
     /// Image's height.

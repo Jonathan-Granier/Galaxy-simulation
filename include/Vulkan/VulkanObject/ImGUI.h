@@ -19,12 +19,14 @@ public:
         glm::vec2 translate;
     } pushConstBlock;
 
-    ImGUI(Device &ioDevice);
+    /// Constructor.
+    /// @param iDevice Device to initialize ImGUI resources with.
+    ImGUI(const Device &iDevice);
 
     ~ImGUI();
 
     // Initialize all Vulkan resources used by the ui
-    void CreateRessources(VkRenderPass iRenderPass);
+    void CreateResources(VkRenderPass iRenderPass);
 
     ///  Destroys the all vulkan resources object.
     void Destroy();
@@ -39,7 +41,7 @@ private:
     void CreateDescriptors();
     void CreatePipeline(VkRenderPass renderPass);
     // Vulkan resources for rendering the UI
-    Device &m_Device;
+    const Device &m_Device;
 
     /// Texture (Image + Sampler) to store the ImGUI Font.
     Texture m_FontTexture;

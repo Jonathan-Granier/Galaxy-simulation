@@ -4,8 +4,8 @@
 #include <array>
 
 //----------------------------------------------------------------------------------------------------------------------
-Swapchain::Swapchain(Device &ioDevice, uint32_t iWidth, uint32_t iHeight)
-    : m_Device(ioDevice), m_Width(iWidth), m_Height(iHeight)
+Swapchain::Swapchain(const Device &iDevice, uint32_t iWidth, uint32_t iHeight)
+    : m_Device(iDevice), m_Width(iWidth), m_Height(iHeight)
 {
     InitPFNvkFunction();
     CreateSwapchain();

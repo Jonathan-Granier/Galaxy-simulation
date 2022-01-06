@@ -8,8 +8,8 @@ class PipelineLayout
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the pipeline layout with.
-    explicit PipelineLayout(Device &device);
+    /// @param iDevice Device to initialize the pipeline layout with.
+    explicit PipelineLayout(const Device &iDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -18,7 +18,7 @@ public:
     /// @brief
     ///  Move constructor.
     /// @param ioPipeline Pipeline layout to be moved.
-    PipelineLayout(PipelineLayout &&ioLayout) noexcept;
+    PipelineLayout(PipelineLayout &&ioLayout) noexcept = default;
 
     /// @brief
     ///  Destructor.
@@ -33,7 +33,7 @@ public:
     ///  Move assignment operator.
     /// @param ioPipeline Pipeline layout to be moved.
     /// @return Reference to the current pipeline layout.
-    PipelineLayout &operator=(PipelineLayout &&ioLayout) noexcept;
+    PipelineLayout &operator=(PipelineLayout &&ioLayout) noexcept = default;
 
     VkPipelineLayout GetLayout() { return m_Layout; }
     VkDescriptorSetLayout GetDescriptorLayout() { return m_DescLayout; }
@@ -48,7 +48,7 @@ public:
 
 private:
     /// Vulkan device.
-    Device *m_Device;
+    const Device &m_Device;
     /// Pipeline layout.
     VkPipelineLayout m_Layout = VK_NULL_HANDLE;
     /// Descriptor layout corresponding to the pipeline layout.

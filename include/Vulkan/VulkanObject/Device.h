@@ -36,9 +36,9 @@ public:
 
     /// @brief
     ///  Constructs the device, recovering Vulkan functions.
-    /// @param ioInstance Vulkan instance to initialize the device with.
+    /// @param iInstance Vulkan instance to initialize the device with.
     /// @param iSurface Vulkan surface to initialise the device with.
-    explicit Device(Instance &ioInstance, VkSurfaceKHR iSurface);
+    explicit Device(const Instance &iInstance, VkSurfaceKHR iSurface);
 
     /// @brief
     ///  Default destructor.
@@ -48,17 +48,17 @@ public:
     ///  Destroys the device.
     void Destroy();
 
-    VkInstance &GetVkInstance() { return m_Instance.GetVkInstance(); }
-    VkPhysicalDevice &GetPhysicalDevice() { return m_PhysicalDevice; }
+    const VkInstance &GetVkInstance() const { return m_Instance.GetVkInstance(); }
+    const VkPhysicalDevice &GetPhysicalDevice() const { return m_PhysicalDevice; }
     const VkDevice &GetDevice() const { return m_Device; }
     VkDevice &GetDevice() { return m_Device; }
-    VkSurfaceKHR &GetSurface() { return m_Surface; }
+    const VkSurfaceKHR &GetSurface() const { return m_Surface; }
     VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
     VkQueue GetPresentQueue() const { return m_PresentQueue; }
     VkQueue GetComputeQueue() const { return m_ComputeQueue; }
     const VkCommandPool &GetCommandPool() const { return m_CommandPool; }
 
-    QueueFamilyIndices &GetQueueIndices() { return m_QueueIndices; }
+    const QueueFamilyIndices &GetQueueIndices() const { return m_QueueIndices; }
 
     /// @brief
     ///  Finds a memory type that supports the given properties.
@@ -76,7 +76,7 @@ public:
     VkFormat FindSupportedFormat(
         const std::vector<VkFormat> &iCandidates, VkImageTiling iTiling, VkFormatFeatureFlags iFeatures);
 
-    VkSampleCountFlagBits GetMaxUsableSampleCount() { return VK_SAMPLE_COUNT_1_BIT; }
+    VkSampleCountFlagBits GetMaxUsableSampleCount() const { return VK_SAMPLE_COUNT_1_BIT; }
 
     /// @brief
     ///  Create and allocate a buffer.
@@ -120,7 +120,7 @@ private:
     void CreateCommandPool();
 
     /// Vulkan instance.
-    Instance &m_Instance;
+    const Instance &m_Instance;
     /// Physical device (chose by default).
     VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
     /// Logical device.

@@ -11,7 +11,7 @@ public:
 	/// @brief
 	///  Constructor.
 	/// @param iDevice Device to initialize the cloud pipeline with.
-	explicit CloudPipeline(Device &iDevice)
+	explicit CloudPipeline(const Device &iDevice)
 		: Pipeline(iDevice)
 	{
 	}

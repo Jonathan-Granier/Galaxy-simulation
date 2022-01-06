@@ -13,8 +13,8 @@ class ComputePass
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the compute pass with.
-    explicit ComputePass(Device &device);
+    /// @param iDevice Device to initialize the compute pass with.
+    explicit ComputePass(const Device &iDevice);
 
     /// @brief
     ///  Submits the command buffer to the compute queue.
@@ -65,7 +65,7 @@ protected:
     void BuildCommandBuffer(VkDeviceSize iNbPoint);
 
     /// Vulkan device.
-    Device &m_Device;
+    const Device &m_Device;
 
     /// Command pool for the compute queue.
     VkCommandPool m_CommandPool;

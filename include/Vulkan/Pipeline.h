@@ -10,8 +10,8 @@ class Pipeline
 public:
     /// @brief
     ///  Constructor.
-    /// @param ioDevice Device to initialize the pipeline with.
-    explicit Pipeline(Device &ioDevice);
+    /// @param iDevice Device to initialize the pipeline with.
+    explicit Pipeline(const Device &iDevice);
 
     /// @brief
     ///  Deleted copy constructor.
@@ -20,7 +20,7 @@ public:
     /// @brief
     ///  Move constructor.
     /// @param ioPipeline Pipeline to be moved.
-    Pipeline(Pipeline &&ioPipeline) noexcept;
+    Pipeline(Pipeline &&ioPipeline) noexcept = default;
 
     /// @brief
     ///  Destructor.
@@ -35,7 +35,7 @@ public:
     ///  Move assignment operator.
     /// @param ioPipeline Pipeline to be moved.
     /// @return Reference to the current pipeline.
-    Pipeline &operator=(Pipeline &&ioPipeline) noexcept;
+    Pipeline &operator=(Pipeline &&ioPipeline) noexcept = default;
 
     VkPipeline GetPipeline() { return m_Pipeline; }
 
@@ -83,7 +83,7 @@ protected:
     virtual VkPipelineRasterizationStateCreateInfo GetRasterizationInfo() = 0;
 
     /// Vulkan device.
-    Device *m_Device;
+    const Device &m_Device;
     /// Vulkan pipeline.
     VkPipeline m_Pipeline = VK_NULL_HANDLE;
     /// Vertex shader.

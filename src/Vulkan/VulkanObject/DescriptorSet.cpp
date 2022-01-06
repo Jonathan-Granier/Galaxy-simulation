@@ -2,9 +2,8 @@
 #include "Vulkan/VulkanObject/Debug.h"
 #include "Vulkan/VulkanObject/UniformBuffer.h"
 //----------------------------------------------------------------------------------------------------------------------
-void DescriptorSet::Init(Device &ioDevice)
+DescriptorSet::DescriptorSet(const Device &iDevice) : m_Device(iDevice)
 {
-    m_Device = &ioDevice;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20,7 +19,7 @@ void DescriptorSet::AllocateDescriptorSets(VkDescriptorSetLayout iLayout, VkDesc
 
     m_DescriptorSets.resize(iDescSetCount);
     VK_CHECK_RESULT(vkAllocateDescriptorSets(
-        m_Device->GetDevice(), &allocInfo, m_DescriptorSets.data()))
+        m_Device.GetDevice(), &allocInfo, m_DescriptorSets.data()))
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -73,7 +72,7 @@ void DescriptorSet::AddWriteDescriptor(
 void DescriptorSet::UpdateDescriptorSets()
 {
     vkUpdateDescriptorSets(
-        m_Device->GetDevice(), static_cast<uint32_t>(m_WriteDescriptorSets.size()), m_WriteDescriptorSets.data(), 0, nullptr);
+        m_Device.GetDevice(), static_cast<uint32_t>(m_WriteDescriptorSets.size()), m_WriteDescriptorSets.data(), 0, nullptr);
     m_WriteDescriptorSets.clear();
     m_ImageInfos.clear();
     m_BufferInfos.clear();

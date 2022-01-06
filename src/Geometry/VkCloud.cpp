@@ -4,7 +4,7 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 VkCloud::VkCloud(Device &iDevice)
-	: m_Device(&iDevice)
+	: m_Device(iDevice)
 {
 }
 
@@ -58,14 +58,14 @@ void VkCloud::CreateVertexBuffer(const glm::vec3 &color)
 
 	VkDeviceSize bufferSize = sizeof(points[0]) * points.size();
 
-	MemoryBuffer stagingBuffer = m_Device->CreateMemoryBuffer(
+	MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
 		bufferSize,
 		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
 	stagingBuffer.TransferDataInBuffer(points, bufferSize);
 
-	m_VertexBuffer = m_Device->CreateMemoryBuffer(
+	m_VertexBuffer = m_Device.CreateMemoryBuffer(
 		bufferSize,
 		VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -77,8 +77,8 @@ void VkCloud::CreateVertexBuffer(const glm::vec3 &color)
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::Draw(VkCommandBuffer commandBuffer)
 {
-	VkBuffer vertexBuffers[] = {m_VertexBuffer.Buffer};
-	VkDeviceSize offsets[] = {0};
+	const VkBuffer vertexBuffers[] = {m_VertexBuffer.Buffer};
+	const VkDeviceSize offsets[] = {0};
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 	vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Cloud.Points.size()), 1, 0, 0);
 }

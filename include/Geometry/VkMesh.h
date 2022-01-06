@@ -28,15 +28,14 @@ public:
     void Draw(VkCommandBuffer commandBuffer);
 
 private:
-    /// @brief
     ///  Allocate the mesh vertices in the gpu memory.
     void CreateVertexBuffer();
-    /// @brief
+
     ///  Allocate the mesh indices (triangle) in the gpu memory.
     void CreateIndexBuffer();
 
     /// Vulkan device.
-    Device *m_Device;
+    const Device &m_Device;
     /// Geometrical mesh.
     Mesh m_Mesh;
 

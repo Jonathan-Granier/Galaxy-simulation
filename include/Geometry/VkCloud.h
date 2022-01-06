@@ -7,7 +7,7 @@
 #include <glm/vec3.hpp>
 
 /// @brief
-///  Class which holds, allocates and draws a mesh.
+///  Class which holds, allocates and draws a cloud.
 class VkCloud
 {
 public:
@@ -31,12 +31,13 @@ public:
 	const Cloud &GetCloud() const { return m_Cloud; }
 
 private:
-	/// @brief
 	///  Allocate the cloud in the gpu memory.
 	void CreateVertexBuffer(const glm::vec3 &color = glm::vec3(1.0, 0, 0));
 
-	Device *m_Device;
+	/// Vulkan device.
+	Device &m_Device;
+	/// Point cloud.
 	Cloud m_Cloud;
-
+	/// Vertex buffer.
 	MemoryBuffer m_VertexBuffer;
 };

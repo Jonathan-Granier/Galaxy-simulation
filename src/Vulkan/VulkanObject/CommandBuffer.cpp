@@ -3,27 +3,20 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 CommandBuffer::CommandBuffer(const Device &iDevice)
-    : m_Device{&iDevice}
+    : m_Device(iDevice)
 {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = m_Device->GetCommandPool();
+    allocInfo.commandPool = m_Device.GetCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = 1;
 
     VK_CHECK_RESULT(
-        vkAllocateCommandBuffers(m_Device->GetDevice(), &allocInfo, &m_CommandBuffer))
+        vkAllocateCommandBuffers(m_Device.GetDevice(), &allocInfo, &m_CommandBuffer))
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-CommandBuffer::CommandBuffer(CommandBuffer &&ioBuffer) noexcept
-    : m_CommandBuffer{std::exchange(ioBuffer.m_CommandBuffer, {})},
-      m_Device{ioBuffer.m_Device}
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void CommandBuffer::Begin(VkCommandBufferUsageFlags iFlags) const
+void CommandBuffer::Begin(VkCommandBufferUsageFlags iFlags)
 {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -35,7 +28,7 @@ void CommandBuffer::Begin(VkCommandBufferUsageFlags iFlags) const
 
 //----------------------------------------------------------------------------------------------------------------------
 void CommandBuffer::CopyBuffer(
-    VkBuffer iSrcBuffer, VkBuffer iDstBuffer, uint64_t iSize, uint64_t iSrcOffset, uint64_t iDstOffset) const
+    VkBuffer iSrcBuffer, VkBuffer iDstBuffer, uint64_t iSize, uint64_t iSrcOffset, uint64_t iDstOffset)
 {
     VkBufferCopy copyRegion{};
     copyRegion.srcOffset = iDstOffset;
@@ -46,16 +39,7 @@ void CommandBuffer::CopyBuffer(
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-CommandBuffer &CommandBuffer::operator=(CommandBuffer &&ioBuffer) noexcept
-{
-    std::swap(m_CommandBuffer, ioBuffer.m_CommandBuffer);
-    std::swap(m_Device, ioBuffer.m_Device);
-
-    return *this;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void CommandBuffer::End() const
+void CommandBuffer::End()
 {
     VK_CHECK_RESULT(vkEndCommandBuffer(m_CommandBuffer))
 }
@@ -66,12 +50,12 @@ void CommandBuffer::Free()
     if (m_CommandBuffer == VK_NULL_HANDLE)
         return;
 
-    vkFreeCommandBuffers(m_Device->GetDevice(), m_Device->GetCommandPool(), 1, &m_CommandBuffer);
+    vkFreeCommandBuffers(m_Device.GetDevice(), m_Device.GetCommandPool(), 1, &m_CommandBuffer);
     m_CommandBuffer = VK_NULL_HANDLE;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CommandBuffer::EndAndRun(VkQueue iQueue) const
+void CommandBuffer::EndAndRun(VkQueue iQueue)
 {
     End();
     VkSubmitInfo submitInfo{};

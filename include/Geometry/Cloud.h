@@ -12,7 +12,7 @@ struct Cloud
 	static Cloud InitAxisY();
 	static Cloud InitAxisZ();
 
-	void Translate(glm::vec3 &iVector);
+	void Translate(const glm::vec3 &iVector);
 	[[nodiscard]] glm::vec3 ComputeCentroid() const;
 
 	std::vector<glm::vec3> Points;
