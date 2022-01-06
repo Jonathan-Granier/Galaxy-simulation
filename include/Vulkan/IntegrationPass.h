@@ -1,7 +1,8 @@
 #pragma once
 #include "Vulkan/ComputePass.h"
 
-class DisplacementPass : public ComputePass
+/// Integration compute pass for update position of each star.
+class IntegrationPass : public ComputePass
 {
 public:
     using ComputePass::ComputePass;

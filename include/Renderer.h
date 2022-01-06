@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include "Vulkan/VulkanObject/Device.h"
 #include "Vulkan/VulkanObject/Swapchain.h"
-#include "Vulkan/DisplacementPass.h"
+#include "Vulkan/IntegrationPass.h"
 #include "Vulkan/AccelerationPass.h"
 #include "Vulkan/VulkanObject/PipelineLayout.h"
 #include "Vulkan/CloudPipeline.h"
@@ -133,7 +133,7 @@ private:
     /// Pass to compute the stars acceleration
     AccelerationPass m_AccelerationPass;
     /// Pass to calculate the new position and speed of each stars.
-    DisplacementPass m_DisplacementPass;
+    IntegrationPass m_IntegrationPass;
 
     /// Command pool for the graphics queue.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;

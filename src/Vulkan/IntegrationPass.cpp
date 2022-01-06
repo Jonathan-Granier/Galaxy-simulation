@@ -1,8 +1,8 @@
-#include "Vulkan/DisplacementPass.h"
+#include "Vulkan/IntegrationPass.h"
 #include <glm/vec4.hpp>
 #include <glm/geometric.hpp>
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::Destroy()
+void IntegrationPass::Destroy()
 {
 
     m_SpeedBuffer.Destroy();
@@ -10,7 +10,7 @@ void DisplacementPass::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::Create(
+void IntegrationPass::Create(
     VkDescriptorPool &iDescriptorPool,
     const VkCloud &iGalaxy,
     const UniformBuffer &iOptions,
@@ -21,11 +21,11 @@ void DisplacementPass::Create(
     CreatePipelineLayout();
     CreateBuffers(iGalaxy, iInitialSpeed);
     CreateDescriptor(iDescriptorPool, iGalaxy, iOptions, iAccelerationBuffer);
-    ComputePass::Create("displacement", nbPoint);
+    ComputePass::Create("integration", nbPoint);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::CreatePipelineLayout()
+void IntegrationPass::CreatePipelineLayout()
 {
     std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(4);
 
@@ -61,7 +61,7 @@ void DisplacementPass::CreatePipelineLayout()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy, float iInitialSpeed)
+void IntegrationPass::CreateBuffers(const VkCloud &iGalaxy, float iInitialSpeed)
 {
 
     VkDeviceSize bufferSize = sizeof(glm::vec4) * iGalaxy.GetCloud().Points.size();
@@ -91,7 +91,7 @@ void DisplacementPass::CreateBuffers(const VkCloud &iGalaxy, float iInitialSpeed
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void DisplacementPass::CreateDescriptor(
+void IntegrationPass::CreateDescriptor(
     VkDescriptorPool &iDescriptorPool, const VkCloud &iGalaxy, const UniformBuffer &iOptions, const MemoryBuffer &iAccelerationBuffer)
 {
     m_DescriptorSet.AllocateDescriptorSets(m_PipelineLayout.GetDescriptorLayout(), iDescriptorPool);

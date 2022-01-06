@@ -12,7 +12,7 @@ Renderer::Renderer(Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, 
       m_CloudPipeline(m_Device),
       m_DepthBuffer(m_Device),
       m_AccelerationPass(m_Device),
-      m_DisplacementPass(m_Device)
+      m_IntegrationPass(m_Device)
 {
     CreateResources();
 }
@@ -72,7 +72,7 @@ void Renderer::InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float
 
     m_AccelerationPass.Create(m_DescriptorPool, galaxy, m_UniformBuffers.Acceleration);
 
-    m_DisplacementPass.Create(
+    m_IntegrationPass.Create(
         m_DescriptorPool,
         galaxy,
         m_UniformBuffers.Displacement,
@@ -84,7 +84,7 @@ void Renderer::ReleaseGalaxy()
 {
     vkDeviceWaitIdle(m_Device.GetDevice());
 
-    m_DisplacementPass.Destroy();
+    m_IntegrationPass.Destroy();
     m_AccelerationPass.Destroy();
 
     vkDestroyDescriptorPool(m_Device.GetDevice(), m_DescriptorPool, nullptr);
@@ -385,7 +385,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
 void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
     // TODO remove ?
-    m_DisplacementPass.WaitFence();
+    m_IntegrationPass.WaitFence();
     m_AccelerationPass.WaitFence();
 
     vkWaitForFences(m_Device.GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
@@ -434,8 +434,8 @@ void Renderer::DrawNextFrame(const glm::mat4 &iView, const glm::mat4 &iProj)
     VK_CHECK_RESULT(
         vkQueueSubmit(m_Device.GetGraphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrame]))
 
-    m_AccelerationPass.Process(m_AccelerationPass.GetSemaphore(), m_DisplacementPass.GetSemaphore());
-    m_DisplacementPass.Process(m_DisplacementPass.GetSemaphore(), m_RenderFinishedSemaphores[m_CurrentFrame]);
+    m_AccelerationPass.Process(m_AccelerationPass.GetSemaphore(), m_IntegrationPass.GetSemaphore());
+    m_IntegrationPass.Process(m_IntegrationPass.GetSemaphore(), m_RenderFinishedSemaphores[m_CurrentFrame]);
 
     result = m_Swapchain.PresentNextImage(&m_RenderFinishedSemaphores[m_CurrentFrame], imageIndex);
 
