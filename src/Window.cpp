@@ -80,20 +80,11 @@ void Window::Run()
         if (m_Menu.IsRestart())
             Restart();
 
-        m_FrameCounter++;
-        if (m_FrameCounter >= 100)
-            m_FrameCounter = 0;
-        auto tStart = std::chrono::high_resolution_clock::now();
         MouseInteraction();
         m_Menu.UpdateMenu();
         UpdateParameters();
 
         m_Renderer->DrawNextFrame(m_Camera.GetViewMatrix(), m_Camera.GetPerspectiveMatrix());
-
-        auto tEnd = std::chrono::high_resolution_clock::now();
-        auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
-        m_FrameTimes.Current = static_cast<float>(tDiff) / 1000.0f;
-
         glfwPollEvents();
     }
 }
@@ -185,7 +176,6 @@ void Window::KeyInput(int iKey, int iAction)
 
     if (iKey == GLFW_KEY_F1 && iAction == GLFW_RELEASE)
     {
-        std::cout << "Key press" << std::endl;
         m_Menu.SetVisible(!m_Menu.IsVisible());
     }
 }

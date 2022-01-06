@@ -33,12 +33,15 @@ layout(std140, binding = 2) buffer Speeds
 // Binding 2: Option uniform buffer.
 layout(binding = 3) uniform Options {
     float Step;
+    uint NbPoints;
 } options;
 
 
 void main() {
     uint index = gl_GlobalInvocationID.x;
-
+    if(index >= options.NbPoints)
+        return;
+    
     speeds[index] += options.Step * accelerations[index];
     positions[index].pos += options.Step * speeds[index].xyz;
 }

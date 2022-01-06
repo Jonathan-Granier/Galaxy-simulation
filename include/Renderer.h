@@ -173,6 +173,7 @@ private:
     struct DisplacementInfo
     {
         float Step = 0;
+        uint32_t NbPoint = 0;
     } m_DisplacementInfo;
 
     struct AccelerationInfo
