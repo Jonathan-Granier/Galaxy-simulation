@@ -1,6 +1,7 @@
 #include "Camera.h"
 
-void Camera::UpdateViewMatrix(){
+void Camera::UpdateViewMatrix()
+{
     glm::mat4 rotM = glm::mat4(1.0f);
     glm::mat4 transM;
 
@@ -9,7 +10,8 @@ void Camera::UpdateViewMatrix(){
     rotM = glm::rotate(rotM, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     glm::vec3 translation = position;
-    if (flipY) {
+    if (flipY)
+    {
         translation.y *= -1.0f;
     }
     transM = glm::translate(glm::mat4(1.0f), translation);
@@ -25,7 +27,8 @@ void Camera::SetPerspective(float iFov, float iAspect, float iZnear, float iZfar
     this->znear = iZnear;
     this->zfar = iZfar;
     perspective = glm::perspective(glm::radians(fov), iAspect, znear, zfar);
-    if (flipY) {
+    if (flipY)
+    {
         perspective[1][1] *= -1.0f;
     }
 };
@@ -33,7 +36,8 @@ void Camera::SetPerspective(float iFov, float iAspect, float iZnear, float iZfar
 void Camera::UpdateAspectRatio(float iAspect)
 {
     perspective = glm::perspective(glm::radians(fov), iAspect, znear, zfar);
-    if (flipY) {
+    if (flipY)
+    {
         perspective[1][1] *= -1.0f;
     }
 }

@@ -9,7 +9,6 @@ public:
 
     void Destroy() override;
 
-    /// @brief
     ///  Creates the compute pass.
     /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
     /// @param iGalaxy Galaxy cloud.
@@ -22,7 +21,6 @@ public:
     const olp::MemoryBuffer &GetAccelerationBuffer() const { return m_AccelerationBuffer; }
 
 private:
-    /// @brief
     ///  Create the pipeline layout.
     void CreatePipelineLayout() override;
 
@@ -30,7 +28,6 @@ private:
     /// @param iNbPoint Number of point in Galaxy
     void CreateBuffers(VkDeviceSize iNbPoint);
 
-    /// @brief
     ///  Create the descriptors.
     /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
     /// @param iGalaxy Galaxy cloud.

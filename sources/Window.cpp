@@ -24,10 +24,7 @@ static void KeyCallBack(GLFWwindow *window, int key, int scancode, int action, i
 
 //----------------------------------------------------------------------------------------------------------------------
 Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
-    : m_Name(iName),
-      m_Width(iWidth),
-      m_Height(iHeight),
-      m_Menu(iWidth, iHeight)
+    : m_Name(iName), m_Width(iWidth), m_Height(iHeight), m_Menu(iWidth, iHeight)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -49,10 +46,8 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
     CreateSurface();
 
     m_Renderer = std::make_unique<Renderer>(m_Instance, m_Surface, m_Width, m_Height);
-    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars,
-                                 m_Menu.GetGalaxyParameters().Diameter,
-                                 m_Menu.GetGalaxyParameters().Thickness,
-                                 m_Menu.GetGalaxyParameters().StarsSpeed,
+    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars, m_Menu.GetGalaxyParameters().Diameter,
+                                 m_Menu.GetGalaxyParameters().Thickness, m_Menu.GetGalaxyParameters().StarsSpeed,
                                  m_Menu.GetGalaxyParameters().BlackHoleMass);
 
     m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 1000.0f);
@@ -96,10 +91,7 @@ void Window::CreateSurface()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Window::DestroySurface()
-{
-    vkDestroySurfaceKHR(m_Instance.GetVkInstance(), m_Surface, nullptr);
-}
+void Window::DestroySurface() { vkDestroySurfaceKHR(m_Instance.GetVkInstance(), m_Surface, nullptr); }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Window::Resize(uint32_t iWidth, uint32_t iHeight)
@@ -157,18 +149,13 @@ void Window::UpdateParameters()
 void Window::Restart()
 {
     m_Renderer->ReleaseGalaxy();
-    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars,
-                                 m_Menu.GetGalaxyParameters().Diameter,
-                                 m_Menu.GetGalaxyParameters().Thickness,
-                                 m_Menu.GetGalaxyParameters().StarsSpeed,
+    m_Renderer->InitializeGalaxy(m_Menu.GetGalaxyParameters().NbStars, m_Menu.GetGalaxyParameters().Diameter,
+                                 m_Menu.GetGalaxyParameters().Thickness, m_Menu.GetGalaxyParameters().StarsSpeed,
                                  m_Menu.GetGalaxyParameters().BlackHoleMass);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Window::Scroll(float iYOffset)
-{
-    m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.f));
-}
+void Window::Scroll(float iYOffset) { m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.f)); }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Window::KeyInput(int iKey, int iAction)

@@ -9,7 +9,7 @@
 class VkMesh
 {
 public:
-    VkMesh(Device &iDevice);
+    VkMesh(olp::Device &iDevice);
     ~VkMesh() = default;
     VkMesh(const VkMesh &) = delete;
     VkMesh(VkMesh &&ioCloud) noexcept = default;
@@ -35,12 +35,12 @@ private:
     void CreateIndexBuffer();
 
     /// Vulkan device.
-    const Device &m_Device;
+    const olp::Device &m_Device;
     /// Geometrical mesh.
     Mesh m_Mesh;
 
     /// Vertex buffer.
-    MemoryBuffer m_VertexBuffer;
+    olp::MemoryBuffer m_VertexBuffer;
     /// Triangle indices buffer.
-    MemoryBuffer m_IndexBuffer;
+    olp::MemoryBuffer m_IndexBuffer;
 };

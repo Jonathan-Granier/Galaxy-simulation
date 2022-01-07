@@ -2,7 +2,7 @@
 #include <iostream>
 
 //----------------------------------------------------------------------------------------------------------------------
-VkMesh::VkMesh(Device &iDevice)
+VkMesh::VkMesh(olp::Device &iDevice)
     : m_Device(iDevice)
 {
 }
@@ -45,7 +45,7 @@ void VkMesh::CreateVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Vertices[0]) * m_Mesh.Vertices.size();
 
-    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
+    olp::MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -66,7 +66,7 @@ void VkMesh::CreateIndexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Mesh.Indices[0]) * m_Mesh.Indices.size();
 
-    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
+    olp::MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);

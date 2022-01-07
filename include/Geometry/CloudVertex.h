@@ -9,13 +9,13 @@
 ///  A cloud vertex, a 32-byte object.
 struct CloudVertex
 {
-	/// Position
-	glm::vec3 Pos{};
-	/// Padding (necessary for the use in compute shader).
-	float pad1;
-	/// star speed
-	glm::vec4 Speed{};
+    /// Position
+    glm::vec3 Pos{};
+    /// Padding (necessary for the use in compute shader).
+    float pad1;
+    /// star speed
+    glm::vec4 Speed{};
 
-	static VkVertexInputBindingDescription GetBindingDescription();
-	static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
+    static VkVertexInputBindingDescription GetBindingDescription();
+    static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
 };
