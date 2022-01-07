@@ -124,7 +124,7 @@ private:
     /// Pipeline layout of the main render pass.
     PipelineLayout m_PipelineLayout;
     /// Cloud pipeline.
-    CloudPipeline m_CloudPipeline;
+    CloudPipeline<CloudVertex> m_CloudPipeline;
 
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;

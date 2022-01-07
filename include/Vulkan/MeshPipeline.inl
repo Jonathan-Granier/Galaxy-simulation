@@ -1,19 +1,8 @@
 #include "Vulkan/MeshPipeline.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-MeshPipeline::MeshPipeline(const Device &iDevice)
-    : Pipeline(iDevice)
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void MeshPipeline::SetPolygonMode(VkPolygonMode iPolyMode)
-{
-    m_PolygonMode = iPolyMode;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-VkPipelineVertexInputStateCreateInfo MeshPipeline::GetVertexInputInfo()
+template <typename VertexType>
+VkPipelineVertexInputStateCreateInfo MeshPipeline<VertexType>::GetVertexInputInfo()
 {
     // VERTEX INPUT
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
@@ -26,7 +15,8 @@ VkPipelineVertexInputStateCreateInfo MeshPipeline::GetVertexInputInfo()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-VkPipelineInputAssemblyStateCreateInfo MeshPipeline::GetInputAssemblyInfo()
+template <typename VertexType>
+VkPipelineInputAssemblyStateCreateInfo MeshPipeline<VertexType>::GetInputAssemblyInfo()
 {
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -36,7 +26,8 @@ VkPipelineInputAssemblyStateCreateInfo MeshPipeline::GetInputAssemblyInfo()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-VkPipelineRasterizationStateCreateInfo MeshPipeline::GetRasterizationInfo()
+template <typename VertexType>
+VkPipelineRasterizationStateCreateInfo MeshPipeline<VertexType>::GetRasterizationInfo()
 {
     VkPipelineRasterizationStateCreateInfo rasterizer{};
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;

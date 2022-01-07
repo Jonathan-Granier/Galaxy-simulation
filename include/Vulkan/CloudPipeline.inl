@@ -1,7 +1,6 @@
-#include "Vulkan/CloudPipeline.h"
-
 //----------------------------------------------------------------------------------------------------------------------
-VkPipelineVertexInputStateCreateInfo CloudPipeline::CloudPipeline::GetVertexInputInfo()
+template <class VertexType>
+VkPipelineVertexInputStateCreateInfo CloudPipeline<VertexType>::CloudPipeline::GetVertexInputInfo()
 {
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -13,7 +12,8 @@ VkPipelineVertexInputStateCreateInfo CloudPipeline::CloudPipeline::GetVertexInpu
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-VkPipelineInputAssemblyStateCreateInfo CloudPipeline::CloudPipeline::GetInputAssemblyInfo()
+template <class VertexType>
+VkPipelineInputAssemblyStateCreateInfo CloudPipeline<VertexType>::CloudPipeline::GetInputAssemblyInfo()
 {
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -23,7 +23,8 @@ VkPipelineInputAssemblyStateCreateInfo CloudPipeline::CloudPipeline::GetInputAss
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-VkPipelineRasterizationStateCreateInfo CloudPipeline::CloudPipeline::GetRasterizationInfo()
+template <class VertexType>
+VkPipelineRasterizationStateCreateInfo CloudPipeline<VertexType>::CloudPipeline::GetRasterizationInfo()
 {
 	VkPipelineRasterizationStateCreateInfo rasterizer{};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;

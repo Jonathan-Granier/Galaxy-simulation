@@ -138,8 +138,9 @@ set(
 
     src/*.cpp
     include/*.h
+    include/*.inl
 )  
- 
+  
 # Adding every file to be compiled
 file(
     GLOB_RECURSE

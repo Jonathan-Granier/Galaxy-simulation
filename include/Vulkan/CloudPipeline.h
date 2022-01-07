@@ -5,16 +5,11 @@
 
 /// @brief
 ///  Specific pipeline class to render clouds.
+template <typename VertexType>
 class CloudPipeline : public Pipeline
 {
 public:
-	/// @brief
-	///  Constructor.
-	/// @param iDevice Device to initialize the cloud pipeline with.
-	explicit CloudPipeline(const Device &iDevice)
-		: Pipeline(iDevice)
-	{
-	}
+	using Pipeline::Pipeline;
 
 protected:
 	/// @brief
@@ -32,6 +27,8 @@ protected:
 	/// @return Cloud pipeline's rasterization information object.
 	VkPipelineRasterizationStateCreateInfo GetRasterizationInfo() override;
 
-	const VkVertexInputBindingDescription m_BindingDescription = CloudVertex::GetBindingDescription();
-	const std::vector<VkVertexInputAttributeDescription> m_AttributeDescriptions = CloudVertex::GetAttributeDescriptions();
+	const VkVertexInputBindingDescription m_BindingDescription = VertexType::GetBindingDescription();
+	const std::vector<VkVertexInputAttributeDescription> m_AttributeDescriptions = VertexType::GetAttributeDescriptions();
 };
+
+#include "Vulkan/CloudPipeline.inl"
