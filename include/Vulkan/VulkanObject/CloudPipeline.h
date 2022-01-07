@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Geometry/CloudVertex.h"
-#include "Vulkan/Pipeline.h"
+#include "Vulkan/VulkanObject/Pipeline.h"
 
 /// @brief
 ///  Specific pipeline class to render clouds.
@@ -31,4 +31,4 @@ protected:
 	const std::vector<VkVertexInputAttributeDescription> m_AttributeDescriptions = VertexType::GetAttributeDescriptions();
 };
 
-#include "Vulkan/CloudPipeline.inl"
+#include "Vulkan/VulkanObject/CloudPipeline.inl"

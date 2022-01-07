@@ -6,7 +6,7 @@
 #include "Vulkan/IntegrationPass.h"
 #include "Vulkan/AccelerationPass.h"
 #include "Vulkan/VulkanObject/PipelineLayout.h"
-#include "Vulkan/CloudPipeline.h"
+#include "Vulkan/VulkanObject/CloudPipeline.h"
 #include "Vulkan/VulkanObject/Image.h"
 #include "Vulkan/VulkanObject/DescriptorSet.h"
 #include "Vulkan/VulkanObject/CommandBuffer.h"

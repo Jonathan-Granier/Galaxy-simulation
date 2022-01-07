@@ -11,7 +11,9 @@ Idea from this [repo](https://github.com/angeluriot/Galaxy_simulation)
 
 <br/>
 
-
+<p align="center">
+	<img src="images/Galaxy.png" width="700">
+</p>
 
 
 ## Install
