@@ -22,7 +22,7 @@ public:
     /// @param iSurface Vulkan surface to initialize the device with.
     /// @param iWidth Swapchain width.
     /// @param iHeight Swapchain height.
-    Renderer(const Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight);
+    Renderer(const olp::Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight);
     ~Renderer() = default;
 
     ///  Create Vulkan resources.
@@ -112,19 +112,19 @@ private:
     void UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj);
 
     /// Vulkan device that contains instance, physical device, device and queue.
-    Device m_Device;
+    olp::Device m_Device;
     /// Swapchain.
-    Swapchain m_Swapchain;
+    olp::Swapchain m_Swapchain;
 
     /// Descriptor of the main render pass.
-    DescriptorSet m_MainPassDescriptor;
+    olp::DescriptorSet m_MainPassDescriptor;
     /// Descriptor pool.
     VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
 
     /// Pipeline layout of the main render pass.
-    PipelineLayout m_PipelineLayout;
+    olp::PipelineLayout m_PipelineLayout;
     /// Cloud pipeline.
-    CloudPipeline<CloudVertex> m_CloudPipeline;
+    olp::CloudPipeline<CloudVertex> m_CloudPipeline;
 
     /// Graphics render pass.
     VkRenderPass m_RenderPass = VK_NULL_HANDLE;
@@ -138,10 +138,10 @@ private:
     /// Command pool for the graphics queue.
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
     /// Command buffer for the graphics queue. ( 1 by framebuffer of the swapchain).
-    std::vector<CommandBuffer> m_CommandBuffers{};
+    std::vector<olp::CommandBuffer> m_CommandBuffers{};
 
     /// Depth buffer image.
-    Image m_DepthBuffer;
+    olp::Image m_DepthBuffer;
 
     /// Mesh to draw.
     std::vector<VkCloud> m_Clouds;
@@ -161,7 +161,7 @@ private:
     size_t m_CurrentFrame = 0;
 
     /// ImGUI
-    std::unique_ptr<ImGUI> m_ImGUI;
+    std::unique_ptr<olp::ImGUI> m_ImGUI;
 
     struct ModelInfo
     {
@@ -187,8 +187,8 @@ private:
     /// Uniform buffers.
     struct UniformBuffers
     {
-        UniformBuffer Model;
-        UniformBuffer Displacement;
-        UniformBuffer Acceleration;
+        olp::UniformBuffer Model;
+        olp::UniformBuffer Displacement;
+        olp::UniformBuffer Acceleration;
     } m_UniformBuffers;
 };

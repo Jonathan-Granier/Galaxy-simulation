@@ -11,8 +11,8 @@ void IntegrationPass::Destroy()
 void IntegrationPass::Create(
     VkDescriptorPool &iDescriptorPool,
     const VkCloud &iGalaxy,
-    const UniformBuffer &iOptions,
-    const MemoryBuffer &iAccelerationBuffer,
+    const olp::UniformBuffer &iOptions,
+    const olp::MemoryBuffer &iAccelerationBuffer,
     float iInitialSpeed)
 {
     VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
@@ -52,7 +52,7 @@ void IntegrationPass::CreatePipelineLayout()
 
 //----------------------------------------------------------------------------------------------------------------------
 void IntegrationPass::CreateDescriptor(
-    VkDescriptorPool &iDescriptorPool, const VkCloud &iGalaxy, const UniformBuffer &iOptions, const MemoryBuffer &iAccelerationBuffer)
+    VkDescriptorPool &iDescriptorPool, const VkCloud &iGalaxy, const olp::UniformBuffer &iOptions, const olp::MemoryBuffer &iAccelerationBuffer)
 {
     m_DescriptorSet.AllocateDescriptorSets(m_PipelineLayout.GetDescriptorLayout(), iDescriptorPool);
     //Vertex Buffer of the galaxy

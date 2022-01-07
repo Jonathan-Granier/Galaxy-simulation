@@ -8,61 +8,64 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 
-class ImGUI
+namespace olp
 {
-
-public:
-    // UI params are set via push constants
-    struct PushConstBlock
+    class ImGUI
     {
-        glm::vec2 scale;
-        glm::vec2 translate;
-    } pushConstBlock;
 
-    /// Constructor.
-    /// @param iDevice Device to initialize ImGUI resources with.
-    ImGUI(const Device &iDevice);
+    public:
+        // UI params are set via push constants
+        struct PushConstBlock
+        {
+            glm::vec2 scale;
+            glm::vec2 translate;
+        } pushConstBlock;
 
-    ~ImGUI();
+        /// Constructor.
+        /// @param iDevice Device to initialize ImGUI resources with.
+        ImGUI(const Device &iDevice);
 
-    // Initialize all Vulkan resources used by the ui
-    void CreateResources(VkRenderPass iRenderPass);
+        ~ImGUI();
 
-    ///  Destroys the all vulkan resources object.
-    void Destroy();
+        // Initialize all Vulkan resources used by the ui
+        void CreateResources(VkRenderPass iRenderPass);
 
-    // Update vertex and index buffer containing the imGui elements when required
-    void Update();
+        ///  Destroys the all vulkan resources object.
+        void Destroy();
 
-    // Draw current imGui frame into a command buffer
-    void Draw(VkCommandBuffer commandBuffer);
+        // Update vertex and index buffer containing the imGui elements when required
+        void Update();
 
-private:
-    void CreateDescriptors();
-    void CreatePipeline(VkRenderPass renderPass);
-    // Vulkan resources for rendering the UI
-    const Device &m_Device;
+        // Draw current imGui frame into a command buffer
+        void Draw(VkCommandBuffer commandBuffer);
 
-    /// Texture (Image + Sampler) to store the ImGUI Font.
-    Texture m_FontTexture;
-    /// ImGUI vertex buffer.
-    MemoryBuffer m_VertexBuffer;
-    /// ImGUI Index buffer (triangle).
-    MemoryBuffer m_IndexBuffer;
+    private:
+        void CreateDescriptors();
+        void CreatePipeline(VkRenderPass renderPass);
+        // Vulkan resources for rendering the UI
+        const Device &m_Device;
 
-    /// Vertex buffer size..
-    int32_t m_VertexCount = 0;
-    /// Index buffer size
-    int32_t m_IndexCount = 0;
-    /// Pipeline layout to draw ImGUI mesh.
-    VkPipelineLayout m_PipelineLayout;
-    /// Pipeleine to draw ImGUI mesh.
-    VkPipeline m_Pipeline;
+        /// Texture (Image + Sampler) to store the ImGUI Font.
+        Texture m_FontTexture;
+        /// ImGUI vertex buffer.
+        MemoryBuffer m_VertexBuffer;
+        /// ImGUI Index buffer (triangle).
+        MemoryBuffer m_IndexBuffer;
 
-    /// Descriptor pool.
-    VkDescriptorPool m_DescriptorPool;
-    /// Descriptor layout.
-    VkDescriptorSetLayout m_DescriptorSetLayout;
-    /// Descriptor set to use the font texture.
-    DescriptorSet m_DescriptorSet;
-};
+        /// Vertex buffer size..
+        int32_t m_VertexCount = 0;
+        /// Index buffer size
+        int32_t m_IndexCount = 0;
+        /// Pipeline layout to draw ImGUI mesh.
+        VkPipelineLayout m_PipelineLayout;
+        /// Pipeleine to draw ImGUI mesh.
+        VkPipeline m_Pipeline;
+
+        /// Descriptor pool.
+        VkDescriptorPool m_DescriptorPool;
+        /// Descriptor layout.
+        VkDescriptorSetLayout m_DescriptorSetLayout;
+        /// Descriptor set to use the font texture.
+        DescriptorSet m_DescriptorSet;
+    };
+}

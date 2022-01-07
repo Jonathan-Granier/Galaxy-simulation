@@ -5,7 +5,7 @@
 #include <cmath>
 
 //----------------------------------------------------------------------------------------------------------------------
-ComputePass::ComputePass(const Device &iDevice)
+ComputePass::ComputePass(const olp::Device &iDevice)
     : m_Device(iDevice),
       m_PipelineLayout(iDevice),
       m_DescriptorSet(iDevice)
@@ -35,7 +35,7 @@ void ComputePass::Create(
 //----------------------------------------------------------------------------------------------------------------------
 void ComputePass::CreatePipeline(std::filesystem::path iShaderName)
 {
-    Shader shader(m_Device);
+    olp::Shader shader(m_Device);
     std::filesystem::path shaderPath = OLYMPUS_ROOT;
     shaderPath += "shaders/build" / iShaderName;
     shaderPath += "_comp.spv";
@@ -60,7 +60,7 @@ void ComputePass::CreatePipeline(std::filesystem::path iShaderName)
 //----------------------------------------------------------------------------------------------------------------------
 void ComputePass::CreateCommandPoolAndBuffer()
 {
-    Device::QueueFamilyIndices queueFamilyIndices = m_Device.GetQueueIndices();
+    olp::Device::QueueFamilyIndices queueFamilyIndices = m_Device.GetQueueIndices();
     VkCommandPoolCreateInfo cmdPoolInfo{};
     cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     cmdPoolInfo.queueFamilyIndex = queueFamilyIndices.computeFamily.value();

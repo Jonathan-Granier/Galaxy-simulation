@@ -14,7 +14,7 @@ public:
     /// @brief
     ///  Constructor.
     /// @param iDevice Device to initialize the compute pass with.
-    explicit ComputePass(const Device &iDevice);
+    explicit ComputePass(const olp::Device &iDevice);
 
     /// @brief
     ///  Submits the command buffer to the compute queue.
@@ -65,7 +65,7 @@ protected:
     void BuildCommandBuffer(VkDeviceSize iNbPoint);
 
     /// Vulkan device.
-    const Device &m_Device;
+    const olp::Device &m_Device;
 
     /// Command pool for the compute queue.
     VkCommandPool m_CommandPool;
@@ -77,9 +77,9 @@ protected:
     VkFence m_Fence;
 
     /// Layout of the compute pipeline.
-    PipelineLayout m_PipelineLayout;
+    olp::PipelineLayout m_PipelineLayout;
     /// Descriptor of the compute pass.
-    DescriptorSet m_DescriptorSet;
+    olp::DescriptorSet m_DescriptorSet;
     /// Compute pipeline.
     VkPipeline m_Pipeline;
 };

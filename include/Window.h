@@ -60,7 +60,7 @@ private:
     uint32_t m_Height;
 
     /// Vulkan instance.
-    Instance m_Instance;
+    olp::Instance m_Instance;
     /// Vullan surface.
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
     /// Renderer.

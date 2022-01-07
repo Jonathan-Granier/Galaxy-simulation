@@ -5,7 +5,7 @@
 #include <chrono>
 
 //----------------------------------------------------------------------------------------------------------------------
-Renderer::Renderer(const Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
+Renderer::Renderer(const olp::Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
     : m_Device(iInstance, iSurface),
       m_Swapchain(m_Device, iWidth, iHeight),
       m_PipelineLayout(m_Device),
@@ -23,7 +23,7 @@ void Renderer::CreateResources()
 {
     std::cout << "Create ressources" << std::endl;
 
-    m_ImGUI = std::make_unique<ImGUI>(m_Device);
+    m_ImGUI = std::make_unique<olp::ImGUI>(m_Device);
 
     CreatePipelineLayout();
     CreateSwapchainResources();
@@ -127,7 +127,7 @@ void Renderer::ReleaseSwapchainResources()
     m_CloudPipeline.Destroy();
     m_ImGUI->Destroy();
 
-    for (CommandBuffer &commandBuffer : m_CommandBuffers)
+    for (olp::CommandBuffer &commandBuffer : m_CommandBuffers)
         commandBuffer.Free();
 
     vkDestroyRenderPass(m_Device.GetDevice(), m_RenderPass, nullptr);
@@ -336,7 +336,7 @@ void Renderer::CreateSyncObjects()
 //----------------------------------------------------------------------------------------------------------------------
 void Renderer::BuildCommandBuffer(uint32_t iIndex)
 {
-    CommandBuffer &commandBuffer = m_CommandBuffers[iIndex];
+    olp::CommandBuffer &commandBuffer = m_CommandBuffers[iIndex];
     commandBuffer.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
     const VkExtent2D imageSize = m_Swapchain.GetImageSize();

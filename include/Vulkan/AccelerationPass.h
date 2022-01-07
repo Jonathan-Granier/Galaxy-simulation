@@ -17,9 +17,9 @@ public:
     void Create(
         VkDescriptorPool &iDescriptorPool,
         const VkCloud &iGalaxy,
-        const UniformBuffer &iOptions);
+        const olp::UniformBuffer &iOptions);
 
-    const MemoryBuffer &GetAccelerationBuffer() const { return m_AccelerationBuffer; }
+    const olp::MemoryBuffer &GetAccelerationBuffer() const { return m_AccelerationBuffer; }
 
 private:
     /// @brief
@@ -38,7 +38,7 @@ private:
     void CreateDescriptor(
         VkDescriptorPool &iDescriptorPool,
         const VkCloud &iGalaxy,
-        const UniformBuffer &iOptions);
+        const olp::UniformBuffer &iOptions);
 
-    MemoryBuffer m_AccelerationBuffer;
+    olp::MemoryBuffer m_AccelerationBuffer;
 };
