@@ -63,7 +63,7 @@ void Renderer::InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float
     CreateDescriptorSets();
 
     VkCloud &galaxy = m_Clouds.emplace_back(m_Device);
-    galaxy.Init(iNbStars, iGalaxyDiameters, iGalaxyThickness);
+    galaxy.Init(iNbStars, iGalaxyDiameters, iGalaxyThickness, iInitialSpeed);
 
     m_AccelerationInfo.NbPoint = galaxy.GetCloud().Points.size();
     m_DisplacementInfo.NbPoint = m_AccelerationInfo.NbPoint;
@@ -195,7 +195,7 @@ void Renderer::CreatePipeline()
         m_PipelineLayout.GetLayout(),
         m_RenderPass,
         0,
-        "mesh",
+        "galaxy",
         m_Swapchain.GetImageSize().width,
         m_Swapchain.GetImageSize().height,
         1);

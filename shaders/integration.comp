@@ -7,8 +7,7 @@ struct Vertex
 {
     vec3 pos;
     float pad1;
-    vec3 color;
-    int pad2;
+    vec4 speed;
 };
 
 
@@ -24,14 +23,8 @@ layout(std140, binding = 1) buffer Accelerations
     vec4 accelerations[ ];
 };
 
-// Binding 2: Speed storage buffer, input
-layout(std140, binding = 2) buffer Speeds
-{
-    vec4 speeds[ ];
-};
-
 // Binding 2: Option uniform buffer.
-layout(binding = 3) uniform Options {
+layout(binding = 2) uniform Options {
     float Step;
     uint NbPoints;
 } options;
@@ -41,7 +34,7 @@ void main() {
     uint index = gl_GlobalInvocationID.x;
     if(index >= options.NbPoints)
         return;
-    
-    speeds[index] += options.Step * accelerations[index];
-    positions[index].pos += options.Step * speeds[index].xyz;
+
+    positions[index].speed += options.Step * accelerations[index];
+    positions[index].pos += options.Step * positions[index].speed.xyz;
 }

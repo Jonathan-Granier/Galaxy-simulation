@@ -46,7 +46,7 @@ endif ()
 if (Vulkan_FOUND)
     if (NOT GLSLC_EXECUTABLE)
         set(GLSLC_EXECUTABLE glslc) # glslc is assumed to be available from the path... Kind of a long shot under Windows
-    endif ()
+    endif () 
  
     message(STATUS "[Vulkan] Found:")
     if (VULKAN_SDK_ROOT)

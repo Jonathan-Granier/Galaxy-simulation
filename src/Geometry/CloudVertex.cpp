@@ -19,8 +19,7 @@ std::vector<VkVertexInputAttributeDescription> CloudVertex::GetAttributeDescript
 	attributeDescriptions[0].offset = offsetof(CloudVertex, Pos);
 	attributeDescriptions[1].binding = 0;
 	attributeDescriptions[1].location = 1;
-	attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[1].offset = offsetof(CloudVertex, Color);
-	attributeDescriptions[2].binding = 0;
+	attributeDescriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	attributeDescriptions[1].offset = offsetof(CloudVertex, Speed);
 	return attributeDescriptions;
 }

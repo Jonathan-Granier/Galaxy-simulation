@@ -4,8 +4,6 @@
 //----------------------------------------------------------------------------------------------------------------------
 void IntegrationPass::Destroy()
 {
-
-    m_SpeedBuffer.Destroy();
     ComputePass::Destroy();
 }
 
@@ -19,7 +17,6 @@ void IntegrationPass::Create(
 {
     VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
     CreatePipelineLayout();
-    CreateBuffers(iGalaxy, iInitialSpeed);
     CreateDescriptor(iDescriptorPool, iGalaxy, iOptions, iAccelerationBuffer);
     ComputePass::Create("integration", nbPoint);
 }
@@ -27,7 +24,7 @@ void IntegrationPass::Create(
 //----------------------------------------------------------------------------------------------------------------------
 void IntegrationPass::CreatePipelineLayout()
 {
-    std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(4);
+    std::vector<VkDescriptorSetLayoutBinding> descriptorBinding(3);
 
     // Position storage buffer.
     descriptorBinding[0].binding = 0;
@@ -43,51 +40,14 @@ void IntegrationPass::CreatePipelineLayout()
     descriptorBinding[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
     descriptorBinding[1].pImmutableSamplers = nullptr;
 
-    // Speed buffer.
+    // Smoothing length
     descriptorBinding[2].binding = 2;
-    descriptorBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    descriptorBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorBinding[2].descriptorCount = 1;
     descriptorBinding[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
     descriptorBinding[2].pImmutableSamplers = nullptr;
 
-    // Smoothing length
-    descriptorBinding[3].binding = 3;
-    descriptorBinding[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    descriptorBinding[3].descriptorCount = 1;
-    descriptorBinding[3].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    descriptorBinding[3].pImmutableSamplers = nullptr;
-
     m_PipelineLayout.Create(descriptorBinding);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void IntegrationPass::CreateBuffers(const VkCloud &iGalaxy, float iInitialSpeed)
-{
-
-    VkDeviceSize bufferSize = sizeof(glm::vec4) * iGalaxy.GetCloud().Points.size();
-    std::vector<glm::vec4> speeds;
-    speeds.reserve(iGalaxy.GetCloud().Points.size());
-
-    for (const glm::vec3 &position : iGalaxy.GetCloud().Points)
-    {
-        glm::vec3 speed = glm::normalize(glm::cross(position, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed;
-        speeds.emplace_back(glm::vec4(speed, 0));
-    }
-
-    MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
-        bufferSize,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-    stagingBuffer.TransferDataInBuffer(speeds, bufferSize);
-
-    m_SpeedBuffer = m_Device.CreateMemoryBuffer(
-        bufferSize,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    m_SpeedBuffer.CopyFrom(stagingBuffer.Buffer, bufferSize);
-    stagingBuffer.Destroy();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -107,15 +67,8 @@ void IntegrationPass::CreateDescriptor(
     accelerationBufferInfo.offset = 0;
     accelerationBufferInfo.range = iAccelerationBuffer.Size;
 
-    // Speed buffer
-    VkDescriptorBufferInfo speedBufferInfo{};
-    speedBufferInfo.buffer = m_SpeedBuffer.Buffer;
-    speedBufferInfo.offset = 0;
-    speedBufferInfo.range = m_SpeedBuffer.Size;
-
     m_DescriptorSet.AddWriteDescriptor(0, vertexBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
     m_DescriptorSet.AddWriteDescriptor(1, accelerationBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-    m_DescriptorSet.AddWriteDescriptor(2, speedBufferInfo, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-    m_DescriptorSet.AddWriteDescriptor(3, iOptions);
+    m_DescriptorSet.AddWriteDescriptor(2, iOptions);
     m_DescriptorSet.UpdateDescriptorSets();
 }

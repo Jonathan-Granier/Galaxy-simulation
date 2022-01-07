@@ -1,6 +1,7 @@
 #include "Geometry/VkCloud.h"
 #include "Geometry/CloudVertex.h"
 #include <iostream>
+#include <glm/geometric.hpp>
 
 //----------------------------------------------------------------------------------------------------------------------
 VkCloud::VkCloud(Device &iDevice)
@@ -9,31 +10,10 @@ VkCloud::VkCloud(Device &iDevice)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void VkCloud::Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness)
+void VkCloud::Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness, float iInitialSpeed)
 {
 	m_Cloud = Cloud::InitGalaxy(iNbStars, iGalaxyDiameters, iGalaxyThickness);
-	CreateVertexBuffer(glm::vec3(0.0, 0, 1.0));
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void VkCloud::InitAxisX()
-{
-	m_Cloud = Cloud::InitAxisX();
-	CreateVertexBuffer(glm::vec3(1.0, 0, 0));
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void VkCloud::InitAxisY()
-{
-	m_Cloud = Cloud::InitAxisY();
-	CreateVertexBuffer(glm::vec3(0, 1.0, 0));
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void VkCloud::InitAxisZ()
-{
-	m_Cloud = Cloud::InitAxisZ();
-	CreateVertexBuffer(glm::vec3(0, 0, 1.0));
+	CreateVertexBuffer(iInitialSpeed);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -43,7 +23,7 @@ void VkCloud::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void VkCloud::CreateVertexBuffer(const glm::vec3 &color)
+void VkCloud::CreateVertexBuffer(float iInitialSpeed)
 {
 	std::vector<CloudVertex> points;
 	points.reserve(m_Cloud.Points.size());
@@ -52,7 +32,7 @@ void VkCloud::CreateVertexBuffer(const glm::vec3 &color)
 	{
 		CloudVertex v;
 		v.Pos = curPt;
-		v.Color = color;
+		v.Speed = glm::vec4(glm::normalize(glm::cross(curPt, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed, 0);
 		points.emplace_back(v);
 	}
 

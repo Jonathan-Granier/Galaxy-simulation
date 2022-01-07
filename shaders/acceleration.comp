@@ -7,8 +7,7 @@ struct Vertex
 {
     vec3 pos;
     float pad1;
-    vec3 color;
-    int pad2;
+    vec4 speed;
 };
 
 // Binding 0 : Position of point in Galaxy, input

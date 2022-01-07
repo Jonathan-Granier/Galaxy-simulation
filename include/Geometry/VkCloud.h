@@ -19,10 +19,7 @@ public:
 	VkCloud &operator=(const VkCloud &) = delete;
 	VkCloud &operator=(VkCloud &&ioCloud) noexcept = default;
 
-	void Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness);
-	void InitAxisX();
-	void InitAxisY();
-	void InitAxisZ();
+	void Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness, float iInitialSpeed);
 
 	void Destroy();
 	void Draw(VkCommandBuffer commandBuffer);
@@ -32,7 +29,7 @@ public:
 
 private:
 	///  Allocate the cloud in the gpu memory.
-	void CreateVertexBuffer(const glm::vec3 &color = glm::vec3(1.0, 0, 0));
+	void CreateVertexBuffer(float iInitialSpeed);
 
 	/// Vulkan device.
 	Device &m_Device;

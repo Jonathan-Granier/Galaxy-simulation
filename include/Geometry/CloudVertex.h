@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <vulkan/vulkan.h>
 #include <vector>
 
@@ -12,10 +13,8 @@ struct CloudVertex
 	glm::vec3 Pos{};
 	/// Padding (necessary for the use in compute shader).
 	float pad1;
-	/// Color
-	glm::vec3 Color{};
-    /// Padding.
-    float pad2;
+	/// star speed
+	glm::vec4 Speed{};
 
 	static VkVertexInputBindingDescription GetBindingDescription();
 	static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
