@@ -173,7 +173,6 @@ void Window::Scroll(float iYOffset)
 //----------------------------------------------------------------------------------------------------------------------
 void Window::KeyInput(int iKey, int iAction)
 {
-
     if (iKey == GLFW_KEY_F1 && iAction == GLFW_RELEASE)
     {
         m_Menu.SetVisible(!m_Menu.IsVisible());

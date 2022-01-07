@@ -37,7 +37,7 @@ void ComputePass::CreatePipeline(std::filesystem::path iShaderName)
 {
     Shader shader(m_Device);
     std::filesystem::path shaderPath = OLYMPUS_ROOT;
-    shaderPath += "shaders" / iShaderName;
+    shaderPath += "shaders/build" / iShaderName;
     shaderPath += "_comp.spv";
     shader.Load(shaderPath);
 

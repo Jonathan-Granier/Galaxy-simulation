@@ -125,7 +125,7 @@ void ImGUI::CreatePipeline(VkRenderPass iRenderPass)
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStateEnables.size());
     dynamicState.flags = 0;
 
-    std::filesystem::path path = std::filesystem::path(OLYMPUS_ROOT) / std::filesystem::path("shaders") / "ui";
+    std::filesystem::path path = std::filesystem::path(OLYMPUS_ROOT) / std::filesystem::path("shaders/build") / "ui";
     std::filesystem::path vertexPath = path;
     std::filesystem::path fragPath = path;
     vertexPath += "_vert.spv";

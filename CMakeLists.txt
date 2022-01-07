@@ -89,7 +89,7 @@ if (Vulkan_FOUND)
             list(GET SHADER_FILE_PARTS 0 SHADER_NAME)
             list(GET SHADER_FILE_PARTS 1 SHADER_EXT)
 
-            set(SHADER_OUTPUT_PATH "${SHADERS_ROOT}/${SHADER_NAME}_${SHADER_EXT}.spv")
+            set(SHADER_OUTPUT_PATH "${SHADERS_ROOT}/build/${SHADER_NAME}_${SHADER_EXT}.spv")
 
             add_custom_command(
                 OUTPUT "${SHADER_OUTPUT_PATH}"

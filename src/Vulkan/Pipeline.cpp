@@ -11,7 +11,7 @@ Pipeline::Pipeline(const Device &iDevice)
 //----------------------------------------------------------------------------------------------------------------------
 void Pipeline::LoadShader(const std::filesystem::path &iShaderName)
 {
-    std::filesystem::path path = std::filesystem::path(OLYMPUS_ROOT) / std::filesystem::path("shaders") / iShaderName;
+    std::filesystem::path path = std::filesystem::path(OLYMPUS_ROOT) / std::filesystem::path("shaders/build") / iShaderName;
     std::filesystem::path vertexPath = path;
     std::filesystem::path fragPath = path;
     vertexPath += "_vert.spv";
