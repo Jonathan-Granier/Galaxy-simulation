@@ -136,16 +136,16 @@ target_include_directories(
 set(
     OLYMPUS_FILES
 
-    src/*.cpp
+    sources/*.cpp
     include/*.h
     include/*.inl
-)  
+)   
    
 # Adding every file to be compiled
 file(
     GLOB_RECURSE
     OLYMPUS_SOURCES 
- 
+  
     ${OLYMPUS_FILES}
 ) 
 

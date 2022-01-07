@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "Menu.h"
-#include "Vulkan/VulkanObject/ImGUI.h"
+#include "Vulkan/Olympus/ImGUI.h"
 #include <memory>
 
 /// Main window manage with GLFW.
