@@ -210,7 +210,7 @@ void Renderer::CreateDescriptorPool()
 
     VkDescriptorPoolSize storageBufferPoolSize{};
     storageBufferPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    storageBufferPoolSize.descriptorCount = 5; // Position Buffer*2 + Acceleration buffer*2 + Speed buffer*1
+    storageBufferPoolSize.descriptorCount = 4; // Position Buffer*2 + Acceleration buffer*2
 
     std::array<VkDescriptorPoolSize, 2> poolSizes{uniformPoolSize, storageBufferPoolSize};
 
