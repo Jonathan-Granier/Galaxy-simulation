@@ -1,17 +1,17 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Vulkan/Olympus/Device.h"
-#include "Vulkan/Olympus/Swapchain.h"
+#include "Olympus/Device.h"
+#include "Olympus/Swapchain.h"
 #include "Vulkan/IntegrationPass.h"
 #include "Vulkan/AccelerationPass.h"
-#include "Vulkan/Olympus/PipelineLayout.h"
-#include "Vulkan/Olympus/CloudPipeline.h"
-#include "Vulkan/Olympus/Image.h"
-#include "Vulkan/Olympus/DescriptorSet.h"
-#include "Vulkan/Olympus/CommandBuffer.h"
-#include "Vulkan/Olympus/UniformBuffer.h"
-#include "Vulkan/Olympus/ImGUI.h"
+#include "Olympus/PipelineLayout.h"
+#include "Olympus/CloudPipeline.h"
+#include "Olympus/Image.h"
+#include "Olympus/DescriptorSet.h"
+#include "Olympus/CommandBuffer.h"
+#include "Olympus/UniformBuffer.h"
+#include "Olympus/ImGUI.h"
 #include "Geometry/VkCloud.h"
 
 class Renderer

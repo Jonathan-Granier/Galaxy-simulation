@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Vulkan/Olympus/Debug.h"
+#include "Olympus/Debug.h"
 #include <imgui/imgui.h>
 
 // TODO percent of max size.

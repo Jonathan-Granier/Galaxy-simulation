@@ -1,7 +1,7 @@
 
 #include "Vulkan/ComputePass.h"
-#include "Vulkan/Olympus/Debug.h"
-#include "Vulkan/Olympus/Shader.h"
+#include "Olympus/Debug.h"
+#include "Olympus/Shader.h"
 #include <cmath>
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -36,8 +36,7 @@ void ComputePass::Create(
 void ComputePass::CreatePipeline(std::filesystem::path iShaderName)
 {
     olp::Shader shader(m_Device);
-    std::filesystem::path shaderPath = OLYMPUS_ROOT;
-    shaderPath += "shaders/build" / iShaderName;
+    std::filesystem::path shaderPath = GALAXY_SHADERS / iShaderName;
     shaderPath += "_comp.spv";
     shader.Load(shaderPath);
 

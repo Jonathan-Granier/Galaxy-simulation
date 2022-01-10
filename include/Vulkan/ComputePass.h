@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Vulkan/Olympus/PipelineLayout.h"
-#include "Vulkan/Olympus/DescriptorSet.h"
-#include "Vulkan/Olympus/Device.h"
-#include "Vulkan/Olympus/MemoryBuffer.h"
+#include "Olympus/PipelineLayout.h"
+#include "Olympus/DescriptorSet.h"
+#include "Olympus/Device.h"
+#include "Olympus/MemoryBuffer.h"
 #include "Geometry/VkCloud.h"
 
 /// @brief

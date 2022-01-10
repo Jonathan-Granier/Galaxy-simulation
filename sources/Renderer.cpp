@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Vulkan/Olympus/Debug.h"
+#include "Olympus/Debug.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <chrono>
@@ -195,7 +195,7 @@ void Renderer::CreatePipeline()
         m_PipelineLayout.GetLayout(),
         m_RenderPass,
         0,
-        "galaxy",
+        std::filesystem::path(GALAXY_SHADERS) / "galaxy",
         m_Swapchain.GetImageSize().width,
         m_Swapchain.GetImageSize().height,
         1);

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Geometry/Mesh.h"
-#include "Vulkan/Olympus/Device.h"
-#include "Vulkan/Olympus/MemoryBuffer.h"
+#include "Olympus/Device.h"
+#include "Olympus/MemoryBuffer.h"
 
 /// @brief
 ///  Class which holds, allocates and draws a mesh.

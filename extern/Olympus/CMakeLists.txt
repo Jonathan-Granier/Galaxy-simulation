@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(Galaxy VERSION 0.1.0)
-add_executable(Galaxy)
 
-# Using C++17
-target_compile_features(Galaxy PRIVATE cxx_std_17)
+project(Olympus VERSION 1.0.0)
 
+add_library(Olympus OBJECT)
 
+target_compile_features(Olympus PRIVATE cxx_std_17)
 
 
 #############################
@@ -49,6 +48,19 @@ if (Vulkan_FOUND)
     if (NOT GLSLC_EXECUTABLE)
         set(GLSLC_EXECUTABLE glslc) # glslc is assumed to be available from the path... Kind of a long shot under Windows
     endif () 
+ 
+    message(STATUS "[Vulkan] Found:")
+    if (VULKAN_SDK_ROOT)
+        message(STATUS "  - Root path: ${VULKAN_SDK_ROOT}")
+    endif ()
+    message(STATUS "  - Include: ${Vulkan_INCLUDE_DIRS}")
+    message(STATUS "  - Library: ${Vulkan_LIBRARIES}")
+    message(STATUS "  - GLSLC executable: ${GLSLC_EXECUTABLE}")
+
+    # Including & linking the Vulkan SDK
+
+    target_include_directories(Olympus PUBLIC "${Vulkan_INCLUDE_DIRS}")
+    target_link_libraries(Olympus PUBLIC "${Vulkan_LIBRARIES}")
 
     if (GLSLC_EXECUTABLE)
         #######################
@@ -89,7 +101,7 @@ if (Vulkan_FOUND)
                 VERBATIM
             )
 
-            target_sources(Galaxy PRIVATE "${SHADER_OUTPUT_PATH}")
+            target_sources(Olympus PRIVATE "${SHADER_OUTPUT_PATH}")
         endforeach ()
     else ()
         # GLSLC executable not found, send a warning
@@ -104,12 +116,26 @@ else ()
     message(SEND_ERROR "[Olympus] Error: Vulkan SDK not found, please specify its installation path manually.")
 endif ()
 
+set(
+    OLYMPUS_LINKER_FLAGS
+
+    ${OLYMPUS_LINKER_FLAGS}
+    ${Vulkan_LIBRARY}
+)
+
+target_include_directories(
+	Olympus
+    SYSTEM
+    PUBLIC
+
+    ${Vulkan_INCLUDE_DIRS}
+)
 ##########################
-# GALAXY - Source files #
+# OLYMPUS - Source files #
 ##########################
 
 set(
-    GALAXY_FILES
+    OLYMPUS_FILES
 
     sources/*.cpp
     include/*.h
@@ -119,49 +145,45 @@ set(
 # Adding every file to be compiled
 file(
     GLOB_RECURSE
-    GALAXY_SOURCES 
+    OLYMPUS_SOURCES 
   
-    ${GALAXY_FILES}
+    ${OLYMPUS_FILES}
 ) 
 
 ####################
-# Galaxy - Build #
+# Olympus - Build #
 ####################
 
-target_sources(Galaxy PRIVATE ${GALAXY_SOURCES})
+target_sources(Olympus PRIVATE ${OLYMPUS_SOURCES})
+
 
 target_include_directories(
-	Galaxy
+	Olympus
 
-	PRIVATE
+	SYSTEM
+    PUBLIC
 
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-    
-add_subdirectory(extern)
-add_subdirectory(extern/glm)
-set(
-    GALAXY_LINKER_FLAGS 
 
-    ${GALAXY_LINKER_FLAGS}
+add_subdirectory(extern)
+
+set(
+    OLYMPUS_LINKER_FLAGS 
+
+    ${OLYMPUS_LINKER_FLAGS}
     GLFW 
-    ImGui
-    glm::glm
-    Olympus
+    ImGui  
 )  
 
 target_compile_definitions(
-    Galaxy
+    Olympus
   
     PRIVATE  
 
-    GALAXY_SHADERS="${CMAKE_CURRENT_SOURCE_DIR}/shaders/build"
-    GLFW_INCLUDE_VULKAN #use vulkan with GLFW
-    GLM_ENABLE_EXPERIMENTAL # To be able to use quaternions
-    GLM_FORCE_RADIANS # Forcing calculations to be in radians
-    GLM_FORCE_DEPTH_ZERO_TO_ONE # To fix glm's perspective matrix
-    #GLM_FORCE_LEFT_HANDED # Needs to be forced to LH for Vulkan
+    OLYMPUS_SHADERS="${CMAKE_CURRENT_SOURCE_DIR}/shaders/build"
 )
 
-target_compile_options(Galaxy PRIVATE ${GALAXY_COMPILER_FLAGS})
-target_link_libraries(Galaxy PRIVATE ${GALAXY_LINKER_FLAGS})
+target_compile_options(Olympus PUBLIC ${OLYMPUS_COMPILER_FLAGS})
+target_link_libraries(Olympus PUBLIC ${OLYMPUS_LINKER_FLAGS})
+
