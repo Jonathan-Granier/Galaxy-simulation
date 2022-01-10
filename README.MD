@@ -1,4 +1,4 @@
-# Olympus - Galaxy simulation
+# Galaxy simulation
 
 ![Language](https://img.shields.io/badge/Language-C%2B%2B-0052cf)
 ![Libraries](https://img.shields.io/badge/Libraries-Vulkan_-00cf2c)
