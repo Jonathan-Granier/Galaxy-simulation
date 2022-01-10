@@ -20,7 +20,7 @@ Idea from this [repo](https://github.com/angeluriot/Galaxy_simulation)
 
 To build from source , first clone the repository
 ```bash
-git clone https://github.com/Jonathan-Granier/Olympus.git
+git clone https://github.com/Jonathan-Granier/Galaxy-simulation.git
 ```
 In order to compile the project, the following tools and libraries are required:
 * CMake 3.0
