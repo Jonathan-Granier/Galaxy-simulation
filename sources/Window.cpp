@@ -10,13 +10,13 @@ static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
     app->Resize(width, height);
 }
 
-static void ScrollCallBack(GLFWwindow *window, double xoffset, double yoffset)
+static void ScrollCallBack(GLFWwindow *window, double, double yoffset)
 {
     auto app = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
     app->Scroll(yoffset);
 }
 
-static void KeyCallBack(GLFWwindow *window, int key, int scancode, int action, int mods)
+static void KeyCallBack(GLFWwindow *window, int key, int, int action, int)
 {
     auto app = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
     app->KeyInput(key, action);
@@ -50,7 +50,7 @@ Window::Window(std::string iName, uint32_t iWidth, uint32_t iHeight)
                                  m_Menu.GetGalaxyParameters().Thickness, m_Menu.GetGalaxyParameters().StarsSpeed,
                                  m_Menu.GetGalaxyParameters().BlackHoleMass);
 
-    m_Camera.SetPerspective(45.0f, (float)m_Width / (float)m_Height, 0.1f, 1000.0f);
+    m_Camera.SetPerspective(45.0f, static_cast<float>(m_Width) / static_cast<float>(m_Height), 0.1f, 1000.0f);
     m_Camera.SetPosition(glm::vec3(0.0f, 0.0f, -150.0f));
     m_Camera.SetRotation(glm::vec3(60.0f, 0.0f, 0.0f));
 }
@@ -124,8 +124,8 @@ void Window::MouseInteraction()
 
     m_Menu.UpdateMouse(xpos, ypos, left, right);
 
-    float dx = xpos - m_PrevMousePos.x;
-    float dy = ypos - m_PrevMousePos.y;
+    float dx = static_cast<float>(xpos) - m_PrevMousePos.x;
+    float dy = static_cast<float>(ypos) - m_PrevMousePos.y;
     m_PrevMousePos = glm::vec2(xpos, ypos);
 
     // if (left)
@@ -155,7 +155,7 @@ void Window::Restart()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Window::Scroll(float iYOffset) { m_Camera.Translate(glm::vec3(0.0f, 0.0f, (float)iYOffset * 1.f)); }
+void Window::Scroll(double iYOffset) { m_Camera.Translate(glm::vec3(0.0f, 0.0f, static_cast<float>(iYOffset) * 1.f)); }
 
 //----------------------------------------------------------------------------------------------------------------------
 void Window::KeyInput(int iKey, int iAction)

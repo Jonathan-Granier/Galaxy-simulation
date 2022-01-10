@@ -15,13 +15,11 @@ public:
     /// @param[in] iGalaxy              Galaxy cloud.
     /// @param[in] iOptions             Uniform buffer of control parameters.
     /// @param[in] iAccelerationBuffer  Buffer that store the acceleration of each star.
-    /// @param[in] iInitialSpeed        Stars' initial speed.
     void Create(
         VkDescriptorPool &iDescriptorPool,
         const VkCloud &iGalaxy,
         const olp::UniformBuffer &iOptions,
-        const olp::MemoryBuffer &iAccelerationBuffer,
-        float iInitialSpeed);
+        const olp::MemoryBuffer &iAccelerationBuffer);
 
 private:
     ///  Create the pipeline layout.

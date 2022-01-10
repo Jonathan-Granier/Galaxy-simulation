@@ -8,12 +8,13 @@
 Renderer::Renderer(const olp::Instance &iInstance, VkSurfaceKHR iSurface, uint32_t iWidth, uint32_t iHeight)
     : m_Device(iInstance, iSurface),
       m_Swapchain(m_Device, iWidth, iHeight),
+      m_MainPassDescriptor(m_Device),
       m_PipelineLayout(m_Device),
       m_CloudPipeline(m_Device),
-      m_DepthBuffer(m_Device),
       m_AccelerationPass(m_Device),
       m_IntegrationPass(m_Device),
-      m_MainPassDescriptor(m_Device)
+      m_DepthBuffer(m_Device)
+
 {
     CreateResources();
 }
@@ -75,7 +76,7 @@ void Renderer::InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float
         m_DescriptorPool,
         galaxy,
         m_UniformBuffers.Displacement,
-        m_AccelerationPass.GetAccelerationBuffer(), iInitialSpeed);
+        m_AccelerationPass.GetAccelerationBuffer());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -157,11 +158,6 @@ void Renderer::CreateUniformBuffers()
 
 void Renderer::UpdateUniformBuffers(const glm::mat4 &iView, const glm::mat4 &iProj)
 {
-    static auto startTime = std::chrono::high_resolution_clock::now();
-
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
     ModelInfo modelUbo{};
     modelUbo.Model = glm::mat4(1.0);
     modelUbo.View = iView;
@@ -348,7 +344,7 @@ void Renderer::BuildCommandBuffer(uint32_t iIndex)
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = m_RenderPass;
-    renderPassInfo.framebuffer = m_Swapchain.GetFramebuffer(static_cast<uint32_t>(iIndex));
+    renderPassInfo.framebuffer = m_Swapchain.GetFramebuffer(iIndex);
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = {imageSize};
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());

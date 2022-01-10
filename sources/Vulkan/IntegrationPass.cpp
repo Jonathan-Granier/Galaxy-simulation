@@ -12,8 +12,7 @@ void IntegrationPass::Create(
     VkDescriptorPool &iDescriptorPool,
     const VkCloud &iGalaxy,
     const olp::UniformBuffer &iOptions,
-    const olp::MemoryBuffer &iAccelerationBuffer,
-    float iInitialSpeed)
+    const olp::MemoryBuffer &iAccelerationBuffer)
 {
     VkDeviceSize nbPoint = iGalaxy.GetSize();
     CreatePipelineLayout();

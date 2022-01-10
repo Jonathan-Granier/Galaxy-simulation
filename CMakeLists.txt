@@ -1,13 +1,21 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(Galaxy VERSION 0.1.0)
+project(Galaxy)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/extern/Olympus/cmake")
+
 add_executable(Galaxy)
 
 # Using C++17
 target_compile_features(Galaxy PRIVATE cxx_std_17)
 
+############################
+# Olympus - Compiler flags #
+############################ 
 
+include(CompilerFlags) 
+add_compiler_flags(Galaxy PRIVATE)
  
- 
+  
 #############################
 # Olympus - Finding Vulkan #
 ############################# 

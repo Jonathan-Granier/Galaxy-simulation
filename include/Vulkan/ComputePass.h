@@ -12,18 +12,18 @@
 class ComputePass
 {
 public:
-    /// @brief
+    /// Virtual desctructor.
+    virtual ~ComputePass() = default;
+
     ///  Constructor.
     /// @param iDevice Device to initialize the compute pass with.
     explicit ComputePass(const olp::Device &iDevice);
 
-    /// @brief
     ///  Submits the command buffer to the compute queue.
     /// @param[in] iWaitSemaphore Semaphore to wait before execute the pass.
     /// @param[in] iSignalSemaphore Semaphore to signal when the execution is finished.
     void Process(VkSemaphore iWaitSemaphore, VkSemaphore iSignalSemaphore);
 
-    /// @brief
     /// Wait the fence of the compute pass.
     void WaitFence();
 
@@ -31,38 +31,31 @@ public:
     VkCommandBuffer GetCommandBuffer() { return m_CommandBuffer; }
 
 protected:
-    /// @brief
     ///  Destructor.
     virtual void Destroy();
 
-    /// @brief
     ///  Creates the compute pass.
     /// @param iDescriptorPool Descriptor pool to allocate descriptor of the pass.
     /// @param iGalaxy Galaxy cloud.
     /// @param iOptions  Uniform buffer of control parameters.
-    virtual void Create(
+    void Create(
         std::filesystem::path iShaderName,
         VkDeviceSize iNbPoint);
 
-    /// @brief
     ///  Create the pipeline layout.
     virtual void CreatePipelineLayout() = 0;
 
-    /// @brief
     ///  Create the pipeline.
     void CreatePipeline(std::filesystem::path iShaderName);
 
-    /// @brief
     ///  Create the command pool and the command buffer.
     void CreateCommandPoolAndBuffer();
-    /// @brief
     /// Create the sempahore and the fence used for the sync.
     void CreateSemaphore();
 
-    /// @brief
     ///  Build the command buffer.
-    /// @param iWidth VertexIndexImage width.
-    /// @param iHeight VertexIndexImage height.
+    /// @param[in] iWidth VertexIndexImage width.
+    /// @param[in] iHeight VertexIndexImage height.
     void BuildCommandBuffer(VkDeviceSize iNbPoint);
 
     /// Vulkan device.

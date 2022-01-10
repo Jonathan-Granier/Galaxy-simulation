@@ -29,7 +29,7 @@ public:
 
     /// Manage mouse scroll.
     /// @param iYOffset Scroll offset.
-    void Scroll(float iYOffset);
+    void Scroll(double iYOffset);
 
     /// Manage Key input.
     /// @param iKey Key noticed

@@ -19,7 +19,7 @@ void VkCloud::Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThick
         vertex.Pos.y *= iGalaxyThickness / iGalaxyDiameters;
         vertex.Speed = glm::vec4(glm::normalize(glm::cross(vertex.Pos, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed, 0);
     }
-    CreateVertexBuffer(iInitialSpeed);
+    CreateVertexBuffer();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ void VkCloud::Destroy()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void VkCloud::CreateVertexBuffer(float iInitialSpeed)
+void VkCloud::CreateVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(m_Cloud[0]) * m_Cloud.size();
 

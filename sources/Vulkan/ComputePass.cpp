@@ -112,7 +112,7 @@ void ComputePass::BuildCommandBuffer(VkDeviceSize iNbPoint)
         0,
         nullptr);
 
-    uint32_t x = static_cast<uint32_t>(std::ceil(iNbPoint / 256.0));
+    uint32_t x = static_cast<uint32_t>(std::ceil(static_cast<double>(iNbPoint) / 256.0));
 
     vkCmdDispatch(m_CommandBuffer, x, 1, 1);
 

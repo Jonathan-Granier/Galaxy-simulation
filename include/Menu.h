@@ -19,7 +19,7 @@ public:
 
     struct RealTimeParameters
     {
-        float Step = 0.0001;
+        float Step = 0.0001f;
         float SmoothingLenght = 1.0f;
         float InteractionRate = 0.05f;
     };
@@ -27,7 +27,7 @@ public:
     Menu(uint32_t iWidth, uint32_t iHeight);
     ~Menu();
     void UpdateMenu();
-    void UpdateMouse(float iXPos, float iYPos, bool iLeftClick, bool iRightClick);
+    void UpdateMouse(double iXPos, double iYPos, bool iLeftClick, bool iRightClick);
 
     void Resize(uint32_t iWidth, uint32_t iHeight);
     const GalaxyParameters &GetGalaxyParameters() { return m_GalaxyParameters; }

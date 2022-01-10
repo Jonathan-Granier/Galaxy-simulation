@@ -24,11 +24,11 @@ public:
     void Draw(VkCommandBuffer commandBuffer);
 
     const olp::MemoryBuffer &GetVertexBuffer() const { return m_VertexBuffer; }
-    const size_t GetSize() const { return m_Cloud.size(); }
+    uint32_t GetSize() const { return static_cast<uint32_t>(m_Cloud.size()); }
 
 private:
     ///  Allocate the cloud in the gpu memory.
-    void CreateVertexBuffer(float iInitialSpeed);
+    void CreateVertexBuffer();
 
     /// Vulkan device.
     olp::Device &m_Device;

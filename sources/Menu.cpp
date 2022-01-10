@@ -61,7 +61,7 @@ Menu::Menu(uint32_t iWidth, uint32_t iHeight)
     // Dimensions
     ImGuiIO &io = ImGui::GetIO();
     io.FontGlobalScale = 1.0;
-    io.DisplaySize = ImVec2(iWidth, iHeight);
+    io.DisplaySize = ImVec2(static_cast<float>(iWidth), static_cast<float>(iHeight));
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 }
 
@@ -151,10 +151,10 @@ void Menu::UpdateMenu()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void Menu::UpdateMouse(float iXPos, float iYPos, bool iLeftClick, bool iRightClick)
+void Menu::UpdateMouse(double iXPos, double iYPos, bool iLeftClick, bool iRightClick)
 {
     ImGuiIO &io = ImGui::GetIO();
-    io.MousePos = ImVec2(iXPos, iYPos);
+    io.MousePos = ImVec2(static_cast<float>(iXPos), static_cast<float>(iYPos));
     io.MouseDown[0] = iLeftClick;
     io.MouseDown[1] = iRightClick;
 }
@@ -174,7 +174,7 @@ void Menu::AddTitle(const std::string &iTitle)
 
     ImGui::NewLine();
     ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-    ImGui::Text(iTitle.c_str());
+    ImGui::Text("%s", iTitle.c_str());
     ImGui::Separator();
 }
 
@@ -182,17 +182,17 @@ void Menu::AddTitle(const std::string &iTitle)
 std::vector<bool> Menu::CenteredButtons(const std::vector<std::string> iTexts, float iButtonsHeight, float iSpacesSize)
 {
     float windowWidth = ImGui::GetWindowSize().x;
-    float buttonsWidths = (windowWidth - ((iTexts.size() + 2) * iSpacesSize)) / iTexts.size();
+    float buttonsWidths = (windowWidth - ((static_cast<float>(iTexts.size()) + 2) * iSpacesSize)) / static_cast<float>(iTexts.size());
     std::vector<bool> result(iTexts.size());
 
     ImGui::NewLine();
     ImGui::NewLine();
 
-    for (int i = 0; i < iTexts.size(); i++)
+    for (uint32_t i = 0; i < static_cast<uint32_t>(iTexts.size()); i++)
     {
         ImGui::SameLine();
-        ImGui::SetCursorPosX(iSpacesSize + buttonsWidths * i + iSpacesSize * i);
-        ImGui::Text("");
+        ImGui::SetCursorPosX(iSpacesSize + buttonsWidths * static_cast<float>(i) + iSpacesSize * static_cast<float>(i));
+        ImGui::Text("%s", "");
         ImGui::SameLine();
         result[i] = ImGui::Button(iTexts[i].c_str(), ImVec2(buttonsWidths, iButtonsHeight));
     }
@@ -206,11 +206,11 @@ void Menu::UpdateFPS()
     m_FrameCounter++;
     // reset every second.
     auto now = std::chrono::high_resolution_clock::now();
-    float diff = std::chrono::duration<double, std::milli>(now - m_Start).count();
+    float diff = static_cast<float>(std::chrono::duration<double, std::milli>(now - m_Start).count());
     if (diff > 1000)
     {
         std::rotate(m_FPS.begin(), m_FPS.begin() + 1, m_FPS.end());
-        float currentFPS = m_FrameCounter * 1000.0f / diff;
+        float currentFPS = static_cast<float>(m_FrameCounter) * 1000.0f / diff;
         m_FPS.back() = currentFPS;
         if (currentFPS > m_MaxFPS)
         {
