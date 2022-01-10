@@ -14,7 +14,7 @@ void AccelerationPass::Create(
     const VkCloud &iGalaxy,
     const olp::UniformBuffer &iOptions)
 {
-    VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
+    VkDeviceSize nbPoint = iGalaxy.GetSize();
     CreatePipelineLayout();
     CreateBuffers(nbPoint);
     CreateDescriptor(iDescriptorPool, iGalaxy, iOptions);

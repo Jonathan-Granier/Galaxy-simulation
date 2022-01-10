@@ -65,7 +65,7 @@ void Renderer::InitializeGalaxy(uint32_t iNbStars, float iGalaxyDiameters, float
     VkCloud &galaxy = m_Clouds.emplace_back(m_Device);
     galaxy.Init(iNbStars, iGalaxyDiameters, iGalaxyThickness, iInitialSpeed);
 
-    m_AccelerationInfo.NbPoint = galaxy.GetCloud().Points.size();
+    m_AccelerationInfo.NbPoint = galaxy.GetSize();
     m_DisplacementInfo.NbPoint = m_AccelerationInfo.NbPoint;
     m_AccelerationInfo.BlackHoleMass = iBlackHoleMass;
 

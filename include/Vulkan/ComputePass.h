@@ -5,6 +5,7 @@
 #include "Olympus/Device.h"
 #include "Olympus/MemoryBuffer.h"
 #include "Geometry/VkCloud.h"
+#include <filesystem>
 
 /// @brief
 ///  Compute pass for the compute star position.

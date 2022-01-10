@@ -15,7 +15,7 @@ void IntegrationPass::Create(
     const olp::MemoryBuffer &iAccelerationBuffer,
     float iInitialSpeed)
 {
-    VkDeviceSize nbPoint = iGalaxy.GetCloud().Points.size();
+    VkDeviceSize nbPoint = iGalaxy.GetSize();
     CreatePipelineLayout();
     CreateDescriptor(iDescriptorPool, iGalaxy, iOptions, iAccelerationBuffer);
     ComputePass::Create("integration", nbPoint);

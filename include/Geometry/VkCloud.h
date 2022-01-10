@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Geometry/Cloud.h"
 #include "Olympus/Device.h"
 #include "Olympus/CommandBuffer.h"
 #include "Olympus/MemoryBuffer.h"
+#include "Geometry/CloudVertex.h"
 #include <glm/vec3.hpp>
-
 /// @brief
 ///  Class which holds, allocates and draws a cloud.
 class VkCloud
@@ -25,7 +24,7 @@ public:
     void Draw(VkCommandBuffer commandBuffer);
 
     const olp::MemoryBuffer &GetVertexBuffer() const { return m_VertexBuffer; }
-    const Cloud &GetCloud() const { return m_Cloud; }
+    const size_t GetSize() const { return m_Cloud.size(); }
 
 private:
     ///  Allocate the cloud in the gpu memory.
@@ -34,7 +33,7 @@ private:
     /// Vulkan device.
     olp::Device &m_Device;
     /// Point cloud.
-    Cloud m_Cloud;
+    std::vector<CloudVertex> m_Cloud;
     /// Vertex buffer.
     olp::MemoryBuffer m_VertexBuffer;
 };

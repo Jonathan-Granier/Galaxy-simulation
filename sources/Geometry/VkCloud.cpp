@@ -1,8 +1,7 @@
 #include "Geometry/VkCloud.h"
-#include "Geometry/CloudVertex.h"
 #include <iostream>
 #include <glm/geometric.hpp>
-
+#include "MathHelper.h"
 //----------------------------------------------------------------------------------------------------------------------
 VkCloud::VkCloud(olp::Device &iDevice)
     : m_Device(iDevice)
@@ -12,7 +11,14 @@ VkCloud::VkCloud(olp::Device &iDevice)
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::Init(uint32_t iNbStars, float iGalaxyDiameters, float iGalaxyThickness, float iInitialSpeed)
 {
-    m_Cloud = Cloud::InitGalaxy(iNbStars, iGalaxyDiameters, iGalaxyThickness);
+    m_Cloud.resize(iNbStars);
+
+    for (CloudVertex &vertex : m_Cloud)
+    {
+        vertex.Pos = Spherical(RandomFloat(0.0f, iGalaxyDiameters * 0.5f), RandomFloat(0.0, 2 * PI), RandomFloat(0.0f, PI));
+        vertex.Pos.y *= iGalaxyThickness / iGalaxyDiameters;
+        vertex.Speed = glm::vec4(glm::normalize(glm::cross(vertex.Pos, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed, 0);
+    }
     CreateVertexBuffer(iInitialSpeed);
 }
 
@@ -25,25 +31,14 @@ void VkCloud::Destroy()
 //----------------------------------------------------------------------------------------------------------------------
 void VkCloud::CreateVertexBuffer(float iInitialSpeed)
 {
-    std::vector<CloudVertex> points;
-    points.reserve(m_Cloud.Points.size());
-
-    for (const glm::vec3 &curPt : m_Cloud.Points)
-    {
-        CloudVertex v;
-        v.Pos = curPt;
-        v.Speed = glm::vec4(glm::normalize(glm::cross(curPt, glm::vec3(0.f, 1.f, 0.f))) * iInitialSpeed, 0);
-        points.emplace_back(v);
-    }
-
-    VkDeviceSize bufferSize = sizeof(points[0]) * points.size();
+    VkDeviceSize bufferSize = sizeof(m_Cloud[0]) * m_Cloud.size();
 
     olp::MemoryBuffer stagingBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    stagingBuffer.TransferDataInBuffer(points, bufferSize);
+    stagingBuffer.TransferDataInBuffer(m_Cloud, bufferSize);
 
     m_VertexBuffer = m_Device.CreateMemoryBuffer(
         bufferSize,
@@ -60,5 +55,5 @@ void VkCloud::Draw(VkCommandBuffer commandBuffer)
     const VkBuffer vertexBuffers[] = {m_VertexBuffer.Buffer};
     const VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-    vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Cloud.Points.size()), 1, 0, 0);
+    vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Cloud.size()), 1, 0, 0);
 }
