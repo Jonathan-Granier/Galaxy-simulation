@@ -2,7 +2,7 @@
 
 int main()
 {
-    Window window("Olympus", 1200, 800);
+    Window window("Galaxy simation", 1200, 800);
     window.Run();
     return 0;
 }
