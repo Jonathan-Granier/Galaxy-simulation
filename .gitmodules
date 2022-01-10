@@ -1,3 +1,4 @@
-[submodule "extern/Olympus"]
+[submodule "Olympus"]
 	path = extern/Olympus
 	url = https://github.com/Jonathan-Granier/Olympus.git
+    branch = master
